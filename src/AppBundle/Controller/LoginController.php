@@ -18,6 +18,6 @@ class LoginController extends Controller {
      */
     public function indexAction()
     {
-        return $this->render('default/index.html.twig');
+        return $this->render('login/index.html.twig', ["page_title" => "Login"]);
     }
 }

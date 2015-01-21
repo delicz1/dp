@@ -138,6 +138,19 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
                 return array (  '_controller' => 'AppBundle\\Controller\\LoginController::indexAction',  '_route' => 'loginPage',);
             }
 
+            if (0 === strpos($pathinfo, '/app/vehicle')) {
+                // vehicleList
+                if ($pathinfo === '/app/vehicle/index') {
+                    return array (  '_controller' => 'AppBundle\\Controller\\VehicleController::indexAction',  '_route' => 'vehicleList',);
+                }
+
+                // vehicleCreate
+                if ($pathinfo === '/app/vehicle/create') {
+                    return array (  '_controller' => 'AppBundle\\Controller\\VehicleController::createAction',  '_route' => 'vehicleCreate',);
+                }
+
+            }
+
         }
 
         // _welcome

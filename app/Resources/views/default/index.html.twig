@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    Homepage.
+
+    <ul id="navigation">
+        {% for item in navigation %}
+            <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock %}
