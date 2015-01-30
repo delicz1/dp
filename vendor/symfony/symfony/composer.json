@@ -76,7 +76,9 @@
         "propel/propel1": "~1.6",
         "ircmaxell/password-compat": "~1.0",
         "ocramius/proxy-manager": "~0.4|~1.0",
-        "egulias/email-validator": "~1.2"
+        "egulias/email-validator": "~1.2",
+        "twitter/bootstrap": "3.*",
+        "components/jquery": "*"
     },
     "autoload": {
         "psr-0": { "Symfony\\": "src/" },
