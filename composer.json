@@ -19,7 +19,9 @@
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
         "twitter/bootstrap": "3.*",
-        "components/jquery": "*"
+        "components/jquery": "*",
+        "knplabs/knp-menu-bundle": "~2",
+        "stephanecollot/datetimepicker-bundle": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

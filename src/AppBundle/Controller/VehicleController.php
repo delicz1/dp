@@ -8,8 +8,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Form\Vehicle;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use AppBundle\Entity\Vehicle;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,18 +39,22 @@ class VehicleController extends Controller {
             ->getForm();
 
         $form->handleRequest($request);
+        $errors = $form->getErrors();
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($form->getData());
-            $em->flush();
+            /** @var Vehicle $vehicle */
+            $vehicle = $form->getData();
+            $em->persist($vehicle);
             $save = "Ulozeno !";
         }
 
 
 
 
-        return $this->render('vehicle/create.html.twig', array(
-            'form' => $form->createView(), 'saveStatus' => $save
-        ));
+        return $this->render('vehicle/create.html.twig', [
+            'form' => $form->createView(),
+            'saveStatus' => $save,
+            'errors' => $errors
+        ]);
     }
 }

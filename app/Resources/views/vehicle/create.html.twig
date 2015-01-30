@@ -1,12 +1,41 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ page_title }}{% endblock %}
 {% block body %}
-    
-    <div style="width: 400px">
-    {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+    {{ knp_menu_render('main') }}
     {{ saveStatus }}
+    <div style="width: 500px">
+    {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+    {{ form_stylesheet(form) }}
+    {{ form_javascript(form) }}
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ form_end(form) }}
     </div>
 {% endblock %}
+{#{% block stylesheets %}#}
+    {#{% stylesheets '@bootstrap_css' %}#}
+    {#<link rel="stylesheet" type="text/css" media="screen" href="{{ asset_url }}"/>#}
+    {#{% endstylesheets %}#}
+    {#{% javascripts '@jquery' '@bootstrap_js' %}#}
+    {#<script type="text/javascript" src="{{ asset_url }}"></script>#}
+    {#{% endjavascripts %}#}
+    {#&#123;&#35;<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" />&#35;&#125;#}
+
+    {#{{ form_stylesheet(form) }}#}
+{#{% endblock %}#}
+
+{#{% block javascripts %}#}
+    {#&#123;&#35;<script src="{{ asset('js/jquery.min.js') }}"></script>&#35;&#125;#}
+    {#&#123;&#35;<script src="{{ asset('js/bootstrap.min.js') }}"></script>&#35;&#125;#}
+
+    {#{{ form_javascript(form) }}#}
+{#{% endblock %}#}
+
+{#{% block body %}#}
+    {#<form action="{{ path('vehicleCreate') }}" method="post" type="post" {{ form_enctype(form) }}>#}
+        {#{{ form_widget(form) }}#}
+
+        {#<input type="submit" />#}
+    {#</form>#}
+{#{% endblock %}#}
+

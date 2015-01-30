@@ -9,6 +9,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
  * Class Vehicle
@@ -39,6 +41,22 @@ class Vehicle {
     protected $numberPlate;
 
     /**
+     * @ORM\Column(name="capacity")
+     * @var int
+     */
+    protected $capacity;
+
+    //== Staticke metody
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('name', new NotBlank());
+        $metadata->addPropertyConstraint('numberPlate', new NotBlank());
+    }
+
+    //== Getry
+
+    /**
      * @return int
      */
     public function getId() {
@@ -59,6 +77,15 @@ class Vehicle {
     public function getNumberPlate() {
         return $this->numberPlate;
     }
+
+    /**
+     * @return int
+     */
+    public function getCapacity() {
+        return $this->capacity;
+    }
+
+    //== Setry
 
     /**
      * @param int $id
