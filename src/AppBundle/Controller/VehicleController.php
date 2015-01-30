@@ -8,7 +8,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Vehicle;
+use AppBundle\Form\Vehicle;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,11 +32,9 @@ class VehicleController extends Controller {
         // create a task and give it some dummy data for this example
         $save = "";
         $vehicle = new Vehicle();
-        $vehicle->setName('Pojmenovani auta');
-        $vehicle->setNumberPlate("Registracni znacka");
 
         $form = $this->createFormBuilder($vehicle)
-            ->add('name', 'text')
+            ->add('name', 'text', ["attr" => ["placeholder" => "Zadej"]])
             ->add('numberPlate', 'text')
             ->add('save', 'submit', array('label' => 'Vytvor auto'))
             ->getForm();

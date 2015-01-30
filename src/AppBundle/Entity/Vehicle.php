@@ -9,10 +9,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Acl\Domain\DoctrineAclCache;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Type;
 
 /**
  * Class Vehicle
@@ -41,17 +37,6 @@ class Vehicle {
      * @var string
      */
     protected $numberPlate;
-
-
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
-    {
-        $metadata->addPropertyConstraint('name', new NotBlank());
-        $metadata->addPropertyConstraint('numberPlate', new NotBlank());
-    }
-
-    public function saveDb() {
-        $t = new Doctrine();
-    }
 
     /**
      * @return int
