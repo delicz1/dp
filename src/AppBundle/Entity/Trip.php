@@ -63,12 +63,8 @@ class Trip {
      */
     protected $purpose;
 
-
     /**
-     * @ORM\ManyToMany(targetEntity="vehicle")
-     * @ORM\JoinTable(name="trip_vehicle",
-     *      joinColumns={@ORM\JoinColumn(name="trip_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="vehicle_id", referencedColumnName="id")})
+     * @ORM\ManyToMany(targetEntity="Vehicle", mappedBy="trips")
      * @var ArrayCollection
      */
     protected $vehicles;
