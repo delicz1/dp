@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
@@ -46,12 +47,25 @@ class Vehicle {
      */
     protected $capacity;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="trip")
+     * @ORM\JoinTable(name="trip_vehicle",
+     *      joinColumns={@ORM\JoinColumn(name="vehicle_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="trip_id", referencedColumnName="id")})
+     * @var ArrayCollection
+     */
+    protected $trips;
+
     //== Staticke metody
 
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('name', new NotBlank());
         $metadata->addPropertyConstraint('numberPlate', new NotBlank());
+    }
+
+    public function __construct() {
+        $this->trips = new ArrayCollection();
     }
 
     //== Getry

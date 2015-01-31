@@ -8,6 +8,8 @@
 
 namespace AppBundle\Controller;
 
+use /** @noinspection PhpUnusedAliasInspection */
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Entity\Vehicle;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,12 +17,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class VehicleController extends Controller {
 
-    /**
-     * @Route("/app/vehicle/index", name="vehicleList")
-     */
-    public function indexAction() {
-        return "test";
-    }
 
     /**
      * @Route("/app/vehicle/create", name="vehicleCreate")
