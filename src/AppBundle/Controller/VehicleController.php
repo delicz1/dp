@@ -24,14 +24,21 @@ class VehicleController extends Controller {
      * @return Response
      */
     public function createAction(Request $request) {
-        // create a task and give it some dummy data for this example
         $save = "";
         $vehicle = new Vehicle();
 
         $form = $this->createFormBuilder($vehicle)
-            ->add('name', 'text', ["attr" => ["placeholder" => "Zadej"]])
-            ->add('numberPlate', 'text')
-            ->add('save', 'submit', array('label' => 'Vytvor auto'))
+            ->add('name', 'text', ["attr" => ["placeholder" => "povinné pole"], 'label' => 'Název'])
+            ->add('numberPlate', 'text', ['label' => 'Registrační značka'])
+            ->add('capacity', 'integer', ['label' => 'Počet lidí'])
+            ->add('type', 'choice', [
+                'label' => 'Typ dopravního prostředku',
+                "choices" => [
+                    1 => "Osobní auto",
+                    2 => "Autobus",
+                    3 => "Letadlo",
+                ]])
+            ->add('save', 'submit', array('label' => 'Uložit'))
             ->getForm();
 
         $form->handleRequest($request);
@@ -41,7 +48,7 @@ class VehicleController extends Controller {
             /** @var Vehicle $vehicle */
             $vehicle = $form->getData();
             $em->persist($vehicle);
-            $save = "Ulozeno !";
+            $save = "Uloženo !";
         }
 
 

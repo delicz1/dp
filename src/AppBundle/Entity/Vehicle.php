@@ -36,16 +36,24 @@ class Vehicle {
     protected $name;
 
     /**
-     * @ORM\Column(name="number_plate")
+     * @ORM\Column(type="string", length=10, name="number_plate")
      * @var string
      */
     protected $numberPlate;
 
     /**
-     * @ORM\Column(name="capacity")
+     * @ORM\Column(type="integer", name="capacity")
      * @var int
      */
     protected $capacity;
+
+    /**
+     * Typ dopravniho prostredku. Auto, Autobus, Letadlo, jiné
+     * @ORM\Column(type="integer")
+     * @var
+     */
+    protected $type;
+
 
     /**
      * @ORM\ManyToMany(targetEntity="Trip", inversedBy="vehicles")
@@ -97,6 +105,14 @@ class Vehicle {
         return $this->capacity;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getType() {
+        return $this->type;
+    }
+
+
     //== Setry
 
     /**
@@ -119,4 +135,20 @@ class Vehicle {
     public function setNumberPlate($numberPlate) {
         $this->numberPlate = $numberPlate;
     }
+
+    /**
+     * @param int $capacity
+     */
+    public function setCapacity($capacity) {
+        $this->capacity = $capacity;
+    }
+
+    /**
+     * @param mixed $type
+     */
+    public function setType($type) {
+        $this->type = $type;
+    }
+
+
 }
