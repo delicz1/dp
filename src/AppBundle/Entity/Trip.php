@@ -28,13 +28,13 @@ class Trip {
     protected $id;
 
     /**
-     * @ORM\Column(type="integer", name="time_from")
+     * @ORM\Column(type="datetimetz", name="time_from")
      * @var int
      */
     protected $timeFrom;
 
     /**
-     * @ORM\Column(type="integer", name="time_to")
+     * @ORM\Column(type="datetimetz", name="time_to")
      * @var int
      */
     protected $timeTo;
@@ -169,5 +169,38 @@ class Trip {
      */
     public function setPurpose($purpose) {
         $this->purpose = $purpose;
+    }
+
+    /**
+     * Add vehicles
+     *
+     * @param Vehicle $vehicles
+     * @return Trip
+     */
+    public function addVehicle(Vehicle $vehicles)
+    {
+        $this->vehicles[] = $vehicles;
+
+        return $this;
+    }
+
+    /**
+     * Remove vehicles
+     *
+     * @param Vehicle $vehicles
+     */
+    public function removeVehicle(Vehicle $vehicles)
+    {
+        $this->vehicles->removeElement($vehicles);
+    }
+
+    /**
+     * Get vehicles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getVehicles()
+    {
+        return $this->vehicles;
     }
 }

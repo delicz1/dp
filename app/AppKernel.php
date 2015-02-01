@@ -19,6 +19,9 @@ class AppKernel extends Kernel
             new AppBundle\AppBundle(),
             new \Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new SC\DatetimepickerBundle\SCDatetimepickerBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+            new Kitpages\DataGridBundle\KitpagesDataGridBundle(),
+            new Thrace\DataGridBundle\ThraceDataGridBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ page_title }}{% endblock %}
 {% block body %}
-    {{ knp_menu_render('main') }}
     {{ saveStatus }}
     <div style="width: 500px">
     {% form_theme form  with ['bootstrap_3_horizontal_layout.html.twig', ':vehicle:form-create-theme.html.twig'] %}

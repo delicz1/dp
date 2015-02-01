@@ -18,4 +18,16 @@ services:
         arguments: ["@request_stack"]
         tags:
             - { name: knp_menu.menu, alias: main } # The alias is what is used to retrieve the menu
+    app.datagrid.builder.vehicle_grid:
+        class: AppBundle\DataGrid\VehicleGrid
+        arguments: ["@thrace_data_grid.factory.datagrid", "@translator", "@router", "@doctrine.orm.entity_manager"]
+    app.datagrid.vehicle_grid:
+        class: Thrace\DataGridBundle\DataGrid\DataGrid
+        factory_service: app.datagrid.builder.vehicle_grid
+        factory_method: build
+        tags:
+            - { name: thrace_data_grid.datagrid, alias: vehicle_grid }
+    app.datagrid.event_listener.vehicle_grid_edit:
+        class: AppBundle\DataGrid\VehicleGridEdit
+    app.
 

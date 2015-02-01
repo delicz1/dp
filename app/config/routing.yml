@@ -1,3 +1,6 @@
 app:
     resource: @AppBundle/Controller/
     type:     annotation
+thrace_data_grid:
+    resource: "@ThraceDataGridBundle/Resources/config/routing.xml"
+    prefix:   /

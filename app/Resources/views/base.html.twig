@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <head>
-    {% stylesheets '@bootstrap_css' %}
+    {% stylesheets
+        'bundles/jquery-ui/jquery-ui.css'
+        'bundles/jquery-ui/jquery-ui.structure.css'
+        'bundles/jquery-ui/jquery-ui.theme.css'
+        'bundles/jqGrid/css/ui.jqgrid.css'
+        'bundles/jqGrid/plugins/searchFilter.css'
+        filter='cssrewrite'
+    %}
     <link rel="stylesheet" type="text/css" media="screen" href="{{ asset_url }}"/>
     {% endstylesheets %}
-    {% javascripts '@jquery' '@bootstrap_js' %}
+    {% javascripts '@jquery'
+    '@bootstrap_js'
+    'bundles/jquery-ui/jquery-ui.js'
+        'bundles/jqGrid/js/i18n/grid.locale-cs.js'
+        'bundles/jqGrid/js/jquery.jqGrid.src.js'
+    'bundles/thracedatagrid/js/init-datagrid.js'
+    %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 </head>
 <body>
+{% block menu %}{{ knp_menu_render('main') }}{% endblock %}
 {% block body %}{% endblock %}
 
 </body>

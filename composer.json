@@ -21,7 +21,11 @@
         "twitter/bootstrap": "3.*",
         "components/jquery": "*",
         "knplabs/knp-menu-bundle": "~2",
-        "stephanecollot/datetimepicker-bundle": "dev-master"
+        "stephanecollot/datetimepicker-bundle": "dev-master",
+        "knplabs/knp-paginator-bundle": "~2.4",
+        "kitpages/data-grid-bundle": "dev-master",
+        "thrace/datagrid-bundle":"dev-master",
+        "components/jqueryui": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

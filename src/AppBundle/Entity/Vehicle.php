@@ -21,6 +21,26 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 class Vehicle {
 
+    const TYPE_CAR = 1;
+    const TYPE_TRAIN = 2;
+    const TYPE_BUS = 3;
+    const TYPE_PLANE = 4;
+    const TYPE_OTHER = 10;
+
+    const TYPE_CAR_TR = 'Osobní auto';
+    const TYPE_TRAIN_TR = 'Vlak';
+    const TYPE_BUS_TR = 'Autobus';
+    const TYPE_PLANE_TR = 'Letadlo';
+    const TYPE_OTHER_TR = 'Jiné';
+
+    public static $typeList = [
+        self::TYPE_CAR => self::TYPE_CAR_TR,
+        self::TYPE_TRAIN => self::TYPE_TRAIN_TR,
+        self::TYPE_BUS => self::TYPE_BUS_TR,
+        self::TYPE_PLANE => self::TYPE_PLANE_TR,
+        self::TYPE_OTHER => self::TYPE_OTHER_TR,
+    ];
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -106,7 +126,7 @@ class Vehicle {
     }
 
     /**
-     * @return mixed
+     * @return integer
      */
     public function getType() {
         return $this->type;
@@ -144,11 +164,44 @@ class Vehicle {
     }
 
     /**
-     * @param mixed $type
+     * @param int $type
      */
     public function setType($type) {
         $this->type = $type;
     }
 
 
+
+    /**
+     * Add trips
+     *
+     * @param Trip $trips
+     * @return Vehicle
+     */
+    public function addTrip(Trip $trips)
+    {
+        $this->trips[] = $trips;
+
+        return $this;
+    }
+
+    /**
+     * Remove trips
+     *
+     * @param Trip $trips
+     */
+    public function removeTrip(Trip $trips)
+    {
+        $this->trips->removeElement($trips);
+    }
+
+    /**
+     * Get trips
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTrips()
+    {
+        return $this->trips;
+    }
 }
