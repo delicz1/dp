@@ -11,8 +11,7 @@ namespace AppBundle\DataGrid;
 use Doctrine\ORM\EntityNotFoundException;
 use AppBundle\Entity\Vehicle;
 use Symfony\Component\DependencyInjection\ContainerAware;
-use AppBundle\DataGrid\VehicleGrid;
-use Symfony\Component\Form\FormError;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Thrace\DataGridBundle\Event\RowEvent;
 
 class VehicleGridEdit extends ContainerAware {
@@ -25,7 +24,7 @@ class VehicleGridEdit extends ContainerAware {
 
         $vehicle = new Vehicle();
         $vehicle->setName($this->container->get('request')->request->get('name'));
-        $vehicle->setNumberPlate($this->container->get('request')->request->get('numberPlace'));
+        $vehicle->setNumberPlate($this->container->get('request')->request->get('numberPlate'));
         $vehicle->setType($this->container->get('request')->request->get('type'));
         $vehicle->setCapacity($this->container->get('request')->request->get('capacity'));
 
@@ -34,34 +33,35 @@ class VehicleGridEdit extends ContainerAware {
 
     public function onRowEdit(RowEvent $event)
     {
-        if ($event->getDataGridName() !== ProductManagementBuilder::IDENTIFIER){
+        if ($event->getDataGridName() !== VehicleGrid::IDENTIFIER){
             return;
         }
 
-        $repo = $this->container->get('doctrine.orm.entity_manager')->getRepository('AppBundle:Product');
+        $repo = $this->container->get('doctrine.orm.entity_manager')->getRepository('AppBundle:Vehicle');
+        /** @var Vehicle $vehicle */
+        $vehicle = $repo->find($event->getId());
 
-        $product = $repo->findOneById($event->getId());
-
-        if (!$product){
+        if (!$vehicle){
             throw new EntityNotFoundException();
         }
 
-        $product->setName($this->container->get('request')->request->get('name'));
-        $product->setPrice($this->container->get('request')->request->get('price'));
+        $vehicle->setName($this->container->get('request')->request->get('name'));
+        $vehicle->setNumberPlate($this->container->get('request')->request->get('numberPlate'));
+        $vehicle->setCapacity($this->container->get('request')->request->get('capacity'));
+        $vehicle->setType($this->container->get('request')->request->get('type'));
 
-        $this->process($product, $event);
-
+        $this->process($vehicle, $event);
     }
 
     public function onRowDelete(RowEvent $event)
     {
-        if ($event->getDataGridName() !== ProductManagementBuilder::IDENTIFIER){
+        if ($event->getDataGridName() !== VehicleGrid::IDENTIFIER){
             return;
         }
 
-        $repo = $this->container->get('doctrine.orm.entity_manager')->getRepository('AppBundle:Product');
+        $repo = $this->container->get('doctrine.orm.entity_manager')->getRepository('AppBundle:Vehicle');
 
-        $product = $repo->findOneById($event->getId());
+        $product = $repo->find($event->getId());
 
         if (!$product){
             throw new EntityNotFoundException();
@@ -74,14 +74,16 @@ class VehicleGridEdit extends ContainerAware {
 
     }
 
-    protected function process(Vehicle $vehicle, RowEvent $event)
-    {
+    protected function process(Vehicle $vehicle, RowEvent $event) {
         $errors = $this->container->get('validator')->validate($vehicle, array('default'));
+        $errorData = $this->errorsToArray($errors);
+        if ((int)$vehicle->getCapacity() < 1) {
+            $errorData[] = "Špatna kapacita";
+        }
 
-        if ($errors->count() > 0){
-            $event->setErrors($this->errorsToArray($errors));
+        if (!empty($errorData)){
+            $event->setErrors($errorData);
             $event->setSuccess(false);
-
         } else {
             $this->container->get('doctrine.orm.entity_manager')->persist($vehicle);
             $this->container->get('doctrine.orm.entity_manager')->flush();
@@ -90,7 +92,7 @@ class VehicleGridEdit extends ContainerAware {
     }
 
     /**
-     * @param FormError[] $errors
+     * @param ConstraintViolationListInterface $errors
      * @return array
      */
     protected function errorsToArray($errors)

@@ -29,5 +29,18 @@ services:
             - { name: thrace_data_grid.datagrid, alias: vehicle_grid }
     app.datagrid.event_listener.vehicle_grid_edit:
         class: AppBundle\DataGrid\VehicleGridEdit
-    app.
-
+        calls:
+          - [setContainer, [@service_container]]
+        tags:
+          - { name: kernel.event_listener, event: thrace_datagrid.onRowAdd, method: onRowAdd }
+          - { name: kernel.event_listener, event: thrace_datagrid.onRowEdit, method: onRowEdit }
+          - { name: kernel.event_listener, event: thrace_datagrid.onRowDel, method: onRowDelete }
+    app.datagrid.builder.trip_grid:
+        class: AppBundle\DataGrid\TripGrid
+        arguments: ["@thrace_data_grid.factory.datagrid", "@translator", "@router", "@doctrine.orm.entity_manager"]
+    app.datagrid.trip_grid:
+        class: Thrace\DataGridBundle\DataGrid\DataGrid
+        factory_service: app.datagrid.builder.trip_grid
+        factory_method: build
+        tags:
+            - { name: thrace_data_grid.datagrid, alias: trip_grid }

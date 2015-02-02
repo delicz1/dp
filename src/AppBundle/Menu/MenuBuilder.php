@@ -27,6 +27,8 @@ class MenuBuilder
         $menu = $this->factory->createItem('root');
 
         $menu->addChild('Home', array('route' => 'homepage'));
+        $menu->addChild('Služební cesty', array('route' => 'tripIndex'));
+        $menu->addChild('Pridat služební cestu', array('route' => 'tripCreate'));
         $menu->addChild('Dopravni prostredky', array('route' => 'vehicleIndex'));
         $menu->addChild('Pridat dopravni prostredek', array('route' => 'vehicleCreate'));
 

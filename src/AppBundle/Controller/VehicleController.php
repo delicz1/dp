@@ -84,21 +84,6 @@ class VehicleController extends Controller {
         ));
     }
 
-
-    /**
-     * @Route("/app/vehicle/edit", name="vehicleEdit")
-     * @param Request $request
-     */
-    public function editAction(Request $request) {
-            var_dump($request);
-//        $id = $request->get('id');
-//        $repository = $this->getDoctrine()->getRepository('AppBundle:Vehicle');
-//        /** @var Vehicle $vehicle */
-//        $vehicle = $repository->find($id);
-//        var_dump($vehicle);
-        exit;
-    }
-
     /**
      * @Route("/app/vehicle/create", name="vehicleCreate")
      * @param Request $request
@@ -131,10 +116,6 @@ class VehicleController extends Controller {
             $em->persist($vehicle);
             $save = "Uloženo !";
         }
-
-
-
-
         return $this->render('vehicle/create.html.twig', [
             'form' => $form->createView(),
             'saveStatus' => $save,

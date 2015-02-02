@@ -15,9 +15,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Thrace\DataGridBundle\DataGrid\DataGridFactoryInterface;
 use Thrace\DataGridBundle\DataGrid\DataGridInterface;
 
-class VehicleGrid {
+class TripGrid {
 
-    const IDENTIFIER = 'vehicle_grid';
+    const IDENTIFIER = 'trip_grid';
 
     protected $factory;
 
@@ -42,38 +42,36 @@ class VehicleGrid {
         /** @var  DataGridInterface $dataGrid */
         $dataGrid = $this->factory->createDataGrid(self::IDENTIFIER);
         $dataGrid
-            ->setCaption('Dopravní prostředky')
+            ->setCaption('Služební cesty')
             ->setColNames(
-                ['id', 'Vozidlo', 'Registrační značka', 'Typ dopravniho prostředku', 'Kapacita'])
+                ['id', 'Čas od', 'Čas do', 'Odkud', 'Kam', 'Počet míst'])
             ->setColModel([
                 [
-                    'name' => 'id', 'index' => 'v.id', 'width' => 20,
-                    'align' => 'left', 'sortable' => true, 'search' => true,
+                    'name' => 'id', 'index' => 't.id', 'width' => 20,
+                    'align' => 'left', 'sortable' => true, 'search' => false,
                 ],
                 [
-                    'name' => 'name', 'index' => 'v.name', 'width' => 50,
-                    'align' => 'left', 'sortable' => true, 'search' => true,
-                    'editable' => true, 'editrules' => ['required' => true]
-                ],
-                [
-                    'name' => 'numberPlate', 'index' => 'v.number_plate', 'width' => 50,
+                    'name' => 'timeFrom', 'index' => 't.time_from', 'width' => 50,
                     'align' => 'left', 'sortable' => true, 'search' => true,
                     'editable' => true, 'editrules' => ['required' => true]
                 ],
                 [
-                    'name' => 'type', 'index' => 'v.type', 'width' => 50,
+                    'name' => 'timeTo', 'index' => 't.time_to', 'width' => 50,
+                    'align' => 'left', 'sortable' => true, 'search' => true,
+                    'editable' => true, 'editrules' => ['required' => true],
+                ],
+                [
+                    'name' => 'fromPoint', 'index' => 't.from_point', 'width' => 50,
                     'align' => 'left', 'sortable' => true, 'search' => true, 'editable' => true,
-                    'edittype' => 'select', 'editoptions' => ["value" => Vehicle::$typeList],
-                    'formatter' => self::getVehicleTypeJs(),
-                    'stype' => 'select','searchoptions' => [
-                        'value' => Vehicle::$typeList,
-                        'sopt' => ['eq']
-                    ]
                 ],
                 [
-                    'name' => 'capacity', 'index' => 'v.capacity', 'width' => 20, 'editable' => true,
+                    'name' => 'toPoint', 'index' => 't.to_point', 'width' => 50, 'editable' => true,
                     'align' => 'left', 'sortable' => true, 'search' => true,
-                    'editrules' => ['required' => true, 'integer' => true, 'minValue' => 1]
+                    'editrules' => ['required' => true]
+                ],
+                [
+                    'name' => 'capacity', 'index' => 't.capacity', 'width' => 50, 'editable' => true,
+                    'align' => 'left', 'sortable' => true, 'search' => true,
                 ]
             ])
             ->setHeight('auto')
@@ -87,23 +85,10 @@ class VehicleGrid {
         return $dataGrid;
     }
 
-
-    public static function getVehicleTypeJs() {
-        $js = "function( cellvalue, options, rowObject ) {\n";
-        $js .= "var type = '';\n";
-        $js .= "switch(cellvalue) {";
-        foreach (Vehicle::$typeList as $key => $val) {
-            $js .= "case $key: var type='$val'; break;\n";
-        }
-        $js .= "}\n";
-        $js .= "return type; }\n";
-        return $js;
-    }
-
     protected function getQueryBuilder()
     {
-        $qb = $this->em->getRepository('AppBundle:Vehicle')->createQueryBuilder('v');
-        $qb->select('v');
+        $qb = $this->em->getRepository('AppBundle:Trip')->createQueryBuilder('t');
+        $qb->select('t');
         return $qb;
     }
 
