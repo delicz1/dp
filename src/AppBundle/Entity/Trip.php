@@ -177,8 +177,7 @@ class Trip {
      * @param Vehicle $vehicles
      * @return Trip
      */
-    public function addVehicle(Vehicle $vehicles)
-    {
+    public function addVehicle(Vehicle $vehicles) {
         $this->vehicles[] = $vehicles;
 
         return $this;
@@ -189,18 +188,16 @@ class Trip {
      *
      * @param Vehicle $vehicles
      */
-    public function removeVehicle(Vehicle $vehicles)
-    {
+    public function removeVehicle(Vehicle $vehicles) {
         $this->vehicles->removeElement($vehicles);
     }
 
     /**
      * Get vehicles
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function getVehicles()
-    {
+    public function getVehicles() {
         return $this->vehicles;
     }
 }
