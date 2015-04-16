@@ -10,13 +10,12 @@ _configurator:
     resource: "@SensioDistributionBundle/Resources/config/routing/webconfigurator.xml"
     prefix:   /_configurator
 
-_errors:
-    resource: "@TwigBundle/Resources/config/routing/errors.xml"
-    prefix:   /_error
-
 _main:
     resource: routing.yml
 
-# AcmeDemoBundle routes (to be removed)
-_acme_demo:
-    resource: "@AcmeDemoBundle/Resources/config/routing.yml"
+_test:
+    resource: "@ProjTestBundle/Resources/config/routing.yml"
+
+_jmose_command_scheduler:
+    resource: "@JMoseCommandSchedulerBundle/Resources/config/routing.yml"
+    prefix:   /

@@ -1,0 +1,612 @@
+<?php
+
+namespace Rdr\Base\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use nil\db\tree\ITreeObject;
+use Rdr\Base\Object\Db\ClassMapper;
+use Rdr\Security\Entity\PermissionObjectInterface;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * Group
+ *
+ * @Gedmo\Tree(type="nested")
+ * @ORM\Table(name="rdr.group", indexes={@ORM\Index(name="group_ID", columns={"lft"})})
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ */
+class Group implements ITreeObject, PermissionObjectInterface {
+
+    //=====================================================
+    //== Konstanty ========================================
+    //=====================================================
+
+    const ROOT = 1;
+
+    const FLAG_DELETED = 0b1;
+
+    const COLUMN_TITLE = 'title';
+    const COLUMN_DBNAME = 'dbname';
+    const COLUMN_LFT = 'lft';
+    const COLUMN_RGT = 'rgt';
+    const COLUMN_FLAG = 'flag';
+
+    //=====================================================
+    //== ORM ==============================================
+    //=====================================================
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=100, nullable=false)
+     */
+    private $title;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="db_name", type="string", length=5, nullable=false)
+     */
+    private $dbName;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="flag", type="integer", nullable=false)
+     */
+    private $flag;
+
+    /**
+     * @var integer
+     *
+     * @Gedmo\TreeLeft
+     * @ORM\Column(name="lft", type="integer", nullable=false)
+     */
+    private $lft;
+
+    /**
+     * @var integer
+     *
+     * @Gedmo\TreeRight
+     * @ORM\Column(name="rgt", type="integer", nullable=false)
+     */
+    private $rgt;
+
+    /**
+     * @var integer
+     *
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="lvl", type="integer")
+     */
+    private $lvl;
+
+    /**
+     * @Gedmo\TreeRoot
+     * @ORM\Column(name="root", type="integer", nullable=true)
+     */
+    private $root;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Group", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Group", mappedBy="parent")
+     */
+    private $children;
+
+    /**
+     * @ORM\OneToMany(targetEntity="User", mappedBy="group")
+     */
+    protected $users;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="Zone", mappedBy="group", cascade={"persist"})
+     */
+    protected $zones;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="Section", mappedBy="group", cascade={"persist"})
+     */
+    protected $sections;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Zone", cascade={"persist"})
+     * @ORM\JoinColumn(name="default_zone_id", referencedColumnName="id")
+     */
+    protected $defaultZone;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Section", cascade={"persist"})
+     * @ORM\JoinColumn(name="default_section_id", referencedColumnName="id")
+     */
+    protected $defaultSection;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AccessType", mappedBy="group", cascade={"persist"})
+     */
+    protected $accessTypes;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AccessTemplate", mappedBy="group")
+     */
+    protected $accessTemplates;
+
+    /**
+     * @var ArrayCollection|GroupConfig[]
+     * @ORM\OneToMany(targetEntity="GroupConfig", mappedBy="group", cascade={"persist", "remove"}, indexBy="key")
+     */
+    protected $configs;
+
+    //=====================================================
+    //== Konstruktor ======================================
+    //=====================================================
+
+    /**
+     *
+     */
+    public function __construct() {
+        $this->configs = new ArrayCollection();
+        $this->users = new ArrayCollection();
+        $this->zones = new ArrayCollection();
+        $this->sections = new ArrayCollection();
+        $this->accessTypes = new ArrayCollection();
+        $this->childrenGroups = new ArrayCollection();
+    }
+
+    //=====================================================
+    //== Set/Get ==========================================
+    //=====================================================
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return Group
+     */
+    public function setTitle($title) {
+        $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle() {
+        return $this->title;
+    }
+
+    /**
+     * Set dbName
+     *
+     * @param string $dbName
+     * @return Group
+     */
+    public function setDbName($dbName) {
+        $this->dbName = $dbName;
+        return $this;
+    }
+
+    /**
+     * Get dbName
+     *
+     * @return string
+     */
+    public function getDbName() {
+        return $this->dbName;
+    }
+
+    /**
+     * Set flag
+     *
+     * @param integer $flag
+     * @return User
+     */
+    public function setFlag($flag) {
+        $this->flag = $flag;
+        return $this;
+    }
+
+    /**
+     * Get flag
+     *
+     * @return integer
+     */
+    public function getFlag() {
+        return $this->flag;
+    }
+
+    /**
+     * Nastavi bit flagu podle predane konstanty.
+     *
+     * @param int   $flag
+     * @param bool  $state
+     */
+    public function setFlagBit($flag, $state) {
+        if($state) {
+            $this->setFlag((int)$this->getFlag() | $flag);
+        } else {
+            $this->setFlag((int)$this->getFlag() & ($flag ^ PHP_INT_MAX));
+        }
+    }
+
+    /**
+     * Vraci hodnotu bitu flagu podle predane konstanty.
+     *
+     * @param $flag
+     * @return bool
+     */
+    public function getFlagBit($flag) {
+        return ($this->getFlag() & $flag) == $flag;
+    }
+
+    /**
+     * Set lft
+     *
+     * @param integer $lft
+     * @return Group
+     */
+    public function setLft($lft) {
+        $this->lft = $lft;
+        return $this;
+    }
+
+    /**
+     * Get lft
+     *
+     * @return integer
+     */
+    public function getLft() {
+        return $this->lft;
+    }
+
+    /**
+     * Set rgt
+     *
+     * @param integer $rgt
+     * @return Group
+     */
+    public function setRgt($rgt) {
+        $this->rgt = $rgt;
+        return $this;
+    }
+
+    /**
+     * Get rgt
+     *
+     * @return integer
+     */
+    public function getRgt() {
+        return $this->rgt;
+    }
+
+    /**
+     * Add users
+     *
+     * @param User $user
+     * @return Group
+     */
+    public function addUser(User $user) {
+        $user->setGroup($this);
+        $this->users[] = $user;
+        return $this;
+    }
+
+    /**
+     * Remove users
+     *
+     * @param User $user
+     */
+    public function removeUser(User $user) {
+        $user->setGroup(null);
+        $this->users->removeElement($user);
+    }
+
+    /**
+     * Get users
+     *
+     * @return ArrayCollection|User[]
+     */
+    public function getUsers() {
+        return $this->users;
+    }
+
+    /**
+     * Set defaultZone
+     *
+     * @param Zone $defaultZone
+     * @return Group
+     */
+    public function setDefaultZone(Zone $defaultZone) {
+        $defaultZone->setGroup($this);
+        $this->defaultZone = $defaultZone;
+        return $this;
+    }
+
+    /**
+     * Get defaultZone
+     *
+     * @return Zone
+     */
+    public function getDefaultZone() {
+        return $this->defaultZone;
+    }
+
+    /**
+     * Set defaultSection
+     *
+     * @param Section $defaultSection
+     * @return Group
+     */
+    public function setDefaultSection(Section $defaultSection) {
+        $defaultSection->setGroup($this);
+        $this->defaultSection = $defaultSection;
+        return $this;
+    }
+
+    /**
+     * Get defaultSection
+     *
+     * @return Section
+     */
+    public function getDefaultSection() {
+        return $this->defaultSection;
+    }
+
+    /**
+     * Add zone
+     *
+     * @param Zone $zone
+     * @return Group
+     */
+    public function addZone(Zone $zone) {
+        $zone->setGroup($this);
+        $this->zones[] = $zone;
+        return $this;
+    }
+
+    /**
+     * Remove zone
+     *
+     * @param Zone $zone
+     */
+    public function removeZone(Zone $zone) {
+        $zone->setGroup(null);
+        $this->zones->removeElement($zone);
+    }
+
+    /**
+     * Get zones
+     *
+     * @return ArrayCollection|Zone[]
+     */
+    public function getZones() {
+        return $this->zones;
+    }
+
+    /**
+     * Add sections
+     *
+     * @param Section $section
+     * @return Group
+     */
+    public function addSection(Section $section) {
+        $section->setGroup($this);
+        $this->sections[] = $section;
+        return $this;
+    }
+
+    /**
+     * Remove sections
+     *
+     * @param Section $section
+     */
+    public function removeSection(Section $section) {
+        $section->setGroup(null);
+        $this->sections->removeElement($section);
+    }
+
+    /**
+     * Get sections
+     *
+     * @return ArrayCollection|Section[]
+     */
+    public function getSections() {
+        return $this->sections;
+    }
+
+    /**
+     * Add accessType
+     *
+     * @param AccessType $accessType
+     * @return Group
+     */
+    public function addAccessType(AccessType $accessType) {
+        $accessType->setGroup($this);
+        $this->accessTypes[] = $accessType;
+        return $this;
+    }
+
+    /**
+     * Remove accessTypes
+     *
+     * @param AccessType $accessType
+     */
+    public function removeAccessType(AccessType $accessType) {
+        $accessType->setGroup(null);
+        $this->accessTypes->removeElement($accessType);
+    }
+
+    /**
+     * Get accessTypes
+     *
+     * @return ArrayCollection|AccessType[]
+     */
+    public function getAccessTypes() {
+        return $this->accessTypes;
+    }
+
+    /**
+     * Add configs
+     *
+     * @param GroupConfig $config
+     * @return Group
+     */
+    public function addConfig(GroupConfig $config) {
+        $config->setGroup($this);
+        $this->configs[$config->getKey()] = $config;
+        return $this;
+    }
+
+    /**
+     * Remove configs
+     *
+     * @param GroupConfig $config
+     */
+    public function removeConfig(GroupConfig $config) {
+        $config->setGroup(null);
+        $this->configs->removeElement($config);
+    }
+
+    /**
+     * Get configs
+     *
+     * @return GroupConfig[]
+     */
+    public function getConfigs() {
+        return $this->configs->toArray();
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public function getConfig($key) {
+        return isset($this->configs[$key]) ? $this->configs[$key]->getValue() : GroupConfig::getDefaultValue($key);
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     *
+     * @return $this
+     */
+    public function setConfig($key, $value) {
+        $default = GroupConfig::getDefaultValue($key);
+        if ($default === $value) {
+            if (isset($this->configs[$key])) {
+                unset($this->configs[$key]);
+            }
+        } else {
+            if (isset($this->configs[$key])) {
+                $this->configs[$key]->setValue($value);
+            } else {
+                $config = (new GroupConfig())
+                    ->setClass(GroupConfig::CLASS_GENERIC)
+                    ->setKey($key)
+                    ->setValue($value);
+                $this->addConfig($config);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Add accessTemplates
+     *
+     * @param AccessTemplate $accessTemplates
+     * @return Group
+     */
+    public function addAccessTemplate(AccessTemplate $accessTemplates) {
+        $accessTemplates->setGroup($this);
+        $this->accessTemplates[] = $accessTemplates;
+        return $this;
+    }
+
+    /**
+     * Remove accessTemplates
+     *
+     * @param AccessTemplate $accessTemplates
+     */
+    public function removeAccessTemplate(AccessTemplate $accessTemplates) {
+        $accessTemplates->setGroup(null);
+        $this->accessTemplates->removeElement($accessTemplates);
+    }
+
+    /**
+     * Get accessTemplates
+     *
+     * @return AccessTemplate[]
+     */
+    public function getAccessTemplates() {
+        return $this->accessTemplates;
+    }
+
+    //=====================================================
+    //== ITreeObject ======================================
+    //=====================================================
+
+    /**
+     * @return string
+     */
+    public function getLftColumnName() {
+        return self::COLUMN_LFT;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRgtColumnName() {
+        return self::COLUMN_RGT;
+    }
+
+    //=====================================================
+    //== Mapper ===========================================
+    //=====================================================
+
+    /**
+     * @return int
+     */
+    public function getClassId() {
+        return (new ClassMapper($this))->getClassId();
+    }
+
+    //=====================================================
+    //== toString =========================================
+    //=====================================================
+
+    /**
+     * @return string
+     */
+    public function __toString() {
+        return $this->id . ' ' . $this->title . '(' . $this->dbName . ')';
+    }
+}

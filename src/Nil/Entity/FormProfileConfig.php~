@@ -1,0 +1,49 @@
+<?php
+
+namespace Nil\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * FormProfileConfig
+ *
+ * @ORM\Table(name="form_profile_config", indexes={@ORM\Index(name="object_id_class_key", columns={"form_profile_id", "input_name"}), @ORM\Index(name="IDX_A65B361C53D5E2C", columns={"form_profile_id"})})
+ * @ORM\Entity
+ */
+class FormProfileConfig
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="input_name", type="string", length=255, nullable=true)
+     */
+    private $inputName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="value", type="text", nullable=true)
+     */
+    private $value;
+
+    /**
+     * @var \FormProfile
+     *
+     * @ORM\ManyToOne(targetEntity="FormProfile")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="form_profile_id", referencedColumnName="id")
+     * })
+     */
+    private $formProfile;
+
+
+}

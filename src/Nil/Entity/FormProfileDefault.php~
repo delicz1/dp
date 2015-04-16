@@ -1,0 +1,53 @@
+<?php
+
+namespace Nil\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Rdr\Base\Entity\User;
+
+/**
+ * FormProfileDefault
+ *
+ * @ORM\Table(name="form_profile_default", indexes={@ORM\Index(name="user_id_form_id", columns={"user_id", "form_id"}), @ORM\Index(name="form_profile_id", columns={"form_profile_id"}), @ORM\Index(name="IDX_8086839AA76ED395", columns={"user_id"})})
+ * @ORM\Entity
+ */
+class FormProfileDefault
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="form_id", type="integer", nullable=true)
+     */
+    private $formId;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Nil\Entity\UserInterface")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
+     */
+    private $user;
+
+    /**
+     * @var FormProfile
+     *
+     * @ORM\ManyToOne(targetEntity="FormProfile")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="form_profile_id", referencedColumnName="id")
+     * })
+     */
+    private $formProfile;
+
+
+}

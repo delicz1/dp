@@ -1,11 +1,12 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
+    - { resource: assetic.php }
     - { resource: services.yml }
 
 framework:
     #esi:             ~
-    #translator:      { fallback: "%locale%" }
+    translator:      { fallback: "%locale%" }
     secret:          "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -14,14 +15,17 @@ framework:
     csrf_protection: ~
     validation:      { enable_annotations: true }
     templating:
-        engines: ['twig']
-        #assets_version: SomeVersionScheme
+        engines: ['twig', 'php']
+    #assets_version: SomeVersionScheme
     default_locale:  "%locale%"
     trusted_hosts:   ~
     trusted_proxies: ~
     session:
-        # handler_id set to null will use default session handler from php.ini
-        handler_id:  ~
+        #handler_id:     session.handler.memcached
+        cookie_lifetime: 86400
+        gc_maxlifetime: 1800
+        gc_probability: 1
+        gc_divisor: 1
     fragments:       ~
     http_method_override: true
 
@@ -29,82 +33,33 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
-    form:
-        resources: ['bootstrap_3_layout.html.twig']
-
-# Assetic Configuration
-assetic:
-    debug:          "%kernel.debug%"
-    use_controller: false
-    bundles:        []
-
-    filters:
-        cssrewrite: ~
-    assets:
-        bootstrap_js:
-            inputs:
-                - %kernel.root_dir%/../vendor/twitter/bootstrap/dist/js/bootstrap.js
-        bootstrap_css:
-            inputs:
-                - %kernel.root_dir%/../vendor/twitter/bootstrap/dist/css/bootstrap.css
-                - %kernel.root_dir%/../vendor/twitter/bootstrap/dist/css/bootstrap-theme.css
-            filters: [cssrewrite]
-
-        bootstrap_glyphicons_ttf:
-            inputs:
-                - %kernel.root_dir%/../vendor/twitter/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf
-            output: "fonts/glyphicons-halflings-regular.ttf"
-        bootstrap_glyphicons_eot:
-            inputs:
-                - %kernel.root_dir%/../vendor/twitter/bootstrap/dist/fonts/glyphicons-halflings-regular.eot
-            output: "fonts/glyphicons-halflings-regular.eot"
-        bootstrap_glyphicons_svg:
-            inputs:
-                - %kernel.root_dir%/../vendor/twitter/bootstrap/dist/fonts/glyphicons-halflings-regular.svg
-            output: "fonts/glyphicons-halflings-regular.svg"
-        bootstrap_glyphicons_woff:
-            inputs:
-                - %kernel.root_dir%/../vendor/twitter/bootstrap/dist/fonts/glyphicons-halflings-regular.woff
-            output: "fonts/glyphicons-halflings-regular.woff"
-
-        jquery:
-            inputs:
-                - %kernel.root_dir%/../vendor/components/jquery/jquery.js
-        jqueryui:
-            inputs:
-                - %kernel.root_dir%/../vendor/components/jqueryui/jquery-ui.js
-        jqueryui_css:
-            inputs:
-                - %kernel.root_dir%/../vendor/components/jqueryui/themes/all.css
-        jqgrid_js:
-            inputs:
-                - %kernel.root_dir%/../src/AppBundle/Resources/jqGrid/js/jquery.jqGrid.src.js
-                - %kernel.root_dir%/../src/AppBundle/Resources/jqGrid/js/i18n/grid.locale-cs.js
-        jqgrid_css:
-            inputs:
-                - %kernel.root_dir%/../src/AppBundle/Resources/jqGrid/css/ui.jqgrid.css
-
 
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver:   "%database_driver%"
-        host:     "%database_host%"
-        port:     "%database_port%"
-        dbname:   "%database_name%"
-        user:     "%database_user%"
-        password: "%database_password%"
-        charset:  UTF8
-        # if using pdo_sqlite as your database driver:
-        #   1. add the path in parameters.yml
-        #     e.g. database_path: "%kernel.root_dir%/data/data.db3"
-        #   2. Uncomment database_path in parameters.yml.dist
-        #   3. Uncomment next line:
-        #     path:     "%database_path%"
-
+        default_connection: default
+        connections:
+            default:
+                driver:   "%database_driver%"
+                host:     "%database_host%"
+                dbname:   "%database_name%"
+                port:     "%database_port%"
+                user:     "%database_user%"
+                password: "%database_password%"
+                charset:  UTF8
     orm:
-        auto_generate_proxy_classes: "%kernel.debug%"
-        auto_mapping: true
+        default_entity_manager: default
+        entity_managers:
+            default:
+                connection: ~
+                mappings:
+                    ProjBaseBundle: ~
+                    JMoseCommandSchedulerBundle: ~
+                dql:
+                    numeric_functions:
+                        isnull: Proj\Base\Dql\IsNull
+                        isequal: Proj\Base\Dql\IsEqual
+                        bitnot: Proj\Base\Dql\BitNot
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -113,30 +68,3 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
-knp_menu:
-    # use "twig: false" to disable the Twig extension and the TwigRenderer
-    twig:
-        template: knp_menu.html.twig
-    #  if true, enables the helper for PHP templates
-    templating: true
-    # the renderer to use, list is also available by default
-    default_renderer: twig
-sc_datetimepicker:
-    picker: ~
-knp_paginator:
-    page_range: 5                      # default page range used in pagination control
-    default_options:
-        page_name: page                # page query parameter name
-        sort_field_name: sort          # sort field query parameter name
-        sort_direction_name: direction # sort direction query parameter name
-        distinct: true                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
-    template:
-        pagination: KnpPaginatorBundle:Pagination:sliding.html.twig     # sliding pagination controls template
-        sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template
-kitpages_data_grid:
-    grid:
-        default_twig: KitpagesDataGridBundle:Grid:bootstrap3-grid.html.twig
-    paginator:
-        default_twig: KitpagesDataGridBundle:Paginator:bootstrap3-paginator.html.twig
-        item_count_in_page: 5
-        visible_page_count_in_paginator: 5

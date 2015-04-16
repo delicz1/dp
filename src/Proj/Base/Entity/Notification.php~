@@ -1,0 +1,70 @@
+<?php
+/**
+ * @author necas
+ */
+
+namespace Rdr\Base\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Notification
+ *
+ * @ORM\Table(name="notification")
+ * @ORM\Entity
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="integer")
+ * @ORM\DiscriminatorMap({
+ *      1 = "\Rdr\Notification\Entity\EmailNotification"
+ * })
+ */
+abstract class Notification {
+
+    //=====================================================
+    //== Konstanty ========================================
+    //=====================================================
+
+    //=====================================================
+    //== ORM ==============================================
+    //=====================================================
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean", nullable=false)
+     */
+    private $status;
+
+    /**
+     * @ORM\OneToMany(targetEntity="NotificationConfig", mappedBy="notification", cascade={"persist", "remove"}, indexBy="key")
+     */
+    private $configs;
+
+    //=====================================================
+    //== Konstruktor ======================================
+    //=====================================================
+
+    /**
+     *
+     */
+    public function __construct() {
+        $this->configs = new ArrayCollection();
+    }
+
+    //=====================================================
+    //== Set/Get ==========================================
+    //=====================================================
+
+
+
+}

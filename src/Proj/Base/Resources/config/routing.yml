@@ -1,0 +1,3 @@
+_form:
+    resource: "@ProjBaseBundle/Controller/FormController.php"
+    type:     annotation

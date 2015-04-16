@@ -1,0 +1,261 @@
+<?php
+
+namespace Nil\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * FormProfile
+ *
+ * @ORM\Table(name="form_profile", indexes={@ORM\Index(name="user_id", columns={"user_id"})})
+ * @ORM\Entity
+ */
+class FormProfile {
+
+    //=====================================================
+    //============== Konstanty ============================
+    //=====================================================
+
+    const TYPE_USER = 1;
+    const TYPE_GROUP = 2;
+
+    const COLUMN_USER_ID = 'user_id';
+    const COLUMN_FORM_ID = 'form_id';
+    const COLUMN_V_OBJ_TYPE = 'v_obj_type';
+    const COLUMN_V_OBJ_ID = 'v_obj_id';
+    const COLUMN_E_OBJ_TYPE = 'e_obj_type';
+    const COLUMN_E_OBJ_ID = 'e_obj_id';
+
+    //=====================================================
+    //== ORM ==============================================
+    //=====================================================
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     */
+    private $name;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="user_id", type="integer", nullable=true)
+     */
+    private $userId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="form_id", type="integer", nullable=true)
+     */
+    private $formId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="v_obj_type", type="integer", nullable=true)
+     */
+    private $vObjType;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="v_obj_id", type="integer", nullable=true)
+     */
+    private $vObjId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="e_obj_type", type="integer", nullable=true)
+     */
+    private $eObjType;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="e_obj_id", type="integer", nullable=true)
+     */
+    private $eObjId;
+
+    /**
+     * @var ArrayCollection|FormProfileConfig[]
+     * @ORM\OneToMany(targetEntity="FormProfileConfig", mappedBy="formProfile", cascade={"persist"}, orphanRemoval=true, indexBy="key")
+     */
+    protected $configs;
+
+    //=====================================================
+    //== Konstruktor ======================================
+    //=====================================================
+
+    /**
+     *
+     */
+    public function __construct() {
+        $this->configs = new ArrayCollection();
+    }
+
+    //=====================================================
+    //== Set/Get ==========================================
+    //=====================================================
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return FormProfile
+     */
+    public function setName($name) {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * Set userId
+     *
+     * @param integer $userId
+     * @return FormProfile
+     */
+    public function setUserId($userId) {
+        $this->userId = $userId;
+        return $this;
+    }
+
+    /**
+     * Get userId
+     *
+     * @return integer 
+     */
+    public function getUserId() {
+        return $this->userId;
+    }
+
+    /**
+     * Set formId
+     *
+     * @param integer $formId
+     * @return FormProfile
+     */
+    public function setFormId($formId) {
+        $this->formId = $formId;
+        return $this;
+    }
+
+    /**
+     * Get formId
+     *
+     * @return integer 
+     */
+    public function getFormId() {
+        return $this->formId;
+    }
+
+    /**
+     * Set vObjType
+     *
+     * @param integer $vObjType
+     * @return FormProfile
+     */
+    public function setVObjType($vObjType) {
+        $this->vObjType = $vObjType;
+        return $this;
+    }
+
+    /**
+     * Get vObjType
+     *
+     * @return integer 
+     */
+    public function getVObjType() {
+        return $this->vObjType;
+    }
+
+    /**
+     * Set vObjId
+     *
+     * @param integer $vObjId
+     * @return FormProfile
+     */
+    public function setVObjId($vObjId) {
+        $this->vObjId = $vObjId;
+        return $this;
+    }
+
+    /**
+     * Get vObjId
+     *
+     * @return integer 
+     */
+    public function getVObjId() {
+        return $this->vObjId;
+    }
+
+    /**
+     * Set eObjType
+     *
+     * @param integer $eObjType
+     * @return FormProfile
+     */
+    public function setEObjType($eObjType) {
+        $this->eObjType = $eObjType;
+        return $this;
+    }
+
+    /**
+     * Get eObjType
+     *
+     * @return integer 
+     */
+    public function getEObjType() {
+        return $this->eObjType;
+    }
+
+    /**
+     * Set eObjId
+     *
+     * @param integer $eObjId
+     * @return FormProfile
+     */
+    public function setEObjId($eObjId) {
+        $this->eObjId = $eObjId;
+        return $this;
+    }
+
+    /**
+     * Get eObjId
+     *
+     * @return integer 
+     */
+    public function getEObjId() {
+        return $this->eObjId;
+    }
+}

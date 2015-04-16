@@ -1,32 +1,13 @@
 <!DOCTYPE html>
-<head>
-    {% stylesheets
-        '@bootstrap_css'
-        'bundles/jquery-ui/jquery-ui.css'
-        'bundles/jquery-ui/jquery-ui.structure.css'
-        'bundles/jquery-ui/jquery-ui.theme.css'
-        'bundles/jqGrid/css/ui.jqgrid.css'
-        'bundles/jqGrid/plugins/searchFilter.css'
-        'bundles/scdatetimepicker/css/datetimepicker.css'
-        filter='cssrewrite'
-    %}
-    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset_url }}"/>
-    {% endstylesheets %}
-    {% javascripts
-        '@jquery'
-        '@bootstrap_js'
-        'bundles/jquery-ui/jquery-ui.js'
-        'bundles/jqGrid/js/i18n/grid.locale-cs.js'
-        'bundles/jqGrid/js/jquery.jqGrid.src.js'
-        'bundles/thracedatagrid/js/init-datagrid.js'
-        'bundles/scdatetimepicker/js/bootstrap-datetimepicker.min.js'
-        'bundles/scdatetimepicker/js/locales/bootstrap-datetimepicker.cs.js'
-    %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-</head>
-<body>
-{% block menu %}{{ knp_menu_render('main') }}{% endblock %}
-{% block body %}{% endblock %}
-
-</body>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

@@ -1,0 +1,312 @@
+<?php
+
+namespace Rdr\Base\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * AccessTemplate
+ *
+ * @ORM\Table(name="access_template")
+ * @ORM\Entity
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="integer")
+ * @ORM\DiscriminatorMap({
+ *      1 = "\Rdr\Access\Entity\AccessTemplateBasic"
+ * })
+ */
+abstract class AccessTemplate {
+
+    //=====================================================
+    //============== Konstanty ============================
+    //=====================================================
+
+    const FLAG_DELETED = 0b1;
+
+    const COLUMN_FROM = '`from`';
+
+    //=====================================================
+    //== ORM ==============================================
+    //=====================================================
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     */
+    private $title;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="flag", type="integer", nullable=false)
+     */
+    private $flag;
+
+    /**
+     * @var Group
+     *
+     * @ORM\ManyToOne(targetEntity="Group", inversedBy="sections")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     * })
+     */
+    private $group;
+
+    /**
+     * @var ArrayCollection|AccessTemplateConfig[]
+     * @ORM\OneToMany(targetEntity="AccessTemplateConfig", mappedBy="accessTemplate", cascade={"persist"}, orphanRemoval=true, indexBy="key")
+     */
+    protected $configs;
+
+    /**
+     * @var ArrayCollection|AccessTemplateSection[]
+     * @ORM\OneToMany(targetEntity="AccessTemplateSection", mappedBy="accessTemplate", cascade={"persist"}, orphanRemoval=true)
+     */
+    protected $accessTemplateSections;
+
+    /**
+     * @var ArrayCollection|AccessTemplateUser[]
+     * @ORM\OneToMany(targetEntity="AccessTemplateUser", mappedBy="accessTemplate", cascade={"persist"}, orphanRemoval=true)
+     */
+    protected $accessTemplateUsers;
+
+    //=====================================================
+    //== Konstruktor ======================================
+    //=====================================================
+
+    /**
+     *
+     */
+    public function __construct() {
+        $this->configs = new ArrayCollection();
+        $this->accessTemplateSections = new ArrayCollection();
+        $this->accessTemplateUsers = new ArrayCollection();
+    }
+
+    //=====================================================
+    //== Set/Get ==========================================
+    //=====================================================
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return AccessTemplate
+     */
+    public function setTitle($title) {
+        $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle() {
+        return $this->title;
+    }
+
+    /**
+     * Set flag
+     *
+     * @param integer $flag
+     * @return AccessTemplate
+     */
+    public function setFlag($flag) {
+        $this->flag = $flag;
+        return $this;
+    }
+
+    /**
+     * Get flag
+     *
+     * @return integer
+     */
+    public function getFlag() {
+        return $this->flag;
+    }
+
+    /**
+     * Nastavi bit flagu podle predane konstanty.
+     *
+     * @param int   $flag
+     * @param bool  $state
+     */
+    public function setFlagBit($flag, $state) {
+        if($state) {
+            $this->setFlag((int)$this->getFlag() | $flag);
+        } else {
+            $this->setFlag((int)$this->getFlag() & ($flag ^ PHP_INT_MAX));
+        }
+    }
+
+    /**
+     * Vraci hodnotu bitu flagu podle predane konstanty.
+     *
+     * @param $flag
+     * @return bool
+     */
+    public function getFlagBit($flag) {
+        return ($this->getFlag() & $flag) == $flag;
+    }
+
+    /**
+     * Add config
+     *
+     * @param AccessTemplateConfig $config
+     * @return AccessTemplate
+     */
+    public function addConfig(AccessTemplateConfig $config) {
+        $config->setAccessTemplate($this);
+        $this->configs[] = $config;
+        return $this;
+    }
+
+    /**
+     * Remove configs
+     *
+     * @param AccessTemplateConfig $config
+     */
+    public function removeConfig(AccessTemplateConfig $config) {
+        $this->configs->removeElement($config);
+    }
+
+    /**
+     * Get configs
+     *
+     * @return AccessTemplateConfig[]
+     */
+    public function getConfigs() {
+        return $this->configs;
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public function getConfig($key) {
+        return isset($this->configs[$key]) ? $this->configs[$key]->getValue() : AccessTemplateConfig::getDefaultValue($key);
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     *
+     * @return $this
+     */
+    public function setConfig($key, $value) {
+        $default = AccessTemplateConfig::getDefaultValue($key);
+        if ($default === $value) {
+            if (isset($this->configs[$key])) {
+                unset($this->configs[$key]);
+            }
+        } else {
+            if (isset($this->configs[$key])) {
+                $this->configs[$key]->setValue($value);
+            } else {
+                $config = (new AccessTemplateConfig())
+                    ->setClass(AccessTemplateConfig::CLASS_GENERIC)
+                    ->setKey($key)
+                    ->setValue($value);
+                $this->addConfig($config);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Add accessTemplateSection
+     *
+     * @param AccessTemplateSection $accessTemplateSection
+     * @return AccessTemplate
+     */
+    public function addAccessTemplateSection(AccessTemplateSection $accessTemplateSection) {
+        $accessTemplateSection->setAccessTemplate($this);
+        $this->accessTemplateSections[] = $accessTemplateSection;
+        return $this;
+    }
+
+    /**
+     * Remove accessTemplateSection
+     *
+     * @param \Rdr\Base\Entity\AccessTemplateSection $accessTemplateSection
+     */
+    public function removeAccessTemplateSection(AccessTemplateSection $accessTemplateSection) {
+        $this->accessTemplateSections->removeElement($accessTemplateSection);
+    }
+
+    /**
+     * Get accessTemplateSections
+     *
+     * @return ArrayCollection|AccessTemplateSection[]
+     */
+    public function getAccessTemplateSections() {
+        return $this->accessTemplateSections;
+    }
+
+    /**
+     * Add accessTemplateUser
+     *
+     * @param AccessTemplateUser $accessTemplateUser
+     * @return AccessTemplate
+     */
+    public function addAccessTemplateUser(AccessTemplateUser $accessTemplateUser) {
+        $accessTemplateUser->setAccessTemplate($this);
+        $this->accessTemplateUsers[] = $accessTemplateUser;
+        return $this;
+    }
+
+    /**
+     * Remove accessTemplateUser
+     *
+     * @param AccessTemplateUser $accessTemplateUser
+     */
+    public function removeAccessTemplateUser(AccessTemplateUser $accessTemplateUser) {
+        $this->accessTemplateUsers->removeElement($accessTemplateUser);
+    }
+
+    /**
+     * Get accessTemplateUsers
+     *
+     * @return ArrayCollection|AccessTemplateUser[]
+     */
+    public function getAccessTemplateUsers() {
+        return $this->accessTemplateUsers;
+    }
+
+    //=====================================================
+    //== Planovaci logika =================================
+    //=====================================================
+
+    /**
+     * @param User  $user
+     * @param       $from
+     * @param       $to
+     * @param       $start
+     * @param array $userPlans
+     *
+     * @return mixed
+     */
+    abstract public function getUserPlans(User $user, $from, $to, $start, $userPlans = []);
+}

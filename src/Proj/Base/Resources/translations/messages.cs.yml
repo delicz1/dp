@@ -1,0 +1,156 @@
+# messages.cs.yml
+header:
+    title:
+        common: ''
+form:
+    add: 'Přidat'
+    edit: 'Editovat'
+    save: 'Uložit'
+    saved: 'Uloženo'
+    updated: 'Aktualizováno'
+    deleted: 'Smazáno'
+    search: 'Hledat'
+    filter: 'Filtrovat'
+    filter-remove: 'Zrušit filtr'
+    delete: 'Smazat'
+    cancel: 'Zrušit'
+    repair: 'Opravit'
+    confirm:
+        delete: 'Opravdu smazat?'
+    v:
+        req: 'musí být vyplněno'
+        length: 'musí mít délku'
+        integer: 'musí být číslo'
+        range: 'musí být'
+    filter-remove: 'Zrušit filtr'
+    setting: 'Nastavení'
+    wizard:
+        cancel: 'Zrušit'
+        finish: 'Dokončit'
+        next: 'Další'
+        previous: 'Předchozí'
+        loading: 'Načítání ...'
+    upload.image:
+        hideall: 'Vybrat obrázek'
+        wait: 'Načítání ...'
+        main:
+            pick: 'Vybrat obrázek'
+            copypaste: 'kopírovat/vložit obrázek'
+        tools:
+            pen:
+                label: 'Tužka'
+                black: 'Černá'
+                red: 'Červená'
+                green: 'Zelená'
+                large: 'Velká'
+                medium: 'Střední'
+                small: 'Malá'
+            crop: 'Ořezat'
+            rotate: 'Otočit'
+            resize:
+                label: 'Změnit velikost'
+                width: 'Šířka (px)'
+                height: 'Výška (px)'
+    profile:
+        select: 'Vyberte profil'
+        add: 'Přidat profil'
+        default: 'výchozí'
+        default.set: 'Nastavit jako výchozí profil'
+        default.saved: 'Profil nastaven jako výchozí'
+        delete: 'Smazat profil'
+        confirm.delete: 'Opravdu si přejete smazat formulářový profil <i>$1</i>?'
+        loaded: 'Profil načten'
+        name: 'Název profilu'
+        can:
+            view: 'Může vidět'
+            delete: 'Může smazat'
+        me: 'Já'
+        my: 'Moje'
+        shared: 'Sdílené'
+    help:
+        locale: 'Jazyk'
+        content: 'Nápověda'
+dialog:
+    ok: 'Ok'
+    cancel: 'Zrušit'
+    delete: 'Smazat'
+    close: 'Zavřít'
+    delete-quetion: 'Opravdu si přejete položku smazat?'
+    question:
+        close-tab: 'Opravdu si přejete záložku zavřít?'
+on: 'Zapnuto'
+off: 'Vypnuto'
+dateutil:
+    day:
+        sunday: 'Neděle'
+        monday: 'Pondělí'
+        tuesday: 'Úterý'
+        wednesday: 'Středa'
+        thursday: 'Čtvrtek'
+        friday: 'Pátek'
+        saturday: 'Sobota'
+        sunday.abbr: 'Ne'
+        monday.abbr: 'Po'
+        tuesday.abbr: 'Út'
+        wednesday.abbr: 'St'
+        thursday.abbr: 'Čt'
+        friday.abbr: 'Pá'
+        saturday.abbr: 'So'
+    month:
+        january: 'leden'
+        february: 'únor'
+        march: 'březen'
+        april: 'duben'
+        may: 'květen'
+        june: 'červen'
+        july: 'červenec'
+        august: 'srpen'
+        september: 'září'
+        october: 'říjen'
+        november: 'listopad'
+        december: 'prosinec'
+grid:
+    check.all: 'Zaškrtnout vše'
+    uncheck.all: 'Odškrtnout vše'
+    check.all.between.selected: 'Zaškrtnout mezi vybranými'
+    you.must.select.least.one.item: 'Musíte vybrat alespoň jednu položku'
+    you.have.to.choose.two.items: 'Musíte vybrat právě dvě položky'
+    refresh: 'Obnovit tabulku'
+    chooser.columns: 'Sloupce'
+    show.selected.items: 'Zobrazit vybrané položky'
+no.data.found: 'Nenalezena žádná data'
+
+# CommandSchedulerBundle
+commandeScheduler:
+    name: Symfony's scheduler
+    dateFormat: Y-m-d H:i
+    list.title: Scheduled commands
+    action:
+        delete: Remove
+        execute: Execute
+        edit: Edit
+        new: New scheduling
+        unlock: Unlock task
+    confirm:
+        delete: Permanently delete this task ?
+        execute: Force an execution for this task ?
+        unlock: The task may be running. Are you sure you want to unlock it ?
+    detail:
+        title: Scheduled command
+        name: Name
+        command: Command
+        arguments: Arguments
+        cronExpression: Cron expression
+        logFile: Output file
+        priority: Priority
+        executeImmediately: Execute now
+        disabled: Disable
+        save: Save
+        lastExecution: Last run
+        lastReturnCode: Last return code
+        actions: Actions
+    flash:
+        success: Scheduling successfully saved.
+        deleted: Scheduling successfully deleted.
+        execute: Command will be execute during the next "scheduler:execute".
+        unlocked: Scheduling successfully unlocked.

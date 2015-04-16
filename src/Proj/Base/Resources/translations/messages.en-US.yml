@@ -1,0 +1,156 @@
+# messages.en.yml
+header:
+    title:
+        common: ''
+form:
+    add: 'Add'
+    edit: 'Edit'
+    save: 'Save'
+    saved: 'Saved'
+    updated: 'Updated'
+    deleted: 'Deleted'
+    search: 'Search'
+    filter: 'Filter'
+    filter-remove: 'Filter remove'
+    delete: 'Delete'
+    cancel: 'Cancel'
+    repair: 'Correct'
+    confirm:
+        delete: 'Delete?'
+    v:
+        req: 'is required'
+        length: 'must have length'
+        integer: 'must be number'
+        range: 'must be'
+    filter-remove: 'Filter remove'
+    setting: 'Setting'
+    wizard:
+        cancel: 'Cancel'
+        finish: 'Finish'
+        next: 'Next'
+        previous: 'Previous'
+        loading: 'Loading ...'
+    upload.image:
+        hideall: 'Open an image'
+        wait: 'Please Wait...'
+        main:
+            pick: 'Load image'
+            copypaste: 'copy/paste image here'
+        tools:
+            pen:
+                label: 'Pen'
+                black: 'Black'
+                red: 'Red'
+                green: 'Green'
+                large: 'Large'
+                medium: 'Medium'
+                small: 'Small'
+            crop: 'Crop'
+            rotate: 'Rotate'
+            resize:
+                label: 'Resize'
+                width: 'Width (px)'
+                height: 'Height (px)'
+    profile:
+        select: 'Select profile'
+        add: 'Create profile'
+        default: 'default'
+        default.set: 'Set as default profile'
+        default.saved: 'Profile saved as default'
+        delete: 'Delete profile'
+        confirm.delete: 'Do you really want delete form profile <i>$1</i>?'
+        loaded: 'Profile loaded'
+        name: 'Profile name'
+        can:
+            view: 'Can view'
+            delete: 'Can edit'
+        me: 'Me'
+        my: 'My'
+        shared: 'Shared'
+    help:
+        locale: 'Language'
+        content: 'Help'
+dialog:
+    ok: 'Ok'
+    cancel: 'Cancel'
+    delete: 'Delete'
+    close: 'Close'
+    delete-quetion: 'Do you really want to delete this item?'
+    question:
+        close-tab: 'Do you really want to close this tab?'
+on: 'On'
+off: 'Off'
+dateutil:
+    day:
+        sunday: 'Sunday'
+        monday: 'Monday'
+        tuesday: 'Tuesday'
+        wednesday: 'Wednesday'
+        thursday: 'Thursday'
+        friday: 'Friday'
+        saturday: 'Saturday'
+        sunday.abbr: 'Sun'
+        monday.abbr: 'Mon'
+        tuesday.abbr: 'Tue'
+        wednesday.abbr: 'Wed'
+        thursday.abbr: 'Thu'
+        friday.abbr: 'Fri'
+        saturday.abbr: 'Sat'
+    month:
+        january: 'january'
+        february: 'february'
+        march: 'march'
+        april: 'april'
+        may: 'may'
+        june: 'june'
+        july: 'july'
+        august: 'august'
+        september: 'september'
+        october: 'october'
+        november: 'november'
+        december: 'december'
+grid:
+    check.all: 'Check all'
+    uncheck.all: 'Uncheck all'
+    check.all.between.selected: 'Check all between selected'
+    you.must.select.least.one.item: 'You must select at least one item'
+    you.have.to.choose.two.items: 'You have to choose two items'
+    refresh: 'Reload table'
+    chooser.columns: 'Columns'
+    show.selected.items: 'Show selected items'
+no.data.found: 'No data found'
+
+# CommandSchedulerBundle
+commandeScheduler:
+    name: Symfony's scheduler
+    dateFormat: Y-m-d H:i
+    list.title: Scheduled commands
+    action:
+        delete: Remove
+        execute: Execute
+        edit: Edit
+        new: New scheduling
+        unlock: Unlock task
+    confirm:
+        delete: Permanently delete this task ?
+        execute: Force an execution for this task ?
+        unlock: The task may be running. Are you sure you want to unlock it ?
+    detail:
+        title: Scheduled command
+        name: Name
+        command: Command
+        arguments: Arguments
+        cronExpression: Cron expression
+        logFile: Output file
+        priority: Priority
+        executeImmediately: Execute now
+        disabled: Disable
+        save: Save
+        lastExecution: Last run
+        lastReturnCode: Last return code
+        actions: Actions
+    flash:
+        success: Scheduling successfully saved.
+        deleted: Scheduling successfully deleted.
+        execute: Command will be execute during the next "scheduler:execute".
+        unlocked: Scheduling successfully unlocked.

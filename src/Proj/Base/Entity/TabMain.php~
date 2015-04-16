@@ -1,0 +1,376 @@
+<?php
+
+namespace Rdr\Base\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * TabMain
+ *
+ * @ORM\Table(name="tab_main", indexes={@ORM\Index(name="grid_setting_id", columns={"grid_setting_id", "user_id"})})
+ * @ORM\Entity
+ */
+class TabMain {
+
+    //=====================================================
+    //== Konstanty ========================================
+    //=====================================================
+
+    const COLUMN_GRID_SETTING = 'gridSetting';
+
+    const LAYOUT_LINE               = 0;
+    const LAYOUT_GALLERY            = 1;
+    const LAYOUT_LINE_WIDTH_GALLERY = 2;
+    const LAYOUT_TIMELINE           = 3;
+    const LAYOUT_PRESENT_MANAGER    = 4;
+
+    const LAYOUT_LINE_KEY               = 'form.layout.line';
+    const LAYOUT_GALLERY_KEY            = 'form.layout.gallery';
+    const LAYOUT_LINE_WIDTH_GALLERY_KEY = 'form.layout.line-gallery';
+    const LAYOUT_TIMELINE_KEY           = 'form.layout.timeline';
+    const LAYOUT_PRESENT_MANAGER_KEY    = 'form.layout.present.manager';
+
+    const TYPE_EVENT = 0;
+    const TYPE_ACCESS = 1;
+    const TYPE_PRESENT_MANAGER = 2;
+
+    const TYPE_EVENT_KEY = 'tab.main.type.event';
+    const TYPE_ACCESS_ERROR_KEY = 'tab.main.type.access.error';
+    const TYPE_PRESENT_MANAGER_KEY = 'tab.main.type.present.manager';
+
+    const PM_PHOTO = 0;
+    const PM_PHONE = 1;
+    const PM_EMAIL = 2;
+    const PM_LAST_EVENT = 3;
+
+    const PM_PHOTO_KEY = 'tab.main.pm.photo';
+    const PM_PHONE_KEY = 'tab.main.pm.phone';
+    const PM_EMAIL_KEY = 'tab.main.pm.email';
+    const PM_LAST_EVENT_KEY = 'tab.main.pm.last.event';
+
+    //=====================================================
+    //== ORM ==============================================
+    //=====================================================
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="text", nullable=false)
+     */
+    private $title;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="grid_setting_id", type="integer", nullable=false)
+     */
+    private $gridSettingId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="user_id", type="integer", nullable=false)
+     */
+    private $userId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="position", type="integer", nullable=false)
+     */
+    private $position;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="type", type="integer", nullable=false)
+     */
+    private $type;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="layout", type="integer", length=3, nullable=false)
+     */
+    private $layout;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="group_id", type="integer", nullable=false)
+     */
+    private $groupId;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
+     */
+    private $user;
+
+    /**
+     * @var GridSetting
+     *
+     * @ORM\OneToOne(targetEntity="GridSetting", cascade={"persist"}, orphanRemoval=true)
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="grid_setting_id", referencedColumnName="id")
+     * })
+     */
+    private $gridSetting;
+
+    /**
+     * @var Group
+     *
+     * @ORM\ManyToOne(targetEntity="Group")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     * })
+     */
+    private $group;
+
+    //=====================================================
+    //== Set/Get ==========================================
+    //=====================================================
+
+    /**
+     * @param $v
+     */
+    public function setId($v) {
+        $this->id = $v;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return TabMain
+     */
+    public function setTitle($title) {
+        $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle() {
+        return $this->title;
+    }
+
+    /**
+     * Set gridSettingId
+     *
+     * @param integer $gridSettingId
+     * @return TabMain
+     */
+    public function setGridSettingId($gridSettingId) {
+        $this->gridSettingId = $gridSettingId;
+        return $this;
+    }
+
+    /**
+     * Get gridSettingId
+     *
+     * @return integer
+     */
+    public function getGridSettingId() {
+        return $this->gridSettingId;
+    }
+
+    /**
+     * Set userId
+     *
+     * @param integer $userId
+     * @return TabMain
+     */
+    public function setUserId($userId) {
+        $this->userId = $userId;
+        return $this;
+    }
+
+    /**
+     * Get userId
+     *
+     * @return integer
+     */
+    public function getUserId() {
+        return $this->userId;
+    }
+
+    /**
+     * Set user
+     *
+     * @param User $user
+     * @return TabMain
+     */
+    public function setUser(User $user = null) {
+        $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return User
+     */
+    public function getUser() {
+        return $this->user;
+    }
+
+
+    /**
+     * Set gridSetting
+     *
+     * @param GridSetting $gridSetting
+     * @return TabMain
+     */
+    public function setGridSetting(GridSetting $gridSetting = null) {
+        $this->gridSetting = $gridSetting;
+        return $this;
+    }
+
+    /**
+     * Get gridSetting
+     *
+     * @return GridSetting
+     */
+    public function getGridSetting() {
+        return $this->gridSetting;
+}
+
+
+    /**
+     * Set position
+     *
+     * @param integer $position
+     * @return TabMain
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * Get position
+     *
+     * @return integer
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * Set type
+     *
+     * @param integer $type
+     * @return TabMain
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return integer
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set layout
+     *
+     * @param integer $layout
+     * @return TabMain
+     */
+    public function setLayout($layout) {
+        $this->layout = $layout;
+        return $this;
+    }
+
+    /**
+     * Get layout
+     *
+     * @return integer
+     */
+    public function getLayout() {
+        return $this->layout;
+    }
+
+    /**
+     * Set groupId
+     *
+     * @param integer $groupId
+     * @return TabMain
+     */
+    public function setGroupId($groupId)
+    {
+        $this->groupId = $groupId;
+
+        return $this;
+    }
+
+    /**
+     * Get groupId
+     *
+     * @return integer
+     */
+    public function getGroupId()
+    {
+        return $this->groupId;
+    }
+
+    /**
+     * Set group
+     *
+     * @param Group $group
+     * @return TabMain
+     */
+    public function setGroup(Group $group = null)
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return \Rdr\Base\Entity\Group
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
+}

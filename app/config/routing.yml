@@ -1,6 +1,9 @@
-app:
-    resource: @AppBundle/Controller/
-    type:     annotation
-thrace_data_grid:
-    resource: "@ThraceDataGridBundle/Resources/config/routing.xml"
-    prefix:   /
+root:
+    path: /
+    defaults:
+        _controller: FrameworkBundle:Redirect:urlRedirect
+        path: /main
+        permanent: true
+
+_proj_base:
+    resource: "@ProjBaseBundle/Resources/config/routing.yml"

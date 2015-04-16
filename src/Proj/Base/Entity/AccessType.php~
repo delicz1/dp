@@ -1,0 +1,322 @@
+<?php
+
+namespace Rdr\Base\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * AccessType
+ *
+ * @ORM\Table(name="access_type", indexes={@ORM\Index(name="fk_func_key_group_id", columns={"group_id"})})
+ * @ORM\Entity
+ */
+class AccessType {
+
+    //=====================================================
+    //============== Konstanty ============================
+    //=====================================================
+
+    const FLAG_NONE     = 0b1;
+    const FLAG_IN       = 0b10;
+    const FLAG_DELETED  = 0b100;
+    const FLAG_OUT      = 0b1000;
+    const FLAG_PAUSE    = 0b10000;
+    const FLAG_DOCTOR   = 0b100000;
+    const FLAG_BUS_LEAVE= 0b1000000;
+
+    const COLUMN_GROUP = 'group';
+    const COLUMN_FLAG = 'flag';
+
+    const ICON_IN = 1;
+    const ICON_OUT = 2;
+    const ICON_UNKNOWN = 3;
+    const ICON_FOOD = 4;
+    const ICON_DOCTOR = 5;
+    const ICON_BUS_TRIP = 6;
+    const ICON_WC = 7;
+    const ICON_SMOKING = 8;
+    const ICON_SELFIE = 9;
+    const CLS_ICON_IN = 'access-in';
+    const CLS_ICON_OUT = 'access-out';
+    const CLS_ICON_UNKNOWN = 'access-unknown';
+    const CLS_ICON_FOOD = 'food';
+    const CLS_ICON_DOCTOR = 'doctor';
+    const CLS_ICON_BUS_TRIP = 'bus-trip';
+    const CLS_ICON_WC = 'wc';
+    const CLS_ICON_SMOKING = 'smoking';
+    const CLS_ICON_SELFIE = 'selfie';
+
+    private static $icons = [
+        self::ICON_IN => self::CLS_ICON_IN, self::ICON_OUT => self::CLS_ICON_OUT, self::ICON_UNKNOWN => self::CLS_ICON_UNKNOWN,
+        self::ICON_FOOD => self::CLS_ICON_FOOD, self::ICON_DOCTOR => self::CLS_ICON_DOCTOR, self::ICON_BUS_TRIP => self::CLS_ICON_BUS_TRIP,
+        self::ICON_WC => self::CLS_ICON_WC, self::ICON_SMOKING => self::CLS_ICON_SMOKING, self::ICON_SELFIE => self::CLS_ICON_SELFIE
+    ];
+    /**
+     * @return array
+     */
+    public static function getIcons() { return self::$icons; }
+
+    //=====================================================
+    //== ORM ==============================================
+    //=====================================================
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=32, nullable=false)
+     */
+    private $title;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="icon", type="integer", nullable=false)
+     */
+    private $icon;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="color", type="string", nullable=false)
+     */
+    private $color;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="flag", type="smallint", nullable=false)
+     */
+    private $flag;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="locale", type="string", nullable=false)
+     */
+    private $locale;
+
+    /**
+     * @var Group
+     *
+     * @ORM\ManyToOne(targetEntity="Group", inversedBy="accessTypes")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     * })
+     */
+    private $group;
+
+    /**
+     * @var ReaderAccessType[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="ReaderAccessType", mappedBy="accessType", cascade={"persist"}, orphanRemoval=true)
+     */
+    private $readerAccessTypes;
+
+    //=====================================================
+    //== Konstruktor ======================================
+    //=====================================================
+
+    /**
+     *
+     */
+    public function __construct() {
+        $this->readerAccessTypes = new ArrayCollection();
+    }
+
+    //=====================================================
+    //== Set/Get ==========================================
+    //=====================================================
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return AccessType
+     */
+    public function setTitle($title) {
+        $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string 
+     */
+    public function getTitle() {
+        return $this->title;
+    }
+
+    /**
+     * Set icon
+     *
+     * @param integer $icon
+     * @return AccessType
+     */
+    public function setIcon($icon) {
+        $this->icon = $icon;
+
+        return $this;
+    }
+
+    /**
+     * Get icon
+     *
+     * @return integer
+     */
+    public function getIcon() {
+        return $this->icon;
+    }
+
+    /**
+     * Set color
+     *
+     * @param string $color
+     * @return AccessType
+     */
+    public function setColor($color) {
+        $this->color = ltrim($color, '#');
+        return $this;
+    }
+
+    /**
+     * Get color
+     *
+     * @return string
+     */
+    public function getColor() {
+        return '#' . $this->color;
+    }
+
+    /**
+     * Set flag
+     *
+     * @param integer $flag
+     * @return AccessType
+     */
+    public function setFlag($flag) {
+        $this->flag = $flag;
+        return $this;
+    }
+
+    /**
+     * Get flag
+     *
+     * @return integer 
+     */
+    public function getFlag() {
+        return $this->flag;
+    }
+
+    /**
+     * Nastavi bit flagu podle predane konstanty.
+     *
+     * @param int   $flag
+     * @param bool  $state
+     */
+    public function setFlagBit($flag, $state) {
+        if($state) {
+            $this->setFlag((int)$this->getFlag() | $flag);
+        } else {
+            $this->setFlag((int)$this->getFlag() & ($flag ^ PHP_INT_MAX));
+        }
+    }
+
+    /**
+     * Vraci hodnotu bitu flagu podle predane konstanty.
+     *
+     * @param $flag
+     * @return bool
+     */
+    public function getFlagBit($flag) {
+        return ($this->getFlag() & $flag) == $flag;
+    }
+
+    /**
+     * Set group
+     *
+     * @param Group $group
+     * @return AccessType
+     */
+    public function setGroup(Group $group = null) {
+        $this->group = $group;
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return Group
+     */
+    public function getGroup() {
+        return $this->group;
+    }
+
+    /**
+     * Add readerAccessTypes
+     *
+     * @param ReaderAccessType $readerAccessTypes
+     * @return AccessType
+     */
+    public function addReaderAccessType(ReaderAccessType $readerAccessTypes) {
+        $this->readerAccessTypes[] = $readerAccessTypes;
+        return $this;
+    }
+
+    /**
+     * Remove readerAccessTypes
+     *
+     * @param ReaderAccessType $readerAccessTypes
+     */
+    public function removeReaderAccessType(ReaderAccessType $readerAccessTypes) {
+        $this->readerAccessTypes->removeElement($readerAccessTypes);
+    }
+
+    /**
+     * Get readerAccessTypes
+     *
+     * @return ArrayCollection|ReaderAccessType[]
+     */
+    public function getReaderAccessTypes() {
+        return $this->readerAccessTypes;
+    }
+
+    //=====================================================
+    //== toString =========================================
+    //=====================================================
+
+    /**
+     * @param $size
+     *
+     * @return string
+     */
+    public function getIconClass($size) {
+        $icon = $this->getIcon();
+        $iconCls = 'icon-reader-' . $size . 'x' . $size . ' ';
+        if (isset(self::$icons[$icon])) {
+            $iconCls .= self::$icons[$icon];
+        } else {
+            $iconCls .= self::CLS_ICON_UNKNOWN;
+        }
+        return $iconCls;
+    }
+}

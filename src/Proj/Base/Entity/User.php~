@@ -1,0 +1,1153 @@
+<?php
+
+namespace Rdr\Base\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Rdr\Base\Object\Db\ClassMapper;
+use Rdr\Security\Entity\IdentityInterface;
+use Rdr\Security\Entity\PermissionObjectInterface;
+use Rdr\Security\Manager\PermissionResolver;
+use Symfony\Component\Security\Core\User\UserInterface;
+
+/**
+ * User
+ *
+ * @ORM\Table(name="user", indexes={@ORM\Index(name="nick", columns={"login"}), @ORM\Index(name="fk_user_group_id", columns={"group_id"})})
+ * @ORM\Entity
+ */
+class User implements \Rdr\Group\Entity\UserInterface, UserInterface, \Serializable, IdentityInterface, PermissionObjectInterface {
+
+    //=====================================================
+    //============== Konstanty ============================
+    //=====================================================
+
+    const FLAG_DELETED = 0b1;
+
+    const COLUMN_LOGIN = 'login';
+    const COLUMN_PASSWD = 'passwd';
+    const COLUMN_NAME = 'name';
+    const COLUMN_SURNAME = 'surname';
+    const COLUMN_COMPANY_ID = 'companyId';
+    const COLUMN_PIN = 'pin';
+    const COLUMN_FLAG = 'flag';
+
+    const COLUMN_GROUP = 'group';
+    const COLUMN_ROLES = 'roles';
+    const COLUMN_READERS = 'readers';
+
+    //=====================================================
+    //== ORM ==============================================
+    //=====================================================
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="login", type="string", length=40, nullable=false)
+     */
+    private $login;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="passwd", type="string", length=40, nullable=false)
+     */
+    private $passwd;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=40, nullable=false)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="surname", type="string", length=40, nullable=false)
+     */
+    private $surname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="company_id", type="string", nullable=false)
+     */
+    private $companyId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="pin", type="integer", nullable=false)
+     */
+    private $pin;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="flag", type="integer", nullable=false)
+     */
+    private $flag;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="plan_to", type="integer", nullable=false)
+     */
+    private $planTo;
+
+    /**
+     * @var Group
+     *
+     * @ORM\ManyToOne(targetEntity="Group", inversedBy="users")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     * })
+     */
+    private $group;
+
+    /**
+     * @ORM\OneToMany(targetEntity="UserConfig", mappedBy="user", cascade={"persist"}, orphanRemoval=true, indexBy="key")
+     */
+    protected $configs;
+
+    /**
+     * @var ArrayCollection|UserData[]
+     * @ORM\OneToMany(targetEntity="UserData", mappedBy="user", cascade={"persist"}, orphanRemoval=true, indexBy="type")
+     */
+    protected $data;
+
+    /**
+     * @var ArrayCollection|Reader[]
+     * @ORM\ManyToMany(targetEntity="Reader", inversedBy="users", cascade={"persist"})
+     * @ORM\JoinTable(name="user_reader")
+     */
+    protected $readers;
+
+    /**
+     * @var ArrayCollection|Role[]
+     * @ORM\ManyToMany(targetEntity="Role", inversedBy="users", cascade={"persist"})
+     */
+    protected $roles;
+
+    /**
+     * @var Section
+     *
+     * @ORM\ManyToOne(targetEntity="Section", inversedBy="users")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="section_id", referencedColumnName="id")
+     * })
+     */
+    private $section;
+
+    /**
+     * @var AccessTemplateUser[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="AccessTemplateUser", mappedBy="user")
+     * @ORM\OrderBy({"from" = "asc"})
+     */
+    protected $accessTemplateUsers;
+
+    /**
+     * @var PermissionResolver
+     */
+    private $permissionResolver;
+
+    //=====================================================
+    //== Konstruktor ======================================
+    //=====================================================
+
+    /**
+     *
+     */
+    public function __construct() {
+        $this->configs = new ArrayCollection();
+        $this->data = new ArrayCollection();
+        $this->readers = new ArrayCollection();
+        $this->roles = new ArrayCollection();
+        $this->accessTemplateUsers = new ArrayCollection();
+    }
+
+    //=====================================================
+    //== Set/Get ==========================================
+    //=====================================================
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set login
+     *
+     * @param string $login
+     * @return User
+     */
+    public function setLogin($login) {
+        $this->login = $login;
+        return $this;
+    }
+
+    /**
+     * Get login
+     *
+     * @return string
+     */
+    public function getLogin() {
+        return $this->login;
+    }
+
+    /**
+     * Set passwd
+     *
+     * @param string $passwd
+     * @return User
+     */
+    public function setPasswd($passwd) {
+        $this->passwd = $passwd;
+        return $this;
+    }
+
+    /**
+     * Get passwd
+     *
+     * @return string
+     */
+    public function getPasswd() {
+        return $this->passwd;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return User
+     */
+    public function setName($name) {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName() {
+        return (string) $this->name;
+    }
+
+    /**
+     * Set surname
+     *
+     * @param string $surname
+     * @return User
+     */
+    public function setSurname($surname) {
+        $this->surname = $surname;
+        return $this;
+    }
+
+    /**
+     * Get surname
+     *
+     * @return string
+     */
+    public function getSurname() {
+        return (string) $this->surname;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullName() {
+        return $this->surname . ' ' . $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullNameAndLogin() {
+        return $this->getFullName() . '(' . $this->login . ')';
+    }
+
+    /**
+     * Set companyId
+     *
+     * @param string $companyId
+     * @return User
+     */
+    public function setCompanyId($companyId) {
+        $this->companyId = $companyId;
+        return $this;
+    }
+
+    /**
+     * Get companyId
+     *
+     * @return string
+     */
+    public function getCompanyId() {
+        return (string) $this->companyId;
+    }
+
+    /**
+     * Set pin
+     *
+     * @param integer $pin
+     * @return User
+     */
+    public function setPin($pin) {
+        $this->pin = $pin;
+        return $this;
+    }
+
+    /**
+     * Get pin
+     *
+     * @return string
+     */
+    public function getPin() {
+        return (string) ($this->pin == 0 ? '' : $this->pin);
+    }
+
+    /**
+     * Set flag
+     *
+     * @param integer $flag
+     * @return User
+     */
+    public function setFlag($flag) {
+        $this->flag = $flag;
+        return $this;
+    }
+
+    /**
+     * Get flag
+     *
+     * @return integer
+     */
+    public function getFlag() {
+        return $this->flag;
+    }
+
+    /**
+     * Nastavi bit flagu podle predane konstanty.
+     *
+     * @param int   $flag
+     * @param bool  $state
+     */
+    public function setFlagBit($flag, $state) {
+        if($state) {
+            $this->setFlag((int)$this->getFlag() | $flag);
+        } else {
+            $this->setFlag((int)$this->getFlag() & ($flag ^ PHP_INT_MAX));
+        }
+    }
+
+    /**
+     * Vraci hodnotu bitu flagu podle predane konstanty.
+     *
+     * @param $flag
+     * @return bool
+     */
+    public function getFlagBit($flag) {
+        return ($this->getFlag() & $flag) == $flag;
+    }
+
+    /**
+     * Set group
+     *
+     * @param Group $group
+     * @return User
+     */
+    public function setGroup(Group $group = null) {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return Group
+     */
+    public function getGroup() {
+        return $this->group;
+    }
+
+    /**
+     * Add configs
+     *
+     * @param UserConfig $config
+     * @return User
+     */
+    public function addConfig(UserConfig $config) {
+        $config->setUser($this);
+        $this->configs[$config->getKey()] = $config;
+        return $this;
+    }
+
+    /**
+     * Remove configs
+     *
+     * @param UserConfig $config
+     */
+    public function removeConfig(UserConfig $config) {
+        $this->configs->removeElement($config);
+    }
+
+    /**
+     * Get configs
+     *
+     * @return UserConfig[]
+     */
+    public function getConfigs() {
+        return $this->configs->toArray();
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public function getConfig($key) {
+        return isset($this->configs[$key]) ? $this->configs[$key]->getValue() : UserConfig::getDefaultValue($key);
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     *
+     * @return $this
+     */
+    public function setConfig($key, $value) {
+        $default = UserConfig::getDefaultValue($key);
+        if ($default === $value) {
+            if (isset($this->configs[$key])) {
+                unset($this->configs[$key]);
+            }
+        } else {
+            if (isset($this->configs[$key])) {
+                $this->configs[$key]->setValue($value);
+            } else {
+                $config = (new UserConfig())
+                    ->setClass(UserConfig::CLASS_GENERIC)
+                    ->setKey($key)
+                    ->setValue($value);
+                $this->addConfig($config);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Add data
+     *
+     * @param UserData $data
+     * @return User
+     */
+    public function addData(UserData $data) {
+        $data->setUser($this);
+        $this->data[$data->getType()] = $data;
+        return $this;
+    }
+
+    /**
+     * Remove data
+     *
+     * @param UserData $data
+     */
+    public function removeData(UserData $data) {
+        $this->data->removeElement($data);
+    }
+
+    /**
+     * Get data
+     *
+     * @return ArrayCollection|UserData[]
+     */
+    public function getData() {
+        return $this->data;
+    }
+
+    /**
+     * @param int $type
+     * @return mixed
+     */
+    public function getDataItem($type) {
+        return isset($this->data[$type]) ? $this->data[$type]->getData() : null;
+    }
+
+    /**
+     * @param int $type
+     * @param mixed $data
+     *
+     * @return $this
+     */
+    public function setDataItem($type, $data) {
+        if ($data instanceof \File) {
+            $data = $data->getContents();
+        }
+        if (isset($this->data[$type])) {
+            if ($data === null) {
+                $this->removeData($this->data[$type]);
+            } else {
+                $this->data[$type]->setData($data);
+            }
+        } else if ($data !== null) {
+            $dataItem = (new UserData())
+                ->setType($type)
+                ->setData($data);
+            $this->addData($dataItem);
+        }
+        return $this;
+    }
+
+    /**
+     * Add reader
+     *
+     * @param Reader $reader
+     * @return User
+     */
+    public function addReader(Reader $reader) {
+        if (!$this->readers->contains($reader)) {
+            $this->readers[] = $reader;
+        }
+        return $this;
+    }
+
+    /**
+     * Remove reader
+     *
+     * @param Reader $reader
+     */
+    public function removeReader(Reader $reader) {
+        $this->readers->removeElement($reader);
+    }
+
+    /**
+     * Get readers
+     *
+     * @return ArrayCollection|Reader[]
+     */
+    public function getReaders() {
+        return $this->readers;
+    }
+
+    /**
+     * Add role
+     *
+     * @param Role $role
+     * @return User
+     */
+    public function addRole(Role $role) {
+        $this->roles[] = $role;
+        return $this;
+    }
+
+    /**
+     * Remove role
+     *
+     * @param Role $role
+     */
+    public function removeRole(Role $role) {
+        $this->roles->removeElement($role);
+    }
+
+    /**
+     * @return Role
+     */
+    public function getMainRole() {
+        return $this->roles->first();
+    }
+
+    /**
+     * @param Role $role
+     * @return User
+     */
+    public function setMainRole(Role $role) {
+        $curentRole = $this->roles->first();
+        if ($role->getId() != $curentRole->getId()) {
+            foreach ($this->roles as $item) {
+                $this->removeRole($item);
+            }
+            $this->addRole($role);
+        }
+        if ($this->permissionResolver instanceof PermissionResolver) {  // Nova inicializace opravneni
+            $this->permissionResolver = new PermissionResolver($this, $this->permissionResolver->doctrine);
+        }
+        return $this;
+    }
+
+    /**
+     * Set section
+     *
+     * @param Section $section
+     * @return User
+     */
+    public function setSection(Section $section = null) {
+        $this->section = $section;
+        return $this;
+    }
+
+    /**
+     * Get section
+     *
+     * @return Section
+     */
+    public function getSection() {
+        return $this->section;
+    }
+
+    /**
+     * Add accessTemplateUser
+     *
+     * @param AccessTemplateUser $accessTemplateUser
+     * @return User
+     */
+    public function addAccessTemplateUser(AccessTemplateUser $accessTemplateUser) {
+        $this->accessTemplateUsers[] = $accessTemplateUser;
+        return $this;
+    }
+
+    /**
+     * Remove accessTemplateUser
+     *
+     * @param \Rdr\Base\Entity\AccessTemplateUser $accessTemplateUser
+     */
+    public function removeAccessTemplateUser(AccessTemplateUser $accessTemplateUser) {
+        $this->accessTemplateUsers->removeElement($accessTemplateUser);
+    }
+
+    /**
+     * Get accessTemplateUsers
+     *
+     * @return ArrayCollection|AccessTemplateUser[]
+     */
+    public function getAccessTemplateUsers() {
+        return $this->accessTemplateUsers;
+    }
+
+    //=====================================================
+    //== Security =========================================
+    //=====================================================
+
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * String representation of object
+     *
+     * @link http://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     */
+    public function serialize() {
+        return serialize([
+            $this->id,
+            $this->login,
+            $this->passwd,
+            // see section on salt below
+            // $this->salt,
+        ]);
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * Constructs the object
+     *
+     * @link http://php.net/manual/en/serializable.unserialize.php
+     *
+     * @param string $serialized <p>
+     *                           The string representation of the object.
+     *                           </p>
+     *
+     * @return void
+     */
+    public function unserialize($serialized) {
+        list (
+            $this->id,
+            $this->login,
+            $this->passwd,
+            // see section on salt below
+            // $this->salt
+            ) = unserialize($serialized);
+    }
+
+    /**
+     * Returns the roles granted to the user.
+     * <code>
+     * public function getRoles()
+     * {
+     *     return array('ROLE_USER');
+     * }
+     * </code>
+     * Alternatively, the roles might be stored on a ``roles`` property,
+     * and populated in any number of different ways when the user object
+     * is created.
+     *
+     * @return string[] The user roles
+     */
+    public function getRoles() {
+        return $this->roles->toArray();
+    }
+
+    /**
+     * Returns the password used to authenticate the user.
+     * This should be the encoded password. On authentication, a plain-text
+     * password will be salted, encoded, and then compared to this value.
+     *
+     * @return string The password
+     */
+    public function getPassword() {
+        return $this->passwd;
+    }
+
+    /**
+     * Returns the salt that was originally used to encode the password.
+     * This can return null if the password was not encoded using a salt.
+     *
+     * @return string|null The salt
+     */
+    public function getSalt() {
+        // you *may* need a real salt depending on your encoder
+        // see section on salt below
+        return null;
+    }
+
+    /**
+     * Returns the username used to authenticate the user.
+     *
+     * @return string The username
+     */
+    public function getUsername() {
+        return $this->login;
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     */
+    public function eraseCredentials() {}
+
+    /**
+     * @return IdentityInterface
+     */
+    public function getParentIdentities() {
+        return [$this->getMainRole()];
+    }
+
+
+    //=====================================================
+    //== Prepnuti skupiny =================================
+    //=====================================================
+
+    /**
+     * @param int $v
+     *
+     * @return $this
+     */
+    public function setActiveGroupId($v) {
+        if ($v == $this->getGroup()->getId()) {
+            $v = 0;
+        }
+        $this->setConfig(UserConfig::KEY_ACTIVE_GROUP, $v);
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getActiveGroupId() {
+        $agId = $this->getConfig(UserConfig::KEY_ACTIVE_GROUP);
+        if (!$agId) {
+            $agId = $this->getGroup()->getId();
+        }
+        return $agId;
+    }
+
+    //=====================================================
+    //== Permission =======================================
+    //=====================================================
+
+    /**
+     * Nastaveni resolveru opravneni, nutne pro testovani opravneni.
+     * @param PermissionResolver $permissionResolver
+     *
+     * @return $this
+     */
+    public function setPermissionResolver(PermissionResolver $permissionResolver) {
+        $this->permissionResolver = $permissionResolver;
+        return $this;
+    }
+
+    /**
+     * @return PermissionResolver
+     */
+    public function getPermissionResolver() {
+        return $this->permissionResolver;
+    }
+
+    /**
+     * Test prirazeneho opravneni. Je mozne predat konkretni objekt, jinak se testuje all.
+     * RESI U KAZDEHO OPRAVNENI VSECHNY UROVNE JEHO DEDICNOSTI
+     *
+     * @param int  $pId                         Konstanta opravneni viz. PermissionConst(Permission)
+     * @param PermissionObjectInterface $object Objekt, kteremu je testovano opravneni. Musi byt perzistentni, protože se testuje id.
+     *
+     * @return bool
+     */
+    public function can($pId, $object = null) {
+        $pr = $this->permissionResolver;
+        switch($pId) {
+            case Permission::VIEW_READERS:
+                $permit = $pr->get($pId, $object);
+                if (!$permit && $object instanceof Reader) {
+                    $object = $object->getZone();
+                    $permit = $pr->get($pId, $object);
+                }
+                if (!$permit && $object instanceof Zone) {
+                    $object = $object->getGroup();
+                    $permit = $pr->get($pId, $object);
+                }
+                break;
+            case Permission::VIEW_GROUPS:
+                $permit = $pr->get($pId, $object);
+                if (!$permit && $object instanceof Group) {
+                    /** @var EntityRepository $repo */
+                    $repo = $pr->doctrine->getRepository('RdrBaseBundle:Group');
+                    $qb = $repo->createQueryBuilder('g')
+                        ->where('g.' . Group::COLUMN_LFT . ' < ' . $object->getLft())
+                        ->andWhere('g.' . Group::COLUMN_RGT . ' > ' . $object->getRgt())
+                        ->orderBy('g.' . Group::COLUMN_LFT, 'DESC');
+                    $parentGroups = $qb->getQuery()->getResult();
+                    foreach ($parentGroups as $parentGroup) {
+                        if ($pr->get($pId, $parentGroup)) {
+                            $permit = true;
+                            break;
+                        }
+                    }
+                }
+                break;
+            default:
+                $permit = $pr->get($pId, $object);
+                break;
+        }
+        return $permit;
+    }
+
+    /**
+     * RAW Test prirazeneho opravneni, nepredava se objekt, ale uz namapovane $oClass a $oId
+     * RESI POUZE DEDICNOST 1.UROVNE (ALL -> OBJECT)
+     *
+     * @param int  $pId     Konstanta opravneni viz. PermissionConst(Permission)
+     * @param int  $oClass  Id tridy testovaneho objektu (vyuziva se ClassMapper), 0 => all
+     * @param int  $oId     Id testovaneho objektu, 0 => all
+     * @param bool $strict  Striktni mod - pokud je zapnut testuje se pouze opravneni na konkretni objekt, netestuje se all
+     *
+     * @return bool
+     */
+    public function canRaw($pId, $oClass, $oId, $strict = false) {
+        return $this->permissionResolver->getRaw($pId, $oClass, $oId, $strict);
+    }
+
+    /**
+     * Vraci pole prirazenych objektu, pro dane opravneni
+     *
+     * @param int                       $pId          Konstanta opravneni viz. PermissionConst(Permission)
+     * @param PermissionObjectInterface $object       Objekt podle ktereho se detekuje oClass, nemusi mit nic nastaveno -> napr. new Reader()
+     * @param PermissionObjectInterface $filterObject Filtr opravneni, Pr. vsechny ctecky na ktere mam pristup, ale pouze v aktivni skupine
+     *
+     * @return array
+     */
+    public function canIds($pId, PermissionObjectInterface $object, PermissionObjectInterface $filterObject = null) {
+        $pr = $this->permissionResolver;
+        /** @var EntityRepository $repo */
+        $repo = $pr->doctrine->getRepository((new ClassMapper($object))->getClassName());
+        switch($pId) {
+            case Permission::VIEW_READERS:
+                $ids = [];
+                $qb = $repo->createQueryBuilder('po')
+                    ->select('po.id');
+                if ($filterObject instanceof Group) {
+                    $qb->where('g.id = ' . $filterObject->getId());
+                } else if ($filterObject instanceof Zone) {
+                    $qb->where('z.id = ' . $filterObject->getId());
+                }
+                if ($object instanceof Group) {
+                    if ($this->can($pId)) {
+                        $ids = $this->canIds(Permission::VIEW_GROUPS, new Group());
+                    } else {
+                        $ids = $pr->getIds($pId, $object);
+                    }
+                } else if ($object instanceof Zone) {
+                    if ($this->can($pId)) {
+                        $gIds = $this->canIds(Permission::VIEW_GROUPS, new Group());
+                        $result = $qb
+                            ->join('po.' . Zone::COLUMN_GROUP, 'g')
+                            ->andWhere(\Criteria::in('g.id', $gIds))
+                            ->getQuery()
+                            ->getScalarResult();
+                        foreach ($result as $item) {
+                            $ids[] = $item['id'];
+                        }
+                    } else {
+                        $gIds = $pr->getIds($pId, new Group());
+                        $zIds = $pr->getIds($pId, new Zone());
+                        $result = $qb
+                            ->join('po.' . Zone::COLUMN_GROUP, 'g')
+                            ->andWhere(\Criteria::in('g.id', $gIds) . ' OR ' . \Criteria::in('po.id', $zIds))
+                            ->getQuery()
+                            ->getScalarResult();
+                        foreach ($result as $item) {
+                            $ids[] = $item['id'];
+                        }
+                    }
+                } else if ($object instanceof Reader) {
+                    if ($this->can($pId)) {
+                        $gIds = $this->canIds(Permission::VIEW_GROUPS, new Group());
+                        $result = $qb
+                            ->join('po.' . Reader::COLUMN_ZONE, 'z')
+                            ->join('z.' . Zone::COLUMN_GROUP, 'g')
+                            ->andWhere(\Criteria::in('g.id', $gIds))
+                            ->getQuery()
+                            ->getScalarResult();
+                        foreach ($result as $item) {
+                            $ids[] = $item['id'];
+                        }
+                    } else {
+                        $gIds = $pr->getIds($pId, new Group());
+                        $zIds = $pr->getIds($pId, new Zone());
+                        $rIds = $pr->getIds($pId, new Reader());
+                        $result = $qb
+                            ->join('po.' . Reader::COLUMN_ZONE, 'z')
+                            ->join('z.' . Zone::COLUMN_GROUP, 'g')
+                            ->andWhere(\Criteria::in('g.id', $gIds) . ' OR ' . \Criteria::in('z.id', $zIds) . ' OR ' . \Criteria::in('po.id', $rIds))
+                            ->getQuery()
+                            ->getScalarResult();
+                        foreach ($result as $item) {
+                            $ids[] = $item['id'];
+                        }
+                    }
+                }
+                break;
+            case Permission::VIEW_USERS:
+                $ids = [];
+                $qb = $repo->createQueryBuilder('po')
+                    ->select('po.id');
+                if ($filterObject instanceof Group) {
+                    $qb->where('g.id = ' . $filterObject->getId());
+                }
+                if ($object instanceof Group) {
+                    if ($this->can($pId)) {
+                        $ids = $this->canIds(Permission::VIEW_GROUPS, new Group());
+                    } else {
+                        $ids = $pr->getIds($pId, $object);
+                    }
+                } else if ($object instanceof User) {
+                    if ($this->can($pId)) {
+                        $gIds = $this->canIds(Permission::VIEW_GROUPS, new Group());
+                        $result = $qb
+                            ->join('po.' . User::COLUMN_GROUP, 'g')
+                            ->andWhere(\Criteria::in('g.id', $gIds))
+                            ->getQuery()
+                            ->getScalarResult();
+                        foreach ($result as $item) {
+                            $ids[] = $item['id'];
+                        }
+                    } else {
+                        $gIds = $pr->getIds($pId, new Group());
+                        $uIds = $pr->getIds($pId, new User());
+                        $result = $qb
+                            ->join('po.' . User::COLUMN_GROUP, 'g')
+                            ->andWhere(\Criteria::in('g.id', $gIds) . ' OR ' . \Criteria::in('po.id', $uIds))
+                            ->getQuery()
+                            ->getScalarResult();
+                        foreach ($result as $item) {
+                            $ids[] = $item['id'];
+                        }
+                    }
+                }
+                break;
+            case Permission::VIEW_GROUPS:
+                if ($this->can($pId)) {
+                    $result = $repo->createQueryBuilder('po')
+                                   ->select('po.id')
+                                   ->getQuery()
+                                   ->getScalarResult();
+                    $ids = [];
+                    foreach ($result as $item) {
+                        $ids[] = $item['id'];
+                    }
+                } else {
+                    $ids = $pr->getIds($pId, $object);
+                    if ($this->can(Permission::VIEW_GROUPS_SUBTREE)) {
+                        $qb = $repo->createQueryBuilder('po');
+                        /** @var Group[] $groups */
+                        $groups = $qb
+                            ->where(\Criteria::in('po.id', $ids))
+                            ->getQuery()
+                            ->getResult();
+                        foreach ($groups as $group) {
+                            $result = $repo->createQueryBuilder('g')
+                                ->select('g.id')
+                                ->where('g.' . Group::COLUMN_LFT . ' > ' . $group->getLft())
+                                ->andWhere('g.' . Group::COLUMN_RGT . ' < ' . $group->getRgt())
+                                ->getQuery()
+                                ->getScalarResult();
+                            foreach ($result as $item) {
+                                $ids[] = $item['id'];
+                            }
+                        }
+                        $ids = array_unique($ids);
+                    }
+                }
+                break;
+            default:
+                if ($this->can($pId)) {
+                    $result = $repo->createQueryBuilder('po')
+                         ->select('po.id')
+                         ->getQuery()
+                         ->getScalarResult();
+                    $ids = [];
+                    foreach ($result as $item) {
+                        $ids[] = $item['id'];
+                    }
+                } else {
+                    $ids = $pr->getIds($pId, $object);
+                }
+                break;
+        }
+        return $ids;
+    }
+
+    /**
+     * @param int                                            $pId
+     * @param PermissionObjectInterface                      $object
+     * @param PermissionObjectInterface                      $filterObject
+     *
+     * @return array
+     */
+    public function canObjects($pId, PermissionObjectInterface $object, PermissionObjectInterface $filterObject = null) {
+        $pr = $this->permissionResolver;
+        /** @var EntityRepository $repo */
+        $repo = $pr->doctrine->getRepository((new ClassMapper($object))->getClassName());
+        $qb = $repo->createQueryBuilder('po');
+        switch($pId) {
+            case Permission::VIEW_READERS:
+                $objects = [];
+                if ($filterObject instanceof Group) {
+                    $qb->where('g.id', $filterObject->getId());
+                } else if ($filterObject instanceof Zone) {
+                    $qb->where('z.id', $filterObject->getId());
+                } else if ($filterObject instanceof Reader) {
+                    $qb->where('r.id', $filterObject->getId());
+                }
+                if ($object instanceof Group) {
+                    if ($this->can($pId)) {
+                        $objects = $this->canObjects(Permission::VIEW_GROUPS, new Group());
+                    } else {
+                        $ids = $pr->getIds($pId, $object);
+                        $objects = $qb->andWhere(\Criteria::in('po.id', $ids))
+                            ->getQuery()
+                            ->getResult();
+                    }
+                } else if ($object instanceof Zone) {
+                    $qb->join('po.' . Zone::COLUMN_GROUP, 'g');
+                    if ($this->can($pId)) {
+                        $gIds = $this->canIds(Permission::VIEW_GROUPS, new Group());
+                        $objects = $qb
+                            ->andWhere(\Criteria::in('g.id', $gIds))
+                            ->getQuery()
+                            ->getResult();
+                    } else {
+                        $gIds = $pr->getIds($pId, new Group());
+                        $zIds = $pr->getIds($pId, new Zone());
+                        $objects = $qb
+                            ->andWhere(\Criteria::in('g.id', $gIds) . ' OR ' . \Criteria::in('po.id', $zIds))
+                            ->getQuery()
+                            ->getResult();
+                    }
+                } else if ($object instanceof Reader) {
+                    $qb->join('po.' . Reader::COLUMN_ZONE, 'z')
+                       ->join('z.' . Zone::COLUMN_GROUP, 'g');
+                    if ($this->can($pId)) {
+                        $gIds = $this->canIds(Permission::VIEW_GROUPS, new Group());
+                        $objects = $qb
+                            ->andWhere(\Criteria::in('g.id', $gIds))
+                            ->getQuery()
+                            ->getResult();
+                    } else {
+                        $gIds = $pr->getIds($pId, new Group());
+                        $zIds = $pr->getIds($pId, new Zone());
+                        $rIds = $pr->getIds($pId, new Reader());
+                        $objects = $qb
+                            ->andWhere(\Criteria::in('g.id', $gIds) . ' . OR . ' . \Criteria::in('z.id', $zIds) . ' OR ' . \Criteria::in('po.id', $rIds))
+                            ->getQuery()
+                            ->getResult();
+                    }
+                }
+                break;
+            case Permission::VIEW_GROUPS:
+                if ($this->can($pId)) {
+                    $objects = $qb
+                        ->getQuery()
+                        ->getResult();
+                } else {
+                    $ids = $this->canIds($pId, $object);
+                    $objects = $qb->andWhere(\Criteria::in('po.id', $ids))
+                                  ->getQuery()
+                                  ->getResult();
+                }
+                break;
+            default:
+                if ($this->can($pId)) {
+                    $objects = $qb
+                        ->getQuery()
+                        ->getResult();
+                } else {
+                    $ids = $pr->getIds($pId, $object);
+                    $objects = $qb
+                        ->where(\Criteria::in('po.id', $ids))
+                        ->getQuery()
+                        ->getResult();
+                }
+                break;
+        }
+        return $objects;
+    }
+
+    //=====================================================
+    //== Mapper ===========================================
+    //=====================================================
+
+    /**
+     * @return mixed
+     */
+    public function getClassId() {
+        return (new ClassMapper($this))->getClassId();
+    }
+
+    //=====================================================
+    //== toString =========================================
+    //=====================================================
+
+    /**
+     * @return string
+     */
+    public function __toString() {
+        return $this->id . ' ' . $this->login . '(' . $this->name . ' ' . $this->surname . ')';
+    }
+}

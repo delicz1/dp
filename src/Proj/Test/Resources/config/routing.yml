@@ -1,0 +1,3 @@
+_test:
+    resource: "@ProjTestBundle/Controller/TestController.php"
+    type:     annotation

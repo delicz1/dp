@@ -4,28 +4,27 @@
     "type": "project",
     "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
-        "psr-0": { "": "src/", "SymfonyStandard": "app/" }
+        "psr-0": { "": "src/", "SymfonyStandard": "app/" },
+        "classmap": ["src/Nil"]
     },
     "require": {
         "php": ">=5.3.3",
         "symfony/symfony": "2.6.*",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "~1.2",
+        "doctrine/dbal": "<2.5.0",
         "twig/extensions": "~1.0",
         "symfony/assetic-bundle": "~2.3",
         "symfony/swiftmailer-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.4",
-        "sensio/distribution-bundle": "~3.0.12",
+        "sensio/distribution-bundle": "~3.0",
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
-        "twitter/bootstrap": "3.*",
-        "components/jquery": "*",
-        "knplabs/knp-menu-bundle": "~2",
-        "stephanecollot/datetimepicker-bundle": "dev-master",
-        "knplabs/knp-paginator-bundle": "~2.4",
-        "kitpages/data-grid-bundle": "dev-master",
-        "thrace/datagrid-bundle":"dev-master",
-        "components/jqueryui": "dev-master"
+        "symfony/var-dumper": "~2.6",
+        "symfony/debug-bundle": "~2.6",
+        "knplabs/knp-snappy-bundle": "dev-master",
+        "jmose/command-scheduler-bundle": "~1.0",
+        "stof/doctrine-extensions-bundle": "~1.1"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
@@ -57,12 +56,11 @@
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",
-        "symfony-assets-install": "relative",
         "incenteev-parameters": {
             "file": "app/config/parameters.yml"
         },
         "branch-alias": {
-            "dev-master": "2.6-dev"
+            "dev-master": "2.5-dev"
         }
     }
 }
