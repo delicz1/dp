@@ -1,8 +1,8 @@
 parameters:
     database_driver:   pdo_mysql
-    database_host:     localhost
+    database_host:     mysql.charon4
     database_port:     3306
-    database_name:     dp
+    database_name:     rdr
     database_user:     root
     database_password: ~
 
@@ -22,5 +22,5 @@ parameters:
 
     session_memcached_host:     localhost
     session_memcached_port:     11211
-    session_memcached_prefix:   sess
+    session_memcached_prefix:   sysdo_sess
     session_memcached_expire:   3600

@@ -54,7 +54,7 @@ class UserGrid extends GridAjaxDoctrine {
     public function __construct($translator, Registry $doctrine) {
         $this->translator = $translator;
         $this->doctrine = $doctrine;
-        parent::__construct();
+        parent::__construct(self::URL . '?hak=1');
     }
 
     //=====================================================
@@ -66,6 +66,7 @@ class UserGrid extends GridAjaxDoctrine {
     }
 
     public function settings() {
+        $this->filterToolbar(true);
     }
 
 
@@ -74,20 +75,23 @@ class UserGrid extends GridAjaxDoctrine {
 //        $t = $this->translator;
 
         $col = \GridColumn::create(self::COLUMN_ID, 'id');
-        $col->option->searchoptions->sopt = [self::SOPT_EQUAL];
+        $col->option->sortable = true;
+//        $col->option->searchoptions->sopt = [self::SOPT_EQUAL];
         $col->option->index = 'u.id';
         $col->option->fixed = true;
         $col->option->width = 80;
+
         $this->addColumnGrid($col);
 
 
         $col = \GridColumn::create(self::COLUMN_EMAIL, 'email');
         $col->option->index = 'u.' . User::COLUMN_EMAIL;
+        $col->option->search = true;
         $col->option->fixed = true;
         $col->option->width = 130;
         $this->addColumnGrid($col);
 
-        $col = \GridColumn::create(self::COLUMN_NAME, 'jmeno');
+        $col = \GridColumn::create(self::COLUMN_NAME, 'jmeno dkdl');
         $col->option->index = 'u.' . User::COLUMN_NAME;
         $col->option->fixed = true;
         $col->option->width = 130;
@@ -95,8 +99,6 @@ class UserGrid extends GridAjaxDoctrine {
 
         $col = \GridColumn::create(self::COLUMN_SURNAME, 'prijmeni');
         $col->option->index = 'u.' . User::COLUMN_SURNAME;
-        $col->option->fixed = true;
-        $col->option->width = 130;
         $this->addColumnGrid($col);
 
     }
@@ -127,11 +129,11 @@ class UserGrid extends GridAjaxDoctrine {
 //        $selfUser = $paramList->selfUser;
         /** @var \Doctrine\ORM\QueryBuilder $qb */
         $qb = $repository
-            ->createQueryBuilder('u')
+            ->createQueryBuilder('u');
 //            ->join('u.' . User::COLUMN_ROLES, 'r')
 //            ->where('g.id = ' . $group->getId())
 //            ->andWhere('BIT_AND(u.' . User::COLUMN_FLAG . ', :flag) = 0')
-            ->orderBy('u.id');
+//            ->orderBy('u.id');
 //            ->setParameters(['flag' => User::FLAG_DELETED]);
 //        if (!$selfUser->can(Permission::ADMIN_ROLES)) {
 //            $qb->andWhere(\Criteria::in('r.id', $selfUser->canIds(Permission::ADMIN_ROLES, new Role())));

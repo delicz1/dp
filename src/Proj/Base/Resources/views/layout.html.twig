@@ -7,7 +7,9 @@
     {% javascripts '@base_js' filter='?uglifyjs2, js_filter' %}
         <script src="{{ asset_url }}" type="text/javascript"></script>
     {% endjavascripts %}
-    {% stylesheets '@base_css' filter='cssrewrite' %}
+    {% stylesheets '@base_css'
+                    'bundles/projbase/css/standard/grid.css'
+                    filter='cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 
