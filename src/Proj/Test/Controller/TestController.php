@@ -25,10 +25,10 @@ class TestController extends BaseController {
 
 
     /**
-     * @Route("/test")
+     * @Route("/fff")
      * @Template()
      */
-    public function testAction() {
+    public function indexAction() {
 
         $formatter = $this->getFormater();
         $dialog = TestDialog::create($formatter);

@@ -54,6 +54,7 @@ doctrine:
                 connection: ~
                 mappings:
                     ProjBaseBundle: ~
+                    ProjBussinesTripBundle: ~
                     JMoseCommandSchedulerBundle: ~
                 dql:
                     numeric_functions:

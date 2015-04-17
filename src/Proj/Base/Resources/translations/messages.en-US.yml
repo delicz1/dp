@@ -71,6 +71,8 @@ form:
         locale: 'Language'
         content: 'Help'
 dialog:
+    title:
+        edit: 'Edit'
     ok: 'Ok'
     cancel: 'Cancel'
     delete: 'Delete'
@@ -119,6 +121,10 @@ grid:
     chooser.columns: 'Columns'
     show.selected.items: 'Show selected items'
 no.data.found: 'No data found'
+user:
+    user: 'User'
+    name: 'First name'
+    last.name: 'Last name'
 
 # CommandSchedulerBundle
 commandeScheduler:

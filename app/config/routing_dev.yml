@@ -12,9 +12,10 @@ _configurator:
 
 _main:
     resource: routing.yml
-
-_test:
-    resource: "@ProjTestBundle/Resources/config/routing.yml"
+_bussines:
+    resource: "@ProjBussinesTripBundle/Resources/config/routing.yml"
+#_test:
+#    resource: "@ProjTestBundle/Resources/config/routing.yml"
 
 _jmose_command_scheduler:
     resource: "@JMoseCommandSchedulerBundle/Resources/config/routing.yml"

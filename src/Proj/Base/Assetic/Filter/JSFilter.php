@@ -2,7 +2,7 @@
 
 namespace Proj\Base\Assetic\Filter;
 
-use Assetic\Asset\AssetInterface;
+use  Assetic\Asset\AssetInterface;
 use Assetic\Filter\FilterInterface;
 
 /**

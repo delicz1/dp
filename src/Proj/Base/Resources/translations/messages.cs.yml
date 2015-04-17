@@ -71,6 +71,8 @@ form:
         locale: 'Jazyk'
         content: 'Nápověda'
 dialog:
+    title:
+        edit: 'Editace'
     ok: 'Ok'
     cancel: 'Zrušit'
     delete: 'Smazat'
@@ -119,6 +121,10 @@ grid:
     chooser.columns: 'Sloupce'
     show.selected.items: 'Zobrazit vybrané položky'
 no.data.found: 'Nenalezena žádná data'
+user:
+    user: 'Uživatel'
+    name: 'Jméno'
+    last.name: 'Přijmení'
 
 # CommandSchedulerBundle
 commandeScheduler:
