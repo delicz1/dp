@@ -6,24 +6,23 @@
 namespace Proj\BussinesTrip\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Class Vehicle
+ * Class Trip
  * @package Proj\BussinesTrip\Entity
  * @ORM\Entity
- * @ORM\Table(name="vehicle")
+ * @ORM\Table(name="trip_point", indexes={@ORM\Index(name="trip", columns={"trip_id"})})
  */
-class Vehicle {
+class TripPoint {
 
     //=====================================================
     //== Konstanty ========================================
     //=====================================================
 
     const COLUMN_ID = 'id';
-    const COLUMN_NAME = 'name';
-    const COLUMN_TYPE = 'type';
-    const COLUMN_CAPACITY = 'capacity';
+    const COLUMN_TIME_FROM = 'timeFrom';
+    const COLUMN_TIME_TO = 'timeTo';
+    const COLUMN_POINT = 'point';
 
     //=====================================================
     //== ORM ==============================================
@@ -38,28 +37,31 @@ class Vehicle {
     private $id;
 
     /**
+     * @var int
+     * @ORM\Column(name="time_from", type="integer");
+     */
+    private $timeFrom;
+
+    /**
+     * @var int
+     * @ORM\Column(name="time_to", type="integer")
+     */
+    private $timeTo;
+
+    /**
      * @var string
-     * @ORM\Column(name="name", type="string", length=50)
+     * @ORM\Column(name="point", type="string", length=100)
      */
-    private $name;
+    private $point;
 
     /**
-     * @var int
-     * @ORM\Column(name="type", type="integer")
+     * @var Trip
+     * @ORM\ManyToOne(targetEntity="Trip", inversedBy="id")
+     * @ORM\JoinColumns(
+     *   @ORM\JoinColumn(name="trip_id", referencedColumnName="id")
+     * )
      */
-    private $type;
-
-    /**
-     * @var int
-     * @ORM\Column(name="capacity", type="integer")
-     */
-    private $capacity;
-
-    /**
-     * @var ArrayCollection|Trip[]
-     * @ORM\OneToMany(targetEntity="Trip", mappedBy="vehicle", cascade={"persist"})
-     */
-    protected $trips;
+    protected $trip;
 
     //=====================================================
     //== Konstruktor ======================================
@@ -68,9 +70,7 @@ class Vehicle {
     /**
      * Konstruktor
      */
-    public function __construct(){
-        $this->trips = new ArrayCollection();
-    }
+    public function __construct() {}
 
     //=====================================================
     //== Set/Get ==========================================
@@ -91,44 +91,60 @@ class Vehicle {
     }
 
     /**
+     * @return int
+     */
+    public function getTimeFrom() {
+        return $this->timeFrom;
+    }
+
+    /**
+     * @param int $timeFrom
+     */
+    public function setTimeFrom($timeFrom) {
+        $this->timeFrom = $timeFrom;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeTo() {
+        return $this->timeTo;
+    }
+
+    /**
+     * @param int $timeTo
+     */
+    public function setTimeTo($timeTo) {
+        $this->timeTo = $timeTo;
+    }
+
+    /**
      * @return string
      */
-    public function getName() {
-        return $this->name;
+    public function getPoint() {
+        return $this->point;
     }
 
     /**
-     * @param string $name
+     * @param string $point
      */
-    public function setName($name) {
-        $this->name = $name;
+    public function setPointFrom($point) {
+        $this->point = $point;
     }
 
     /**
-     * @return int
+     * @return Trip
      */
-    public function getType() {
-        return $this->type;
+    public function getTrip() {
+        return $this->trip;
     }
 
     /**
-     * @param int $type
+     * @param Trip $trip
      */
-    public function setType($type) {
-        $this->type = $type;
+    public function setTrip($trip) {
+        $this->trip = $trip;
     }
 
-    /**
-     * @return int
-     */
-    public function getCapacity() {
-        return $this->capacity;
-    }
 
-    /**
-     * @param int $capacity
-     */
-    public function setCapacity($capacity) {
-        $this->capacity = $capacity;
-    }
 }

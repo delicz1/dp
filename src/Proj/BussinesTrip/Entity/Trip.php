@@ -5,6 +5,7 @@
 
 namespace Proj\BussinesTrip\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -92,6 +93,18 @@ class Trip {
      */
     protected $vehicle;
 
+    /**
+     * @var ArrayCollection|Trip[]
+     * @ORM\OneToMany(targetEntity="TripPoint", mappedBy="trip", cascade={"persist"})
+     */
+    protected $tripPoints;
+
+    /**
+     * @var ArrayCollection|TripUser[]
+     * @ORM\OneToMany(targetEntity="TripUser", mappedBy="trip", cascade={"persist"})
+     */
+    protected $tripUsers;
+
     //=====================================================
     //== Konstruktor ======================================
     //=====================================================
@@ -99,7 +112,10 @@ class Trip {
     /**
      * Konstruktor
      */
-    public function __construct() {}
+    public function __construct() {
+        $this->tripPoints = new ArrayCollection();
+        $this->tripUsers = new ArrayCollection();
+    }
 
     //=====================================================
     //== Set/Get ==========================================
@@ -229,5 +245,19 @@ class Trip {
      */
     public function setVehicle($vehicle) {
         $this->vehicle = $vehicle;
+    }
+
+    /**
+     * @return ArrayCollection|Trip[]
+     */
+    public function getTripPoints() {
+        return $this->tripPoints;
+    }
+
+    /**
+     * @param ArrayCollection|Trip[] $tripPoints
+     */
+    public function setTripPoints($tripPoints) {
+        $this->tripPoints = $tripPoints;
     }
 }

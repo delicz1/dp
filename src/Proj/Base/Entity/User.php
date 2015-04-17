@@ -4,6 +4,7 @@ namespace Proj\Base\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Proj\BussinesTrip\Entity\TripUser;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -71,6 +72,12 @@ class User implements UserInterface, \Serializable {
      */
     protected $roles;
 
+    /**
+     * @var ArrayCollection|TripUser[]
+     * @ORM\OneToMany(targetEntity="Proj\BussinesTrip\Entity\TripUser", mappedBy="user", cascade={"persist"})
+     */
+    protected $tripUsers;
+
     //=====================================================
     //== Konstruktor ======================================
     //=====================================================
@@ -81,6 +88,7 @@ class User implements UserInterface, \Serializable {
     public function __construct() {
         $this->roles = new ArrayCollection();
         $this->accessTemplateUsers = new ArrayCollection();
+        $this->tripUsers = new ArrayCollection();
     }
 
     //=====================================================
@@ -202,6 +210,20 @@ class User implements UserInterface, \Serializable {
      */
     public function getMainRole() {
         return $this->roles->first();
+    }
+
+    /**
+     * @return ArrayCollection|\Proj\BussinesTrip\Entity\TripUser[]
+     */
+    public function getTripUsers() {
+        return $this->tripUsers;
+    }
+
+    /**
+     * @param ArrayCollection|\Proj\BussinesTrip\Entity\TripUser[] $tripUsers
+     */
+    public function setTripUsers($tripUsers) {
+        $this->tripUsers = $tripUsers;
     }
 
     //=====================================================
