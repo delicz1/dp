@@ -5,6 +5,7 @@
 
 namespace Proj\BussinesTrip\Controller;
 
+use Proj\Base\Entity\User;
 use Proj\BussinesTrip\Component\Dialog\EditUserDialog;
 use Proj\BussinesTrip\Component\Form\EditUserForm;
 use Proj\BussinesTrip\Component\Grid\UserGrid;
@@ -41,7 +42,12 @@ class UserController extends BaseController {
      * @Template()
      */
     public function editFormAction() {
-        $form = EditUserForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine());
+        $id = $this->getRequestNil()->getParam('id');
+        $user = new User();
+        if ($id > 0) {
+            $user = $this->getDoctrine()->getRepository('ProjBaseBundle:User')->find($id);
+        }
+        $form = EditUserForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $user);
         return ['form' => $form ];
     }
 
@@ -51,7 +57,8 @@ class UserController extends BaseController {
     public function gridAction() {
         $paramList = new \GenericClass();
         $paramList->selfUser = $this->getSelfUser();
-        $paramList->formater = $this->getFormater();
+        $paramList->formatter = $this->getFormater();
+        $paramList->translator = $this->getLangTranslator();
         UserGrid::renderDataDoctrine($this->getDoctrine(), $this->getRequestNil(), $paramList);
     }
 

@@ -90,7 +90,7 @@ class User implements UserInterface, \Serializable {
      */
     protected $tripUsers;
 
-    public $statusList = [
+    public static $statusList = [
         self::STATUS_ACTIVE => self::STATUS_ACTIVE_TRANS,
         self::STATUS_DELETED => self::STATUS_DELETED_TRANS
     ];

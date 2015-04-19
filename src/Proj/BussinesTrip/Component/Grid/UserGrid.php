@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityRepository;
 use Proj\Base\Entity\User;
 use Proj\Base\Object\Grid\GridAjaxDoctrine;
 use Proj\Base\Object\Locale\LangTranslator;
+use Proj\BussinesTrip\Component\Dialog\EditUserDialog;
 use Proj\BussinesTrip\Controller\UserController;
 
 /**
@@ -22,6 +23,7 @@ class UserGrid extends GridAjaxDoctrine {
     //== Konstanty ========================================
     //=====================================================
 
+    const COLUMN_OPTIONS        = 'options';
     const COLUMN_ID             = 'id';
     const COLUMN_PASSWD         = 'passwd';
     const COLUMN_NAME           = 'name';
@@ -74,6 +76,11 @@ class UserGrid extends GridAjaxDoctrine {
         /** @var LangTranslator $t */
         $t = $this->translator;
 
+        $col = \GridColumn::create(self::COLUMN_OPTIONS, $t->get('grid.options'));
+        $col->option->fixed = true;
+        $col->option->width = 80;
+        $this->addColumnGrid($col);
+
         $col = \GridColumn::create(self::COLUMN_ID, 'id');
         $col->option->sortable = true;
 //        $col->option->searchoptions->sopt = [self::SOPT_EQUAL];
@@ -94,11 +101,15 @@ class UserGrid extends GridAjaxDoctrine {
         $col->option->search = true;
         $this->addColumnGrid($col);
 
-        $col = \GridColumn::create(self::COLUMN_SURNAME, $t->get('user.last.name'));
+        $col = \GridColumn::create(self::COLUMN_SURNAME, $t->get('user.surname'));
         $col->option->index = 'u.' . User::COLUMN_SURNAME;
         $col->option->search = true;
         $this->addColumnGrid($col);
 
+        $col = \GridColumn::create(User::COLUMN_STATUS, $t->get('user.status'));
+        $col->option->index = 'u.' . User::COLUMN_STATUS;
+        $col->option->sortable = true;
+        $this->addColumnGrid($col);
     }
 
     //=====================================================
@@ -146,6 +157,15 @@ class UserGrid extends GridAjaxDoctrine {
     public static function setRenders(\GridDataRender $gridDataRender, $paramList) {
 
         /** @noinspection PhpUnusedParameterInspection */
+        $gridDataRender->addRender(self::COLUMN_OPTIONS, function ($user, $paramList) {
+            /** @var User $user */
+            /** @var LangTranslator $t */
+            $t = $paramList->translator;
+            $dialog = EditUserDialog::create($paramList->formatter, $user->getId());
+            return self::getEditButton($t, $dialog->render(false, false));
+        });
+
+        /** @noinspection PhpUnusedParameterInspection */
         $gridDataRender->addRender(self::COLUMN_ID, function ($user, $paramList) {
             /** @var User $user */
             return $user->getId();
@@ -167,6 +187,15 @@ class UserGrid extends GridAjaxDoctrine {
         $gridDataRender->addRender(self::COLUMN_SURNAME, function ($user, $paramList) {
             /** @var User $user */
             return $user->getSurname();
+        });
+
+        /** @noinspection PhpUnusedParameterInspection */
+        $gridDataRender->addRender(User::COLUMN_STATUS, function ($user, $paramList) {
+            /** @var User $user */
+            /** @var LangTranslator $t */
+            $t = $paramList->translator;
+            $text = User::$statusList[$user->getStatus()];
+            return $t->get($text);
         });
 
 //        $gridDataRender->addRender(self::COLUMN_ROLE, function ($user, $paramList) {

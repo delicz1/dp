@@ -125,7 +125,10 @@ no.data.found: 'No data found'
 user:
     user: 'User'
     name: 'First name'
-    last.name: 'Last name'
+    surname: 'Surname'
+    email: 'E-mail'
+    password: 'Password'
+    valid.password: 'Password - length must be 6 or more characters'
     status: "Status"
     status.1: "Active"
     status.2: "Deleted"

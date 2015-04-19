@@ -125,7 +125,10 @@ no.data.found: 'Nenalezena žádná data'
 user:
     user: 'Uživatel'
     name: 'Jméno'
-    last.name: 'Přijmení'
+    surname: 'Přijmení'
+    email: 'e-mail'
+    password: 'heslo'
+    valid.password: 'Heslo musi obsahovat alespon 6 znaků'
     status: "Stav"
     status.1: "Aktivní"
     status.2: "Nekativní"

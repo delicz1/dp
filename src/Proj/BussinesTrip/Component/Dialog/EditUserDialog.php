@@ -17,11 +17,13 @@ class EditUserDialog extends Dialog {
 
     /**
      * @param Formatter $formatter
-     * @return self
+     * @param null      $id
+     * @return EditUserDialog
      */
-    public static function create(Formatter $formatter) {
+    public static function create(Formatter $formatter, $id = null) {
         $option = self::getDefaultOption();
         $tr = $formatter->getLangTranslator();
+        $url = EditUserForm::ACTION . ($id ? '?id=' . $id : '');
         $option->dialog->title = $tr->get('user.user');
         $option->dialog->description = $tr->get('dialog.title.edit');
         $option->dialog->minWidth = 200;
@@ -29,7 +31,7 @@ class EditUserDialog extends Dialog {
         $option->dialog->image->cls = '';
         $option->dialog->refresh = true;
         $option->ajax->mask->settingLoadImage->src = '/bundles/nil/php/component/ajaxUpdater/js/JQAjaxUpdater/picture/load4.gif';
-        $dialog = new self(self::DIV, EditUserForm::ACTION, $option);
+        $dialog = new self(self::DIV, $url, $option);
 
         $form = EditUserForm::create($formatter);
         $dialog->addSubmitButton($form[EditUserForm::SUBMIT]);
