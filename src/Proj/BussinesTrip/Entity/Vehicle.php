@@ -101,7 +101,7 @@ class Vehicle {
         self::TYPE_OTHER         => self::TYPE_OTHER_TRANS,
     ];
 
-    public $statusList = [
+    public static $statusList = [
         self::STATUS_ACTIVE => self::STATUS_ACTIVE_TRANS,
         self::STATUS_DELETED => self::STATUS_DELETED_TRANS
     ];

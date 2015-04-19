@@ -130,6 +130,7 @@ user:
     status.1: "Active"
     status.2: "Deleted"
 vehicle:
+    vehicle: "Vehicle"
     name: "Name"
     capacity: "Personal capacity"
     type: "Vehicle type"

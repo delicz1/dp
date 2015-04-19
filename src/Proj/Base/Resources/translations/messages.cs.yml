@@ -130,6 +130,7 @@ user:
     status.1: "Aktivní"
     status.2: "Nekativní"
 vehicle:
+    vehicle: "Dopravni prostředek"
     name: "Jméno"
     capacity: "Počet míst"
     type: "Typ dopravního protředku"

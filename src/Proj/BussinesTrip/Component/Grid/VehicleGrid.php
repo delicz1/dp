@@ -7,6 +7,7 @@ namespace Proj\BussinesTrip\Component\Grid;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityRepository;
+use Proj\BussinesTrip\Component\Dialog\EditVehicleDialog;
 use Proj\BussinesTrip\Entity\Vehicle;
 use Proj\Base\Object\Grid\GridAjaxDoctrine;
 use Proj\Base\Object\Locale\LangTranslator;
@@ -70,14 +71,14 @@ class VehicleGrid extends GridAjaxDoctrine {
         /** @var LangTranslator $t */
         $t = $this->translator;
 
-        $col = \GridColumn::create(self::COLUMN_OPTIONS, $t->(''));
+        $col = \GridColumn::create(self::COLUMN_OPTIONS, $t->get('grid.options'));
         $col->option->fixed = true;
         $col->option->width = 80;
+        $this->addColumnGrid($col);
 
 
         $col = \GridColumn::create(self::COLUMN_ID, 'id');
         $col->option->sortable = true;
-//        $col->option->searchoptions->sopt = [self::SOPT_EQUAL];
         $col->option->index = 'v.id';
         $col->option->fixed = true;
         $col->option->width = 80;
@@ -100,16 +101,10 @@ class VehicleGrid extends GridAjaxDoctrine {
         $col->option->search = true;
         $this->addColumnGrid($col);
 
-//        $col = \GridColumn::create(self::COLUMN_NAME, $t->get('user.name'));
-//        $col->option->index = 'u.' . Vehicle::COLUMN_NAME;
-//        $col->option->search = true;
-//        $this->addColumnGrid($col);
-//
-//        $col = \GridColumn::create(self::COLUMN_SURNAME, $t->get('user.last.name'));
-//        $col->option->index = 'u.' . Vehicle::COLUMN_SURNAME;
-//        $col->option->search = true;
-//        $this->addColumnGrid($col);
-
+        $col = \GridColumn::create(Vehicle::COLUMN_STATUS, $t->get('vehicle.status'));
+        $col->option->index = 'v.' . Vehicle::COLUMN_STATUS;
+        $col->option->sortable = true;
+        $this->addColumnGrid($col);
     }
 
     //=====================================================
@@ -123,7 +118,7 @@ class VehicleGrid extends GridAjaxDoctrine {
      * @return null|string
      */
     public static function getRepository(Registry $doctrine, $paramList, $gridFilter) {
-        return $doctrine->getRepository('ProjBaseBundle:Vehicle');
+        return $doctrine->getRepository('ProjBussinesTripBundle:Vehicle');
     }
 
     /**
@@ -137,16 +132,7 @@ class VehicleGrid extends GridAjaxDoctrine {
         /** @var Vehicle $selfVehicle */
 //        $selfVehicle = $paramList->selfVehicle;
         /** @var \Doctrine\ORM\QueryBuilder $qb */
-        $qb = $repository
-            ->createQueryBuilder('v');
-//            ->join('u.' . Vehicle::COLUMN_ROLES, 'r')
-//            ->where('g.id = ' . $group->getId())
-//            ->andWhere('BIT_AND(u.' . Vehicle::COLUMN_FLAG . ', :flag) = 0')
-//            ->orderBy('u.id');
-//            ->setParameters(['flag' => Vehicle::FLAG_DELETED]);
-//        if (!$selfVehicle->can(Permission::ADMIN_ROLES)) {
-//            $qb->andWhere(\Criteria::in('r.id', $selfVehicle->canIds(Permission::ADMIN_ROLES, new Role())));
-//        }
+        $qb = $repository->createQueryBuilder('v');
         return $qb;
     }
 
@@ -157,23 +143,49 @@ class VehicleGrid extends GridAjaxDoctrine {
     public static function setRenders(\GridDataRender $gridDataRender, $paramList) {
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(self::COLUMN_ID, function ($user, $paramList) {
-            /** @var Vehicle $user */
-            return $user->getId();
+        $gridDataRender->addRender(self::COLUMN_OPTIONS, function ($vehicle, $paramList) {
+            /** @var Vehicle $vehicle */
+            /** @var LangTranslator $t */
+            $t = $paramList->translator;
+            $dialog = EditVehicleDialog::create($paramList->formatter, $vehicle->getId());
+            return self::getEditButton($t, $dialog->render(false, false));
+        });
+
+
+        /** @noinspection PhpUnusedParameterInspection */
+        $gridDataRender->addRender(self::COLUMN_ID, function ($vehicle, $paramList) {
+            /** @var Vehicle $vehicle */
+            return $vehicle->getId();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(self::COLUMN_NAME, function ($vehicle, $paramList) {
+        $gridDataRender->addRender(Vehicle::COLUMN_NAME, function ($vehicle, $paramList) {
             /** @var Vehicle $vehicle */
             return $vehicle->getName();
         });
 
-//        $gridDataRender->addRender(self::COLUMN_ROLE, function ($user, $paramList) {
-//            /** @var Vehicle $user */
-//            /** @var Formatter $formater */
-//            $formater = $paramList->formater;
-//            $tr = $formater->getLangTranslator();
-//            return $tr->get($user->getMainRole()->getTitle());
-//        });
+        /** @noinspection PhpUnusedParameterInspection */
+        $gridDataRender->addRender(Vehicle::COLUMN_TYPE, function ($vehicle, $paramList) {
+            /** @var Vehicle $vehicle */
+            /** @var LangTranslator $t */
+            $t = $paramList->translator;
+            $typeTr = Vehicle::$typeList[$vehicle->getType()];
+            return $t->get($typeTr);
+        });
+
+        /** @noinspection PhpUnusedParameterInspection */
+        $gridDataRender->addRender(Vehicle::COLUMN_CAPACITY, function ($vehicle, $paramList) {
+            /** @var Vehicle $vehicle */
+            return $vehicle->getCapacity();
+        });
+
+        /** @noinspection PhpUnusedParameterInspection */
+        $gridDataRender->addRender(Vehicle::COLUMN_STATUS, function ($vehicle, $paramList) {
+            /** @var Vehicle $vehicle */
+            /** @var LangTranslator $t */
+            $t = $paramList->translator;
+            $text = Vehicle::$statusList[$vehicle->getStatus()];
+            return $t->get($text);
+        });
     }
 }

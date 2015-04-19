@@ -6,8 +6,10 @@
 namespace Proj\BussinesTrip\Controller;
 
 
+use Proj\BussinesTrip\Component\Dialog\EditVehicleDialog;
 use Proj\BussinesTrip\Component\Form\EditVehicleForm;
 use Proj\BussinesTrip\Component\Grid\VehicleGrid;
+use Proj\BussinesTrip\Entity\Vehicle;
 use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use /** @noinspection PhpUnusedAliasInspection */
@@ -29,10 +31,10 @@ class VehicleController extends BaseController {
      */
     public function indexAction() {
 
-//        $formatter = $this->getFormater();
-//        $dialog = EditUserDialog::create($formatter);
+        $formatter = $this->getFormater();
+        $dialog = EditVehicleDialog::create($formatter);
         $grid = new VehicleGrid($this->getLangTranslator(), $this->getDoctrine());
-        return ['grid' => $grid];
+        return ['grid' => $grid, 'dialog' => $dialog];
     }
 
     /**
@@ -40,7 +42,13 @@ class VehicleController extends BaseController {
      * @Template()
      */
     public function editFormAction() {
-        $form = EditVehicleForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine());
+        $id = $this->getRequestNil()->getParam(Vehicle::COLUMN_ID);
+        $vehicle = new Vehicle();
+        if ($id > 0) {
+            $vehicle = $this->getDoctrine()->getRepository('ProjBussinesTripBundle:Vehicle')->find($id);
+        }
+        $vehicle = $vehicle ?: new Vehicle();
+        $form = EditVehicleForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $vehicle);
         return ['form' => $form ];
     }
 
@@ -50,7 +58,8 @@ class VehicleController extends BaseController {
     public function gridAction() {
         $paramList = new \GenericClass();
         $paramList->selfUser = $this->getSelfUser();
-        $paramList->formater = $this->getFormater();
+        $paramList->formatter = $this->getFormater();
+        $paramList->translator = $this->getLangTranslator();
         VehicleGrid::renderDataDoctrine($this->getDoctrine(), $this->getRequestNil(), $paramList);
     }
 
