@@ -20,10 +20,33 @@ class Vehicle {
     //== Konstanty ========================================
     //=====================================================
 
-    const COLUMN_ID = 'id';
-    const COLUMN_NAME = 'name';
-    const COLUMN_TYPE = 'type';
+    const COLUMN_ID       = 'id';
+    const COLUMN_NAME     = 'name';
+    const COLUMN_TYPE     = 'type';
     const COLUMN_CAPACITY = 'capacity';
+    const COLUMN_STATUS   = 'status';
+
+    const TYPE_PERSONAL_CAR  = 1;
+    const TYPE_BUSSINES_CAR  = 2;
+    const TYPE_BUS           = 3;
+    const TYPE_TRAIN         = 4;
+    const TYPE_PLANE         = 5;
+    const TYPE_PUBLIC_TRAFIC = 6;
+    const TYPE_OTHER         = 7;
+
+    const TYPE_PERSONAL_CAR_TRANS  = 'vehicle.type.1';
+    const TYPE_BUSSINES_CAR_TRANS  = 'vehicle.type.2';
+    const TYPE_BUS_TRANS           = 'vehicle.type.3';
+    const TYPE_TRAIN_TRANS         = 'vehicle.type.4';
+    const TYPE_PLANE_TRANS         = 'vehicle.type.5';
+    const TYPE_PUBLIC_TRAFIC_TRANS = 'vehicle.type.6';
+    const TYPE_OTHER_TRANS         = 'vehicle.type.7';
+
+    const STATUS_ACTIVE = 1;
+    const STATUS_DELETED = 2;
+
+    const STATUS_ACTIVE_TRANS = 'vehicle.status.1';
+    const STATUS_DELETED_TRANS = 'vehicle.status.2';
 
     //=====================================================
     //== ORM ==============================================
@@ -56,10 +79,32 @@ class Vehicle {
     private $capacity;
 
     /**
+     * @var int
+     * @ORM\Column(name="status", type="integer")
+     */
+    private $status;
+
+
+    /**
      * @var ArrayCollection|Trip[]
      * @ORM\OneToMany(targetEntity="Trip", mappedBy="vehicle", cascade={"persist"})
      */
     protected $trips;
+
+    public static $typeList = [
+        self::TYPE_PERSONAL_CAR  => self::TYPE_PERSONAL_CAR_TRANS,
+        self::TYPE_BUSSINES_CAR  => self::TYPE_BUSSINES_CAR_TRANS,
+        self::TYPE_BUS           => self::TYPE_BUS_TRANS,
+        self::TYPE_TRAIN         => self::TYPE_TRAIN_TRANS,
+        self::TYPE_PLANE         => self::TYPE_PLANE_TRANS,
+        self::TYPE_PUBLIC_TRAFIC => self::TYPE_PUBLIC_TRAFIC_TRANS,
+        self::TYPE_OTHER         => self::TYPE_OTHER_TRANS,
+    ];
+
+    public $statusList = [
+        self::STATUS_ACTIVE => self::STATUS_ACTIVE_TRANS,
+        self::STATUS_DELETED => self::STATUS_DELETED_TRANS
+    ];
 
     //=====================================================
     //== Konstruktor ======================================
@@ -68,7 +113,7 @@ class Vehicle {
     /**
      * Konstruktor
      */
-    public function __construct(){
+    public function __construct() {
         $this->trips = new ArrayCollection();
     }
 
@@ -95,6 +140,20 @@ class Vehicle {
      */
     public function getName() {
         return $this->name;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus() {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus($status) {
+        $this->status = $status;
     }
 
     /**

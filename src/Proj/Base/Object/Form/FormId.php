@@ -12,5 +12,6 @@ namespace Proj\Base\Object\Form;
  */
 class FormId {
 
-    const ADD_USER = 1;
+    const EDIT_USER = 1;
+    const EDIT_VEHICLE = 2;
 }

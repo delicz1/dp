@@ -120,11 +120,30 @@ grid:
     refresh: 'Obnovit tabulku'
     chooser.columns: 'Sloupce'
     show.selected.items: 'Zobrazit vybrané položky'
+    options: 'Možnosti'
 no.data.found: 'Nenalezena žádná data'
 user:
     user: 'Uživatel'
     name: 'Jméno'
     last.name: 'Přijmení'
+    status: "Stav"
+    status.1: "Aktivní"
+    status.2: "Nekativní"
+vehicle:
+    name: "Jméno"
+    capacity: "Počet míst"
+    type: "Typ dopravního protředku"
+    type.1: "Nefiremní auto"
+    type.2: "Firemní auto"
+    type.3: "Autobus"
+    type.4: "Vlak"
+    type.5: "Letadlo"
+    type.6: "Veřejná doprava"
+    type.7: "Jiný dopravní prostředek"
+    status: "Stav jednotky"
+    status.1: "Aktivní"
+    status.2: "Nekativní"
+
 
 # CommandSchedulerBundle
 commandeScheduler:

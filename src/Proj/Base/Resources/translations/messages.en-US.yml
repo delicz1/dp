@@ -120,11 +120,29 @@ grid:
     refresh: 'Reload table'
     chooser.columns: 'Columns'
     show.selected.items: 'Show selected items'
+    options: 'Možnosti'
 no.data.found: 'No data found'
 user:
     user: 'User'
     name: 'First name'
     last.name: 'Last name'
+    status: "Status"
+    status.1: "Active"
+    status.2: "Deleted"
+vehicle:
+    name: "Name"
+    capacity: "Personal capacity"
+    type: "Vehicle type"
+    type.1: "Car"
+    type.2: "Bussines car"
+    type.3: "Bus"
+    type.4: "Train"
+    type.5: "Plani"
+    type.6: "Public trafic"
+    type.7: "Other vehicle"
+    status: "Status"
+    status.1: "Active"
+    status.2: "Deleted"
 
 # CommandSchedulerBundle
 commandeScheduler:

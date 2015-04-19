@@ -22,8 +22,8 @@ class VehicleGrid extends GridAjaxDoctrine {
     //== Konstanty ========================================
     //=====================================================
 
+    const COLUMN_OPTIONS        = 'options';
     const COLUMN_ID             = 'id';
-    const COLUMN_NAME           = 'name';
 
     const ID        = 'vehicle_grid';
     const PAGER_ID  = 'vehicle_grid_pager';
@@ -70,18 +70,33 @@ class VehicleGrid extends GridAjaxDoctrine {
         /** @var LangTranslator $t */
         $t = $this->translator;
 
+        $col = \GridColumn::create(self::COLUMN_OPTIONS, $t->(''));
+        $col->option->fixed = true;
+        $col->option->width = 80;
+
+
         $col = \GridColumn::create(self::COLUMN_ID, 'id');
         $col->option->sortable = true;
 //        $col->option->searchoptions->sopt = [self::SOPT_EQUAL];
-        $col->option->index = 'u.id';
+        $col->option->index = 'v.id';
         $col->option->fixed = true;
         $col->option->width = 80;
 
         $this->addColumnGrid($col);
 
 
-        $col = \GridColumn::create(self::COLUMN_NAME, 'name');
-        $col->option->index = 'u.' . Vehicle::COLUMN_NAME;
+        $col = \GridColumn::create(Vehicle::COLUMN_NAME, $t->get('vehicle.name'));
+        $col->option->index = 'v.' . Vehicle::COLUMN_NAME;
+        $col->option->search = true;
+        $this->addColumnGrid($col);
+
+        $col = \GridColumn::create(Vehicle::COLUMN_TYPE, $t->get('vehicle.type'));
+        $col->option->index = 'v.' . Vehicle::COLUMN_TYPE;
+        $this->addColumnGrid($col);
+
+        $col = \GridColumn::create(Vehicle::COLUMN_CAPACITY, $t->get('vehicle.capacity'));
+        $col->option->index = 'v.' . Vehicle::COLUMN_CAPACITY;
+        $col->option->sortable = true;
         $col->option->search = true;
         $this->addColumnGrid($col);
 

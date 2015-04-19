@@ -6,6 +6,7 @@
 namespace Proj\BussinesTrip\Controller;
 
 
+use Proj\BussinesTrip\Component\Form\EditVehicleForm;
 use Proj\BussinesTrip\Component\Grid\VehicleGrid;
 use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -34,14 +35,14 @@ class VehicleController extends BaseController {
         return ['grid' => $grid];
     }
 
-//    /**
-//     * @Route ("/editForm")
-//     * @Template()
-//     */
-//    public function editFormAction() {
-//        $form = EditUserForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine());
-//        return ['form' => $form ];
-//    }
+    /**
+     * @Route ("/editForm")
+     * @Template()
+     */
+    public function editFormAction() {
+        $form = EditVehicleForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine());
+        return ['form' => $form ];
+    }
 
     /**
      * @Route("/grid")

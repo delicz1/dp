@@ -25,6 +25,12 @@ class User implements UserInterface, \Serializable {
     const COLUMN_SURNAME = 'surname';
     const COLUMN_STATUS = 'status';
 
+    const STATUS_ACTIVE = 1;
+    const STATUS_DELETED = 2;
+
+    const STATUS_ACTIVE_TRANS = 'vehicle.status.1';
+    const STATUS_DELETED_TRANS = 'vehicle.status.2';
+
     //=====================================================
     //== ORM ==============================================
     //=====================================================
@@ -66,6 +72,12 @@ class User implements UserInterface, \Serializable {
     private $email;
 
     /**
+     * @var int
+     * @ORM\Column(name="status", type="integer")
+     */
+    private $status;
+
+    /**
      * @var ArrayCollection|Role[]
      *
      * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
@@ -77,6 +89,11 @@ class User implements UserInterface, \Serializable {
      * @ORM\OneToMany(targetEntity="Proj\BussinesTrip\Entity\TripUser", mappedBy="user", cascade={"persist"})
      */
     protected $tripUsers;
+
+    public $statusList = [
+        self::STATUS_ACTIVE => self::STATUS_ACTIVE_TRANS,
+        self::STATUS_DELETED => self::STATUS_DELETED_TRANS
+    ];
 
     //=====================================================
     //== Konstruktor ======================================
@@ -176,6 +193,20 @@ class User implements UserInterface, \Serializable {
      */
     public function getEmail()  {
         return $this->email;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus() {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus($status) {
+        $this->status = $status;
     }
 
     /**

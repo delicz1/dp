@@ -23,7 +23,7 @@ class EditUserForm extends DoctrineForm {
     //== Konstanty ========================================
     //=====================================================
 
-    const ID = FormId::ADD_USER;
+    const ID = FormId::EDIT_USER;
     const ACTION = UserController::EDIT_FORM;
     const NAME = 'EditUserForm';
 
