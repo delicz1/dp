@@ -30,6 +30,14 @@ class Trip {
     const COLUMN_DISTANCE = 'distance';
     const COLUMN_STATUS = 'status';
 
+    const STATUS_NEW = 1;
+    const STATUS_APPROVED = 2;
+    const STATUS_REJECTED = 3;
+
+    const STATUS_NEW_TRANS = 'trip.status.1';
+    const STATUS_APPROVED_TRANS = 'trip.status.2';
+    const STATUS_REJECTED_TRANS = 'trip.status.3';
+
     //=====================================================
     //== ORM ==============================================
     //=====================================================
@@ -81,6 +89,7 @@ class Trip {
 
     /**
      * @var int
+     * @ORM\Column(name="status", type="integer")
      */
     private $status;
 
@@ -104,6 +113,13 @@ class Trip {
      * @ORM\OneToMany(targetEntity="TripUser", mappedBy="trip", cascade={"persist"})
      */
     protected $tripUsers;
+
+    public static $statusList = [
+        self::STATUS_NEW      => self::STATUS_NEW_TRANS,
+        self::STATUS_APPROVED => self::STATUS_APPROVED_TRANS,
+        self::STATUS_REJECTED => self::STATUS_REJECTED_TRANS
+    ];
+
 
     //=====================================================
     //== Konstruktor ======================================

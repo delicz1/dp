@@ -14,4 +14,5 @@ class FormId {
 
     const EDIT_USER = 1;
     const EDIT_VEHICLE = 2;
+    const EDIT_TRIP = 3;
 }

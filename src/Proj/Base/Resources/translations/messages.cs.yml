@@ -147,6 +147,18 @@ vehicle:
     status: "Stav jednotky"
     status.1: "Aktivní"
     status.2: "Nekativní"
+trip:
+    time.from: 'Čas od'
+    time.to: 'Čas do'
+    point.from: 'Odkud'
+    point.to: 'Kam'
+    bussines.trip: 'Služební jízda'
+    distance: 'Ujeta vzdálenost [km]'
+    purpose: 'Účel'
+    status: 'Stav'
+    status.1: 'Nová'
+    status.2: 'Schválená'
+    status.3: 'Odmítnutá'
 
 
 # CommandSchedulerBundle

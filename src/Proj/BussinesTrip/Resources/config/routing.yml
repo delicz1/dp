@@ -4,3 +4,6 @@ _user:
 _vehicle:
     resource: "@ProjBussinesTripBundle/Controller/VehicleController.php"
     type:     annotation
+_trip:
+    resource: "@ProjBussinesTripBundle/Controller/TripController.php"
+    type:     annotation
