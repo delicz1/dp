@@ -72,6 +72,7 @@ class EditUserForm extends DoctrineForm {
         $this->addText(self::INPUT_SURNAME, $tr->get('user.surname'), $this->user->getSurname());
         $this->addText(self::INPUT_EMAIL, $tr->get('user.email'), $this->user->getEmail())->addRuleEmail('');
         $this->addPassword(self::INPUT_PASSWORD, $tr->get('user.password'))->addRuleMethod('user.valid.password', 'rulePassword');
+        $this->addSelect(User::COLUMN_STATUS, $tr->get('user.status'), $this->user->getStatus(), User:: $statusList);
         $this->addHidden('id', $this->user->getId());
 
         $this->handle();
@@ -87,7 +88,7 @@ class EditUserForm extends DoctrineForm {
         if ($this[self::INPUT_PASSWORD]->getValue()) {
             $user->setPasswd(md5($this[self::INPUT_PASSWORD]->getValue()));
         }
-        $user->setPasswd($this[self::INPUT_PASSWORD]->getValue());
+        $user->setStatus($this[User::COLUMN_STATUS]->getValue());
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);

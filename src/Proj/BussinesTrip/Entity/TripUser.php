@@ -27,6 +27,14 @@ class TripUser {
     const COLUMN_ID = 'id';
     const COLUMN_STATUS = 'status';
 
+    const STATUS_NEW = 1;
+    const STATUS_APPROVED = 2;
+    const STATUS_REJECTED = 3;
+
+    const STATUS_NEW_TRANS = 'trip.status.1';
+    const STATUS_APPROVED_TRANS = 'trip.status.2';
+    const STATUS_REJECTED_TRANS = 'trip.status.3';
+
     //=====================================================
     //== ORM ==============================================
     //=====================================================
@@ -68,6 +76,12 @@ class TripUser {
      * @ORM\OneToMany(targetEntity="Expense", mappedBy="tripUser", cascade={"persist"})
      */
     protected $expenses;
+
+    public static $statusList = [
+        self::STATUS_NEW      => self::STATUS_NEW_TRANS,
+        self::STATUS_APPROVED => self::STATUS_APPROVED_TRANS,
+        self::STATUS_REJECTED => self::STATUS_REJECTED_TRANS
+    ];
 
     //=====================================================
     //== Konstruktor ======================================

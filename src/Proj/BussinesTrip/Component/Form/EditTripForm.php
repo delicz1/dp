@@ -9,13 +9,16 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use nil\Html;
 use Notificator;
+use Proj\Base\Entity\User;
 use Proj\Base\Object\Form\DoctrineForm;
 use Proj\Base\Object\Form\FormId;
+use Proj\Base\Object\Form\FormUtil;
 use Proj\Base\Object\Locale\Formatter;
 use Proj\BussinesTrip\Component\Dialog\EditTripDialog;
 use Proj\BussinesTrip\Component\Grid\TripGrid;
 use Proj\BussinesTrip\Controller\TripController;
 use Proj\BussinesTrip\Entity\Trip;
+use Proj\BussinesTrip\Entity\TripUser;
 use Proj\BussinesTrip\Entity\Vehicle;
 
 /**
@@ -30,6 +33,11 @@ class EditTripForm extends DoctrineForm {
     const ID     = FormId::EDIT_TRIP;
     const ACTION = TripController::EDIT_FORM;
     const NAME   = 'EditTripForm';
+    const SELECT_USERS = 'selectedUsers';
+    const INPUT_USERS = 'inputUsers';
+
+    const BTN_ADD = 'new_btn';
+    const BTN_DELETE = 'delete_btn';
 
     const SUBMIT = 'save';
 
@@ -53,6 +61,7 @@ class EditTripForm extends DoctrineForm {
         $form = new self(self::NAME, self::ACTION, self::POST);
         $form->setFormater($formatter);
         $form->addSubmit(self::SUBMIT, 'form.save', 'glyphicon glyphicon-floppy-disk');
+        $form->addSubmit(self::BTN_ADD, 'form.add', 'icon-system-20x20 add');
         if ($request instanceof \Request) {
             $form->setRequest($request);
             $form->doctrine = $doctrine;
@@ -76,42 +85,65 @@ class EditTripForm extends DoctrineForm {
             $vehicleId = $this->trip->getVehicle()->getId();
         }
 
-
         $this->addHidden('id', $this->trip->getId());
         $this->addDate(Trip::COLUMN_TIME_FROM, 'trip.time.from', $timeFrom, \FormItemDate::MODE_DATETIME);
         $this->addDate(Trip::COLUMN_TIME_TO, 'trip.time.to', $timeTo, \FormItemDate::MODE_DATETIME);
         $this->addText(Trip::COLUMN_POINT_FROM, 'trip.point.from', $this->trip->getPointFrom());
         $this->addText(Trip::COLUMN_POINT_TO, 'trip.point.to', $this->trip->getPointTo());
-        $this->addText(Trip::COLUMN_DISTANCE, 'trip.distance', $this->trip->getDistance())->addRuleInteger();
+        $this->addText(Trip::COLUMN_DISTANCE, 'trip.distance', $this->trip->getDistance())->addRuleInteger('', true);
         $this->addText(Trip::COLUMN_PURPOSE, 'trip.purpose', $this->trip->getPurpose());
         $this->addSelect(Trip::COLUMN_VEHICLE_ID, 'vehicle.vehicle', $vehicleId, $this->getVehicleOptions());
         $this->addSelect(Trip::COLUMN_STATUS, 'trip.status', $status, Trip::$statusList);
+
+//        /** @var TripUser[] $list */
+//        $list = $this->trip->getTripUsers();
+//        $userList = [];
+//        foreach ($list as $tripUser) {
+//            $userList[$tripUser->getUser()->getId()] = $tripUser->getUser();
+//        }
+//
+//        /** @var User[] $userList */
+//        $userList = FormUtil::handleMultiItem($this, new User(), $userList, self::BTN_ADD, self::BTN_DELETE , self::INPUT_USERS);
+//        foreach($userList as $user) {
+//            $id = $user->getId();
+//            $parent = $this->addSelect(self::SELECT_USERS . '['.$id.']', 'Uzivatele', $user->getId(), $this->getUsersOptions());
+////            if(!ContractUtil::isContractSettingUsed($goods)) {
+//                $child = $this->addButton(self::BTN_DELETE.$id,'', 'icon icon-system-20x20 delete',
+//                    $this->getHandler()->submit(self::BTN_DELETE, [self::INPUT_USERS => $user->getId()]))
+//                    ->setAttr('style','margin-left: 6px; border-width: 1px');
+//                $parent->addChildItem($child);
+////            }
+//        }
+
+
         $this->handle();
     }
 
     public function onSuccess() {
+        $save = $this->getRequest()->getParam(self::SUBMIT);
+        if ($save) {
+            $vehicleId = $this[Trip::COLUMN_VEHICLE_ID]->getValue();
+            $vehicle = $this->doctrine->getRepository('ProjBussinesTripBundle:Vehicle')->find($vehicleId);
+            $em = $this->getDoctrine()->getManager();
+            $trip = $this->trip;
 
-        $vehicleId = $this[Trip::COLUMN_VEHICLE_ID]->getValue();
-        $vehicle = $this->doctrine->getRepository('ProjBussinesTripBundle:Vehicle')->find($vehicleId);
-        $em = $this->getDoctrine()->getManager();
-        $trip = $this->trip;
+            $trip->setTimeFrom($this[Trip::COLUMN_TIME_FROM]->getValue());
+            $trip->setTimeTo($this[Trip::COLUMN_TIME_TO]->getValue());
+            $trip->setPointFrom($this[Trip::COLUMN_POINT_FROM]->getValue());
+            $trip->setPointTo($this[Trip::COLUMN_POINT_TO]->getValue());
+            $trip->setDistance($this[Trip::COLUMN_DISTANCE]->getValue());
+            $trip->setPurpose($this[Trip::COLUMN_PURPOSE]->getValue());
+            $trip->setStatus($this[Trip::COLUMN_STATUS]->getValue());
+            $trip->setVehicle($vehicle);
 
-        $trip->setTimeFrom($this[Trip::COLUMN_TIME_FROM]->getValue());
-        $trip->setTimeTo($this[Trip::COLUMN_TIME_TO]->getValue());
-        $trip->setPointFrom($this[Trip::COLUMN_POINT_FROM]->getValue());
-        $trip->setPointTo($this[Trip::COLUMN_POINT_TO]->getValue());
-        $trip->setDistance($this[Trip::COLUMN_DISTANCE]->getValue());
-        $trip->setPurpose($this[Trip::COLUMN_PURPOSE]->getValue());
-        $trip->setStatus($this[Trip::COLUMN_STATUS]->getValue());
-        $trip->setVehicle($vehicle);
+            $em->persist($trip);
+            $em->flush();
 
-        $em->persist($trip);
-        $em->flush();
-
-        Notificator::add('SUCCESS', '', Notificator::TYPE_INFO);
-        $js = EditTripDialog::close(EditTripDialog::DIV);
-        $js .= TripGrid::reload(TripGrid::ID);
-        echo Html::el('script')->setHtml($js);
+            Notificator::add('SUCCESS', '', Notificator::TYPE_INFO);
+            $js = EditTripDialog::close(EditTripDialog::DIV);
+            $js .= TripGrid::reload(TripGrid::ID);
+            echo Html::el('script')->setHtml($js);
+        }
     }
 
     public function onError() {
@@ -144,6 +176,20 @@ class EditTripForm extends DoctrineForm {
         }
         return $list;
     }
+
+//    /**
+//     * @return array
+//     */
+//    private function getUsersOptions() {
+//        $result = [];
+//        $repository = $this->doctrine->getRepository('ProjBaseBundle:User');
+//        /** @var User[] $list */
+//        $list = $repository->findAll();
+//        foreach ($list as $item) {
+//            $result[$item->getId()] = $item->getFullName();
+//        }
+//        return $result;
+//    }
 
     //=====================================================
     //== Validace =========================================

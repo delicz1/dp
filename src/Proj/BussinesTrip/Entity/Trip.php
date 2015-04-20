@@ -7,6 +7,9 @@ namespace Proj\BussinesTrip\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Proj\Base\Object\Locale\Formatter;
+use Proj\Base\Object\Locale\LangTranslator;
+use Proj\Base\Object\Locale\SystemLang;
 
 /**
  * Class Trip
@@ -275,5 +278,34 @@ class Trip {
      */
     public function setTripPoints($tripPoints) {
         $this->tripPoints = $tripPoints;
+    }
+
+    /**
+     * @return ArrayCollection|TripUser[]
+     */
+    public function getTripUsers() {
+        return $this->tripUsers;
+    }
+
+    /**
+     * @param ArrayCollection|TripUser[] $tripUsers
+     */
+    public function setTripUsers($tripUsers) {
+        $this->tripUsers = $tripUsers;
+    }
+
+    /**
+     * @param Formatter $formatter
+     * @return string
+     */
+    public function toString(Formatter $formatter) {
+
+        $vehicle = $this->getVehicle();
+
+        $text = $vehicle ? $vehicle->getName() . ' ' : '';
+        $text .= $formatter->timestamp($this->getTimeFrom(), Formatter::FORMAT_DATE_TIME) . ' - ';
+        $text .= $formatter->timestamp($this->getTimeTo(), Formatter::FORMAT_DATE_TIME);
+        $text .= $this->getPurpose() ? ', ' . $this->getPurpose(): '';
+        return $text;
     }
 }
