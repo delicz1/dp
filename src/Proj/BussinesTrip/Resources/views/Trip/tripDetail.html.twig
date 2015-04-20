@@ -1,0 +1,61 @@
+{% extends 'ProjBaseBundle::layout.html.twig' %}
+
+{% block body %}
+    <div><h2>{{ 'trip.bussines.trip'|trans }}</h2>
+        <table>
+            <tr>
+                <th>
+                    {{ 'vehicle.vehicle'|trans }}
+                </th>
+                <td>
+                    {{ trip.vehicle.name }}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    {{ 'trip.time.from'|trans }}
+                </th>
+                <td>
+                    {{ formatter.timestamp(trip.timeFrom, constant('\FormatterInterface::FORMAT_DATE_TIME')) }}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    {{ 'trip.time.to'|trans }}
+                </th>
+                <td>
+                    {{ formatter.timestamp(trip.timeTo, constant('\FormatterInterface::FORMAT_DATE_TIME')) }}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    {{ 'trip.point.from'|trans }}
+                </th>
+                <td>
+                    {{ trip.pointFrom }}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    {{ 'trip.point.to'|trans }}
+                </th>
+                <td>
+                    {{ trip.pointTo }}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    {{ 'trip.purpose'|trans }}
+                </th>
+                <td>
+                    {{ trip.purpose}}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        {#{{ grid.render(false)|raw }}#}
+    </div>
+
+{% endblock %}
+
