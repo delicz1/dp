@@ -6,13 +6,9 @@
 namespace Proj\BussinesTrip\Controller;
 
 
-use Proj\BussinesTrip\Component\Dialog\EditVehicleDialog;
-use Proj\BussinesTrip\Component\Form\EditExpenseForm;
-use Proj\BussinesTrip\Component\Grid\ExpenseGrid;
-use Proj\BussinesTrip\Component\Grid\VehicleGrid;
-use Proj\BussinesTrip\Entity\Expense;
+use Proj\BussinesTrip\Component\Form\EditTripPointForm;
+use Proj\BussinesTrip\Component\Grid\TripPointGrid;
 use Proj\BussinesTrip\Entity\TripPoint;
-use Proj\BussinesTrip\Entity\Vehicle;
 use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use /** @noinspection PhpUnusedAliasInspection */
@@ -34,15 +30,15 @@ class TripPointController extends BaseController {
      * @Template()
      */
     public function editFormAction() {
-        $id = $this->getRequestNil()->getParam(Expense::COLUMN_ID);
-        $tripId = $this->getRequestNil()->getParam(EditExpenseForm::PARAM_TRIP);
+        $id = $this->getRequestNil()->getParam(TripPoint::COLUMN_ID);
+        $tripId = $this->getRequestNil()->getParam(EditTripPointForm::PARAM_TRIP);
         $trip = $this->getDoctrine()->getRepository('ProjBussinesTripBundle:Trip')->find($tripId);
         $tripPoint = new TripPoint();
         if ($id > 0) {
             $tripPoint = $this->getDoctrine()->getRepository('ProjBussinesTripBundle:TripPoint')->find($id);
         }
-        $tripPoint = $tripPoint ?: new Expense();
-        $form = EditExpenseForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $tripPoint, $trip);
+        $tripPoint = $tripPoint ?: new TripPoint();
+        $form = EditTripPointForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $tripPoint, $trip);
         return ['form' => $form ];
     }
 
@@ -57,7 +53,7 @@ class TripPointController extends BaseController {
         $paramList->formatter = $this->getFormater();
         $paramList->translator = $this->getLangTranslator();
         $paramList->trip = $trip;
-        ExpenseGrid::renderDataDoctrine($this->getDoctrine(), $this->getRequestNil(), $paramList);
+        TripPointGrid::renderDataDoctrine($this->getDoctrine(), $this->getRequestNil(), $paramList);
     }
 
 }

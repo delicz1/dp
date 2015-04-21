@@ -9,7 +9,9 @@ use Proj\Base\Object\Locale\Formatter;
 use Proj\BussinesTrip\Component\Form\EditExpenseForm;
 use Proj\BussinesTrip\Component\Form\EditTripForm;
 use Proj\BussinesTrip\Component\Form\EditTripPointForm;
+use Proj\BussinesTrip\Component\Grid\TripPointGrid;
 use Proj\BussinesTrip\Controller\ExpenseController;
+use Proj\BussinesTrip\Controller\TripPointController;
 
 /**
  * Class EditTripPointDialog
@@ -28,7 +30,7 @@ class EditTripPointDialog extends Dialog {
         $option = self::getDefaultOption();
         $tr = $formatter->getLangTranslator();
         $data ='?id='.$id. '&' . EditTripPointForm::PARAM_TRIP. '='. $tripId;
-        $url = ExpenseController::EDIT_FORM . $data;
+        $url = TripPointController::EDIT_FORM . $data;
         $option->dialog->title = $tr->get('trip.point.title');
         $option->dialog->description = $tr->get('dialog.title.edit');
         $option->dialog->minWidth = 200;

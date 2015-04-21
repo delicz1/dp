@@ -128,7 +128,7 @@ class TripPoint {
     /**
      * @param string $point
      */
-    public function setPointFrom($point) {
+    public function setPoint($point) {
         $this->point = $point;
     }
 

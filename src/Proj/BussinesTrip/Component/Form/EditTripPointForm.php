@@ -88,6 +88,7 @@ class EditTripPointForm extends DoctrineForm {
         $tripPoint = $this->tripPoint;
 
         $tripPoint->setTrip($this->trip);
+        $tripPoint->setPoint($this[TripPoint::COLUMN_POINT]->getValue());
         $tripPoint->setTimeFrom($this[TripPoint::COLUMN_TIME_FROM]->getValue());
         $tripPoint->setTimeTo($this[TripPoint::COLUMN_TIME_TO]->getValue());
 
