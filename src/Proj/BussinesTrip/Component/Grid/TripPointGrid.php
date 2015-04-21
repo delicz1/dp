@@ -7,20 +7,19 @@ namespace Proj\BussinesTrip\Component\Grid;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityRepository;
-use Proj\Base\Entity\User;
 use Proj\Base\Object\Grid\GridAjaxDoctrine;
+use Proj\Base\Object\Locale\Formatter;
 use Proj\Base\Object\Locale\LangTranslator;
-use Proj\BussinesTrip\Component\Dialog\EditTripUserDialog;
-use Proj\BussinesTrip\Controller\TripController;
-use Proj\BussinesTrip\Controller\UserController;
+use Proj\BussinesTrip\Component\Dialog\EditTripPointDialog;
+use Proj\BussinesTrip\Controller\TripPointController;
 use Proj\BussinesTrip\Entity\Trip;
-use Proj\BussinesTrip\Entity\TripUser;
+use Proj\BussinesTrip\Entity\TripPoint;
 
 /**
- * Class UserGrid
+ * Class TripPointGrid
  * @package Proj\BussinesTrip\Component\Grid
  */
-class TripUserGrid extends GridAjaxDoctrine {
+class TripPointGrid extends GridAjaxDoctrine {
 
     //=====================================================
     //== Konstanty ========================================
@@ -29,10 +28,10 @@ class TripUserGrid extends GridAjaxDoctrine {
     const COLUMN_OPTIONS        = 'options';
     const COLUMN_ID             = 'id';
 
-    const ID        = 'tripuser_grid';
-    const PAGER_ID  = 'trip_user_grid_pager';
+    const ID        = 'trip_point_grid';
+    const PAGER_ID  = 'trip_point_grid_pager';
 
-    const URL = TripController::TRIP_DETAIL_DATA;
+    const URL = TripPointController::GRID_DATA;
 
     //=====================================================
     //== Vnorene objekty ==================================
@@ -96,24 +95,17 @@ class TripUserGrid extends GridAjaxDoctrine {
         $this->addColumnGrid($col);
 
 
-        $col = \GridColumn::create(User::COLUMN_EMAIL, $t->get('user.email'));
-        $col->option->index = 'u.' . User::COLUMN_EMAIL;
+        $col = \GridColumn::create(TripPoint::COLUMN_POINT, $t->get('trip.point.point'));
+        $col->option->index = 'tp.' . TripPoint::COLUMN_POINT;
         $col->option->search = true;
         $this->addColumnGrid($col);
 
-        $col = \GridColumn::create(User::COLUMN_NAME, $t->get('user.name'));
-        $col->option->index = 'u.' . User::COLUMN_NAME;
-        $col->option->search = true;
+        $col = \GridColumn::create(TripPoint::COLUMN_TIME_FROM, $t->get('trip.point.time.from'));
+        $col->option->index = 'tp.' . TripPoint::COLUMN_TIME_TO;
         $this->addColumnGrid($col);
 
-        $col = \GridColumn::create(User::COLUMN_SURNAME, $t->get('user.surname'));
-        $col->option->index = 'u.' . User::COLUMN_SURNAME;
-        $col->option->search = true;
-        $this->addColumnGrid($col);
-
-        $col = \GridColumn::create(TripUser::COLUMN_STATUS, $t->get('trip.status'));
-        $col->option->index = 'tu.' . TripUser::COLUMN_STATUS;
-        $col->option->sortable = true;
+        $col = \GridColumn::create(TripPoint::COLUMN_TIME_TO, $t->get('trip.point.time.to'));
+        $col->option->index = 'tp.' . TripPoint::COLUMN_TIME_TO;
         $this->addColumnGrid($col);
     }
 
@@ -128,7 +120,7 @@ class TripUserGrid extends GridAjaxDoctrine {
      * @return null|string
      */
     public static function getRepository(Registry $doctrine, $paramList, $gridFilter) {
-        return $doctrine->getRepository('ProjBussinesTripBundle:TripUser');
+        return $doctrine->getRepository('ProjBussinesTripBundle:TripPoint');
     }
 
     /**
@@ -143,9 +135,8 @@ class TripUserGrid extends GridAjaxDoctrine {
         $trip = $paramList->trip;
         /** @var \Doctrine\ORM\QueryBuilder $qb */
         $qb = $repository
-            ->createQueryBuilder('ut')
-            ->join('ut.user', 'u')
-            ->join('ut.trip', 't')
+            ->createQueryBuilder('tp')
+            ->join('tp.trip', 't')
             ->where('t.id = ' . $trip->getId());
         return $qb;
     }
@@ -157,45 +148,40 @@ class TripUserGrid extends GridAjaxDoctrine {
     public static function setRenders(\GridDataRender $gridDataRender, $paramList) {
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(self::COLUMN_OPTIONS, function ($tripUser, $paramList) {
-            /** @var TripUser $tripUser */
+        $gridDataRender->addRender(self::COLUMN_OPTIONS, function ($tripPoint, $paramList) {
+            /** @var TripPoint $tripPoint */
             /** @var LangTranslator $t */
             $t = $paramList->translator;
-            $dialog = EditTripUserDialog::create($paramList->formatter, $tripUser->getTrip()->getId(), $tripUser->getId());
+            $dialog = EditTripPointDialog::create($paramList->formatter, $tripPoint->getTrip()->getId(), $tripPoint->getId());
             return self::getEditButton($t, $dialog->render(false, false));
         });
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(self::COLUMN_ID, function ($tripUser, $paramList) {
-            /** @var TripUser $tripUser */
-            return $tripUser->getId();
+        $gridDataRender->addRender(self::COLUMN_ID, function ($tripPoint, $paramList) {
+            /** @var TripPoint $tripPoint */
+            return $tripPoint->getId();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(User::COLUMN_EMAIL, function ($tripUser, $paramList) {
-            /** @var TripUser $tripUser */
-            return $tripUser->getUser()->getEmail();
+        $gridDataRender->addRender(TripPoint::COLUMN_POINT, function ($tripPoint, $paramList) {
+            /** @var TripPoint $tripPoint */
+            return $tripPoint->getPoint();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(User::COLUMN_NAME, function ($tripUser, $paramList) {
-            /** @var TripUser $tripUser */
-            return $tripUser->getUser()->getName();
+        $gridDataRender->addRender(TripPoint::COLUMN_TIME_FROM, function ($tripPoint, $paramList) {
+            /** @var TripPoint $tripPoint */
+            /** @var Formatter $formatter */
+            $formatter = $paramList->formatter;
+            return $formatter->timestamp($tripPoint->getTimeFrom(), Formatter::FORMAT_DATE_TIME);
         });
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(User::COLUMN_SURNAME, function ($tripUser, $paramList) {
-            /** @var TripUser $tripUser */
-            return $tripUser->getUser()->getSurname();
-        });
-
-        /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(TripUser::COLUMN_STATUS, function ($tripUser, $paramList) {
-            /** @var User $tripUser */
-            /** @var LangTranslator $t */
-            $t = $paramList->translator;
-            $text = TripUser::$statusList[$tripUser->getStatus()];
-            return $t->get($text);
+        $gridDataRender->addRender(TripPoint::COLUMN_TIME_TO, function ($tripPoint, $paramList) {
+            /** @var TripPoint $tripPoint */
+            /** @var Formatter $formatter */
+            $formatter = $paramList->formatter;
+            return $formatter->timestamp($tripPoint->getTimeTo(), Formatter::FORMAT_DATE_TIME);
         });
     }
 }

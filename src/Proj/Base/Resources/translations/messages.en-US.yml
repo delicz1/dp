@@ -159,7 +159,31 @@ trip:
     status.1: 'New'
     status.2: 'Approved'
     status.3: 'Rejected'
-
+trip.user:
+    title: 'User of trip'
+    status: 'Status'
+    status.1: 'New'
+    status.2: 'Approved'
+    status.3: 'Rejected'
+trip.point:
+    title: 'Trip point'
+    point: 'Point'
+    time.from: 'Time from'
+    time.to: 'Time to'
+expense:
+    expense: 'Expense'
+    currency: 'Currency'
+    description: 'Description'
+    price: 'Price'
+    type: 'Type'
+    type.1: 'Overnight stay '
+    type.2: 'Fare'
+    type.3: 'Diet'
+    type.4: 'Other expense'
+    status: 'Status'
+    status.1: 'New'
+    status.2: 'Approved'
+    status.3: 'Rejected'
 
 # CommandSchedulerBundle
 commandeScheduler:

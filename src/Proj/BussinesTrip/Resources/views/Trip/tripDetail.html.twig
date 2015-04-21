@@ -48,14 +48,36 @@
                     {{ 'trip.purpose'|trans }}
                 </th>
                 <td>
-                    {{ trip.purpose}}
+                    {{ trip.purpose }}
                 </td>
             </tr>
         </table>
     </div>
+    <h3>{{ 'trip.user.title'|trans }}</h3>
+    <button type="button" class="btn btn-success" onclick="{{ editTripUserDialog.render(false, false) }}">
+        <span class="glyphicon glyphicon-16 glyphicon-plus"></span>
+        <span style="font-size: 14px">{{ 'form.add'|trans }}</span>
+    </button>
     <div>
-        {#{{ grid.render(false)|raw }}#}
+        {{ tripUserGrid.render(false)|raw }}
     </div>
-
+    <br />
+    <h3>{{ 'expense.expense'|trans }}</h3>
+    <button type="button" class="btn btn-success" onclick="{{ editExpenseDialog.render(false, false) }}">
+        <span class="glyphicon glyphicon-16 glyphicon-plus"></span>
+        <span style="font-size: 14px">{{ 'form.add'|trans }}</span>
+    </button>
+    <div>
+        {{ expenseGrid.render(false)|raw }}
+    </div>
+    <br />
+    <h3>{{ 'trip.point.title'|trans }}</h3>
+    <button type="button" class="btn btn-success" onclick="{{ editTripPointDialog.render(false, false) }}">
+        <span class="glyphicon glyphicon-16 glyphicon-plus"></span>
+        <span style="font-size: 14px">{{ 'form.add'|trans }}</span>
+    </button>
+    <div>
+        {{ tripUserGrid.render(false)|raw }}
+    </div>
 {% endblock %}
 

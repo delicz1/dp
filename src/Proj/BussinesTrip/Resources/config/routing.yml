@@ -7,3 +7,9 @@ _vehicle:
 _trip:
     resource: "@ProjBussinesTripBundle/Controller/TripController.php"
     type:     annotation
+_expenses:
+    resource: "@ProjBussinesTripBundle/Controller/ExpenseController.php"
+    type:     annotation
+_tripPoint:
+    resource: "@ProjBussinesTripBundle/Controller/TripPointController.php"
+    type:     annotation

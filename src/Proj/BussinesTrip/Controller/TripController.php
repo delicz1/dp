@@ -6,9 +6,15 @@
 namespace Proj\BussinesTrip\Controller;
 
 use Proj\BussinesTrip\Component\Dialog\EditTripDialog;
+use Proj\BussinesTrip\Component\Dialog\EditExpenseDialog;
+use Proj\BussinesTrip\Component\Dialog\EditTripPointDialog;
+use Proj\BussinesTrip\Component\Dialog\EditTripUserDialog;
 use Proj\BussinesTrip\Component\Form\EditTripUserForm;
 use Proj\BussinesTrip\Component\Form\EditTripForm;
+use Proj\BussinesTrip\Component\Grid\ExpenseGrid;
 use Proj\BussinesTrip\Component\Grid\TripGrid;
+use Proj\BussinesTrip\Component\Grid\TripPointGrid;
+use Proj\BussinesTrip\Component\Grid\TripUserGrid;
 use Proj\BussinesTrip\Entity\Trip;
 use Proj\BussinesTrip\Entity\TripUser;
 use /** @noinspection PhpUnusedAliasInspection */
@@ -23,10 +29,12 @@ use Proj\Base\Controller\BaseController;
  */
 class TripController extends BaseController {
 
-    const TRIP_DETAIL = '/trip/detail';
-    const EDIT_FORM = '/trip/editForm';
+    const TRIP_DETAIL      = '/trip/detail';
+    const TRIP_DETAIL_DATA = '/trip/detailData';
+
+    const EDIT_FORM           = '/trip/editForm';
     const EDIT_TRIP_USER_FORM = '/trip/editTripUserForm';
-    const GRID_DATA = '/trip/grid';
+    const GRID_DATA           = '/trip/grid';
 
     /**
      * @Route("/index")
@@ -45,9 +53,37 @@ class TripController extends BaseController {
      * @Template()
      */
     public function tripDetailAction() {
+        $formatter = $this->getFormater();
+        $doctrine = $this->getDoctrine();
+        $tr = $this->getLangTranslator();
         $id = $this->getRequestNil()->getParam(Trip::COLUMN_ID);
         $trip = $this->getDoctrine()->getRepository('ProjBussinesTripBundle:Trip')->find($id);
-        return ['trip' => $trip, 'formatter' => $this->getFormater()];
+        return [
+            'trip'         => $trip,
+            'formatter'    => $this->getFormater(),
+            'tripUserGrid' => new TripUserGrid($tr, $doctrine, $trip),
+            'expenseGrid'  => new ExpenseGrid($tr, $doctrine, $trip),
+            'tripPointGrid'  => new TripPointGrid($tr, $doctrine, $trip),
+            'editTripUserDialog' => EditTripUserDialog::create($formatter, $id),
+            'editExpenseDialog' => EditExpenseDialog::create($formatter, $id),
+            'editTripPointDialog' => EditTripPointDialog::create($formatter, $id),
+        ];
+    }
+
+    /**
+     * @Route("/detailData")
+     */
+    public function tripDetailGridAction() {
+        $id = $this->getRequestNil()->getParam(Trip::COLUMN_ID);
+        $trip = $this->getDoctrine()->getRepository('ProjBussinesTripBundle:Trip')->find($id);
+
+        $paramList = new \GenericClass();
+        $paramList->selfUser = $this->getSelfUser();
+        $paramList->formatter = $this->getFormater();
+        $paramList->translator = $this->getLangTranslator();
+        $paramList->trip = $trip;
+
+        TripUserGrid::renderDataDoctrine($this->getDoctrine(), $this->getRequestNil(), $paramList);
     }
 
     /**
@@ -79,7 +115,7 @@ class TripController extends BaseController {
         }
         $tripUser->setTrip($trip);
         $form = EditTripUserForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $tripUser);
-        return ['form' => $form ];
+        return ['form' => $form];
     }
 
     /**

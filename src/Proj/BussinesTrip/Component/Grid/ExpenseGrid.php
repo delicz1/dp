@@ -10,17 +10,16 @@ use Doctrine\ORM\EntityRepository;
 use Proj\Base\Entity\User;
 use Proj\Base\Object\Grid\GridAjaxDoctrine;
 use Proj\Base\Object\Locale\LangTranslator;
-use Proj\BussinesTrip\Component\Dialog\EditTripUserDialog;
-use Proj\BussinesTrip\Controller\TripController;
-use Proj\BussinesTrip\Controller\UserController;
+use Proj\BussinesTrip\Component\Dialog\EditExpenseDialog;
+use Proj\BussinesTrip\Controller\ExpenseController;
+use Proj\BussinesTrip\Entity\Expense;
 use Proj\BussinesTrip\Entity\Trip;
-use Proj\BussinesTrip\Entity\TripUser;
 
 /**
- * Class UserGrid
+ * Class ExpenseGrid
  * @package Proj\BussinesTrip\Component\Grid
  */
-class TripUserGrid extends GridAjaxDoctrine {
+class ExpenseGrid extends GridAjaxDoctrine {
 
     //=====================================================
     //== Konstanty ========================================
@@ -29,10 +28,10 @@ class TripUserGrid extends GridAjaxDoctrine {
     const COLUMN_OPTIONS        = 'options';
     const COLUMN_ID             = 'id';
 
-    const ID        = 'tripuser_grid';
-    const PAGER_ID  = 'trip_user_grid_pager';
+    const ID        = 'expense_grid';
+    const PAGER_ID  = 'expense_grid_pager';
 
-    const URL = TripController::TRIP_DETAIL_DATA;
+    const URL = ExpenseController::GRID_DATA;
 
     //=====================================================
     //== Vnorene objekty ==================================
@@ -111,8 +110,29 @@ class TripUserGrid extends GridAjaxDoctrine {
         $col->option->search = true;
         $this->addColumnGrid($col);
 
-        $col = \GridColumn::create(TripUser::COLUMN_STATUS, $t->get('trip.status'));
-        $col->option->index = 'tu.' . TripUser::COLUMN_STATUS;
+        $col = \GridColumn::create(Expense::COLUMN_TYPE, $t->get('expense.type'));
+        $col->option->index = 'e.' . Expense::COLUMN_TYPE;
+        $col->option->search = true;
+        $this->addColumnGrid($col);
+
+        $col = \GridColumn::create(Expense::COLUMN_PRICE, $t->get('expense.price'));
+        $col->option->index = 'e.' . Expense::COLUMN_PRICE;
+        $col->option->search = true;
+        $this->addColumnGrid($col);
+
+        $col = \GridColumn::create(Expense::COLUMN_CURRENCY, $t->get('expense.currency'));
+        $col->option->index = 'e.' . Expense::COLUMN_CURRENCY;
+        $col->option->search = true;
+        $this->addColumnGrid($col);
+
+        $col = \GridColumn::create(Expense::COLUMN_DESCRIPTION, $t->get('expense.description'));
+        $col->option->index = 'e.' . Expense::COLUMN_DESCRIPTION;
+        $col->option->search = true;
+        $this->addColumnGrid($col);
+
+
+        $col = \GridColumn::create(Expense::COLUMN_STATUS, $t->get('expense.status'));
+        $col->option->index = 'e.' . Expense::COLUMN_STATUS;
         $col->option->sortable = true;
         $this->addColumnGrid($col);
     }
@@ -128,7 +148,7 @@ class TripUserGrid extends GridAjaxDoctrine {
      * @return null|string
      */
     public static function getRepository(Registry $doctrine, $paramList, $gridFilter) {
-        return $doctrine->getRepository('ProjBussinesTripBundle:TripUser');
+        return $doctrine->getRepository('ProjBussinesTripBundle:Expense');
     }
 
     /**
@@ -143,9 +163,10 @@ class TripUserGrid extends GridAjaxDoctrine {
         $trip = $paramList->trip;
         /** @var \Doctrine\ORM\QueryBuilder $qb */
         $qb = $repository
-            ->createQueryBuilder('ut')
-            ->join('ut.user', 'u')
-            ->join('ut.trip', 't')
+            ->createQueryBuilder('e')
+            ->join('e.tripUser', 'tu')
+            ->join('tu.trip', 't')
+            ->join('tu.user', 'u')
             ->where('t.id = ' . $trip->getId());
         return $qb;
     }
@@ -157,44 +178,71 @@ class TripUserGrid extends GridAjaxDoctrine {
     public static function setRenders(\GridDataRender $gridDataRender, $paramList) {
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(self::COLUMN_OPTIONS, function ($tripUser, $paramList) {
-            /** @var TripUser $tripUser */
+        $gridDataRender->addRender(self::COLUMN_OPTIONS, function ($expense, $paramList) {
+            /** @var Expense $expense */
             /** @var LangTranslator $t */
             $t = $paramList->translator;
-            $dialog = EditTripUserDialog::create($paramList->formatter, $tripUser->getTrip()->getId(), $tripUser->getId());
+            $dialog = EditExpenseDialog::create($paramList->formatter, $expense->getTripUser()->getTrip()->getId(), $expense->getId());
             return self::getEditButton($t, $dialog->render(false, false));
         });
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(self::COLUMN_ID, function ($tripUser, $paramList) {
-            /** @var TripUser $tripUser */
-            return $tripUser->getId();
+        $gridDataRender->addRender(self::COLUMN_ID, function ($expense, $paramList) {
+            /** @var Expense $expense */
+            return $expense->getId();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(User::COLUMN_EMAIL, function ($tripUser, $paramList) {
-            /** @var TripUser $tripUser */
-            return $tripUser->getUser()->getEmail();
+        $gridDataRender->addRender(User::COLUMN_EMAIL, function ($expense, $paramList) {
+            /** @var Expense $expense */
+            return $expense->getTripUser()->getUser()->getEmail();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(User::COLUMN_NAME, function ($tripUser, $paramList) {
-            /** @var TripUser $tripUser */
-            return $tripUser->getUser()->getName();
+        $gridDataRender->addRender(User::COLUMN_NAME, function ($expense, $paramList) {
+            /** @var Expense $expense */
+            return $expense->getTripUser()->getUser()->getName();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(User::COLUMN_SURNAME, function ($tripUser, $paramList) {
-            /** @var TripUser $tripUser */
-            return $tripUser->getUser()->getSurname();
+        $gridDataRender->addRender(User::COLUMN_SURNAME, function ($expense, $paramList) {
+            /** @var Expense $expense */
+            return $expense->getTripUser()->getUser()->getSurname();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(TripUser::COLUMN_STATUS, function ($tripUser, $paramList) {
-            /** @var User $tripUser */
+        $gridDataRender->addRender(Expense::COLUMN_TYPE, function ($expense, $paramList) {
+            /** @var Expense $expense */
             /** @var LangTranslator $t */
             $t = $paramList->translator;
-            $text = TripUser::$statusList[$tripUser->getStatus()];
+            $text = Expense::$typeList[$expense->getType()];
+            return $t->get($text);
+        });
+
+        /** @noinspection PhpUnusedParameterInspection */
+        $gridDataRender->addRender(Expense::COLUMN_PRICE, function ($expense, $paramList) {
+            /** @var Expense $expense */
+            return $expense->getPrice();
+        });
+
+        /** @noinspection PhpUnusedParameterInspection */
+        $gridDataRender->addRender(Expense::COLUMN_CURRENCY, function ($expense, $paramList) {
+            /** @var Expense $expense */
+            return $expense->getCurrency();
+        });
+
+        /** @noinspection PhpUnusedParameterInspection */
+        $gridDataRender->addRender(Expense::COLUMN_DESCRIPTION, function ($expense, $paramList) {
+            /** @var Expense $expense */
+            return $expense->getDescription();
+        });
+
+        /** @noinspection PhpUnusedParameterInspection */
+        $gridDataRender->addRender(Expense::COLUMN_STATUS, function ($expense, $paramList) {
+            /** @var Expense $expense */
+            /** @var LangTranslator $t */
+            $t = $paramList->translator;
+            $text = Expense::$statusList[$expense->getStatus()];
             return $t->get($text);
         });
     }

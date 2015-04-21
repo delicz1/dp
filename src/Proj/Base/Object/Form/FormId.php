@@ -16,4 +16,6 @@ class FormId {
     const EDIT_VEHICLE = 2;
     const EDIT_TRIP = 3;
     const EDIT_TRIP_USER = 4;
+    const EDIT_EXPENSE = 5;
+    const EDIT_TRIP_POINT = 6;
 }

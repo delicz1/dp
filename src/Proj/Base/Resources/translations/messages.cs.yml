@@ -159,7 +159,30 @@ trip:
     status.1: 'Nová'
     status.2: 'Schválená'
     status.3: 'Odmítnutá'
-
+trip.user:
+    title: 'Uživatelé přiřazení k jízdě'
+    status.1: 'Nová'
+    status.2: 'Schválená'
+    status.3: 'Odmítnutá'
+trip.point:
+    title: 'Body jízdy'
+    point: 'Bod'
+    time.from: 'Čas od'
+    time.to: 'Čas do'
+expense:
+    expense: 'Výdaje'
+    currency: 'Měna'
+    descrition: 'Popis'
+    price: 'Cena'
+    type: 'Typ'
+    type.1: 'Nocležné'
+    type.2: 'Jízdné'
+    type.3: 'Stravné'
+    type.4: 'Ostatní výdaje'
+    status: 'Stav'
+    status.1: 'Nová'
+    status.2: 'Schválená'
+    status.3: 'Odmítnutá'
 
 # CommandSchedulerBundle
 commandeScheduler:

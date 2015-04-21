@@ -26,6 +26,25 @@ class Expense {
     const COLUMN_DESCRIPTION = 'description';
     const COLUMN_STATUS = 'status';
 
+    const TYPE_OVERNIGHT_STAY = 1;
+    const TYPE_FARE = 2;
+    const TYPE_DIET = 3;
+    const TYPE_OTHER_EXPENSE = 4;
+
+    const TYPE_OVERNIGHT_STAY_TRANS = 'expense.type.1';
+    const TYPE_FARE_TRANS = 'expense.type.2';
+    const TYPE_DIET_TRANS = 'expense.type.3';
+    const TYPE_OTHER_EXPENSE_TRANS = 'expense.type.4';
+
+
+    const STATUS_NEW = 1;
+    const STATUS_APPROVED = 2;
+    const STATUS_REJECTED = 3;
+
+    const STATUS_NEW_TRANS = 'expense.status.1';
+    const STATUS_APPROVED_TRANS = 'expense.status.2';
+    const STATUS_REJECTED_TRANS = 'expense.status.3';
+
     //=====================================================
     //== ORM ==============================================
     //=====================================================
@@ -76,6 +95,19 @@ class Expense {
      * )
      */
     protected  $tripUser;
+
+    public static $statusList = [
+        self::STATUS_NEW      => self::STATUS_NEW_TRANS,
+        self::STATUS_APPROVED => self::STATUS_APPROVED_TRANS,
+        self::STATUS_REJECTED => self::STATUS_REJECTED_TRANS
+    ];
+
+    public static $typeList = [
+        self::TYPE_OVERNIGHT_STAY => self::TYPE_OVERNIGHT_STAY_TRANS,
+        self::TYPE_FARE => self::TYPE_FARE_TRANS,
+        self::TYPE_DIET => self::TYPE_DIET_TRANS,
+        self::TYPE_OTHER_EXPENSE => self::TYPE_OTHER_EXPENSE_TRANS,
+    ];
 
     //=====================================================
     //== Konstruktor ======================================
@@ -174,4 +206,19 @@ class Expense {
     public function setStatus($status) {
         $this->status = $status;
     }
+
+    /**
+     * @return TripUser
+     */
+    public function getTripUser() {
+        return $this->tripUser;
+    }
+
+    /**
+     * @param TripUser $tripUser
+     */
+    public function setTripUser($tripUser) {
+        $this->tripUser = $tripUser;
+    }
+
 }
