@@ -7,9 +7,7 @@ security:
 
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
-#        ROLE_SUPERADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
-#        ROLE_DEVELOPER: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
-
+        ROLE_SUPERADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
     providers:
         users:
             entity:
@@ -22,7 +20,6 @@ security:
             anonymous: ~
         logged:
             pattern: .*
-#            switch_user: { role: ROLE_ALLOWED_TO_SWITCH, parameter: _switch_to }
             form_login:
                 always_use_default_target_path: true
                 default_target_path: /trip/index

@@ -3,6 +3,11 @@ services:
         class: Proj\Base\Twig\BaseExtension
         tags:
             - { name: twig.extension }
+    proj.twig.menu_extension:
+        class: Proj\Base\Twig\MenuExtension
+        arguments: ["@security.token_storage", "@security.authorization_checker", "@doctrine", "@translator", "@session"]
+        tags:
+            - { name: twig.extension }
     http.utils.class:
         class: Symfony\Component\Security\Http\HttpUtils
     proj.base.locale_listener:

@@ -41,7 +41,6 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler {
      */
     public function onAuthenticationSuccess( Request $request, TokenInterface $token ) {
         /** @var User $user */
-        dump($request);
 //        $user = $token->getUser();
 //        $session = $request->getSession();
 //        $groupId = $user->getActiveGroupId();

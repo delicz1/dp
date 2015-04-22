@@ -16,9 +16,11 @@
 </head>
 <body>
 <br />
+{% if isUser() %}
 <div><a href="{{ path('proj_bussinestrip_user_index') }}">User administration</a> </div>
 <div><a href="{{ path('proj_bussinestrip_vehicle_index') }}">Vehicle administration</a> </div>
 <div><a href="{{ path('proj_bussinestrip_trip_index') }}">Trip administration</a> </div>
+{% endif %}
 <br />
 {% block body %}{% endblock %}
 {% block javascripts %}{% endblock %}
