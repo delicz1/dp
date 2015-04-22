@@ -1,0 +1,4 @@
+services:
+#    proj_security.example:
+#        class: Rdr\SecurityBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

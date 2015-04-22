@@ -24,6 +24,7 @@ class User implements UserInterface, \Serializable {
     const COLUMN_NAME = 'name';
     const COLUMN_SURNAME = 'surname';
     const COLUMN_STATUS = 'status';
+    const COLUMN_ROLE = 'role';
 
     const STATUS_ACTIVE = 1;
     const STATUS_DELETED = 2;
@@ -78,11 +79,17 @@ class User implements UserInterface, \Serializable {
     private $status;
 
     /**
-     * @var ArrayCollection|Role[]
-     *
-     * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
+     * @var string
+     * @ORM\Column(name="role", type="string", length=100, nullable=false)
      */
-    protected $roles;
+    private $role;
+
+//    /**
+//     * @var ArrayCollection|Role[]
+//     *
+//     * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
+//     */
+//    protected $roles;
 
     /**
      * @var ArrayCollection|TripUser[]
@@ -212,36 +219,51 @@ class User implements UserInterface, \Serializable {
     /**
      * @return string
      */
+    public function getRole() {
+        return $this->role;
+    }
+
+    /**
+     * @param string $role
+     */
+    public function setRole($role) {
+        $this->role = $role;
+    }
+
+
+    /**
+     * @return string
+     */
     public function getFullName() {
         return ($this->surname || $this->name) ? $this->surname . ' ' . $this->name : $this->email;
     }
-
-    /**
-     * Add role
-     *
-     * @param Role $role
-     * @return User
-     */
-    public function addRole(Role $role) {
-        $this->roles[] = $role;
-        return $this;
-    }
-
-    /**
-     * Remove role
-     *
-     * @param Role $role
-     */
-    public function removeRole(Role $role) {
-        $this->roles->removeElement($role);
-    }
-
-    /**
-     * @return Role
-     */
-    public function getMainRole() {
-        return $this->roles->first();
-    }
+//
+//    /**
+//     * Add role
+//     *
+//     * @param Role $role
+//     * @return User
+//     */
+//    public function addRole(Role $role) {
+//        $this->roles[] = $role;
+//        return $this;
+//    }
+//
+//    /**
+//     * Remove role
+//     *
+//     * @param Role $role
+//     */
+//    public function removeRole(Role $role) {
+//        $this->roles->removeElement($role);
+//    }
+//
+//    /**
+//     * @return Role
+//     */
+//    public function getMainRole() {
+//        return $this->roles->first();
+//    }
 
     /**
      * @return ArrayCollection|\Proj\BussinesTrip\Entity\TripUser[]
@@ -315,7 +337,7 @@ class User implements UserInterface, \Serializable {
      * @return string[] The user roles
      */
     public function getRoles() {
-        return $this->roles->toArray();
+        return [$this->getRole()];
     }
 
     /**
@@ -326,7 +348,7 @@ class User implements UserInterface, \Serializable {
      * @return string The password
      */
     public function getPassword() {
-        return $this->passwd;
+        return $this->getPasswd();
     }
 
     /**

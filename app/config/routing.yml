@@ -2,7 +2,7 @@ root:
     path: /
     defaults:
         _controller: FrameworkBundle:Redirect:urlRedirect
-        path: /main
+        path: /trip/index
         permanent: true
 
 _proj_base:

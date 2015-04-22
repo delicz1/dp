@@ -46,7 +46,7 @@ class CssBuilder extends \CssBuilderAbstract {
         $this->addComponent(\Tabs::OBJECT);
         $this->addComponent(\Wizard::OBJECT);
         $this->addComponent(\Chart::OBJECT);
-        $this->addComponent(\Schedule::OBJECT);
+//        $this->addComponent(\Schedule::OBJECT);
 
         $this->disableCache();
     }

@@ -7,28 +7,28 @@ security:
 
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
-        ROLE_SUPERADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
-        ROLE_DEVELOPER: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+#        ROLE_SUPERADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+#        ROLE_DEVELOPER: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
         users:
             entity:
                 class: ProjBaseBundle:User
-                property: login
+                property: email
                 manager_name: default
     firewalls:
         login_firewall:
-            pattern:   .*
+            pattern:   ^/login$
             anonymous: ~
-#        logged:
-#            pattern: .*
+        logged:
+            pattern: .*
 #            switch_user: { role: ROLE_ALLOWED_TO_SWITCH, parameter: _switch_to }
-#            form_login:
-#                always_use_default_target_path: true
-#                default_target_path: /main
-#                success_handler: proj.auth.success
-#            logout:
-#                target: /main
+            form_login:
+                always_use_default_target_path: true
+                default_target_path: /trip/index
+                success_handler: proj.auth.success
+            logout:
+                target: /login
 
     access_control:
         #- { path: ^/switch, requires_channel: https, allow_if: 'user.can(1)' } # 1 -> Permission::DEV_TOOLS

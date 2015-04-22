@@ -1,0 +1,55 @@
+{% extends "ProjBaseBundle::layout.html.twig" %}
+
+{% block head %}
+    {% javascripts 'bundles/nil/jquery/js/external/jquery.cookie.min.js' filter='?uglifyjs2' %}
+    <script src="{{ asset_url }}" type="text/javascript"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block body %}
+    <div id="background" class="background"></div>
+
+    <div id="loginCover">
+        {#<img src="bundles/rdrsecurity/img/logo.png" width="198" height="65" alt="Logo" />#}
+        {% if error %}
+            <div>{{ error.message }}</div>
+        {% endif %}
+        <form action="{{ path('login_check') }}" method="post" id="loginForm">
+            <table>
+                <tr>
+                    <td>
+                        <label for="username">{{ 'form.login-name'|trans }}</label>
+                        <input type="text" id="username" name="_username" value="{{ last_username }}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="password">{{ 'form.password'|trans }}</label>
+                        <input type="password" id="password" name="_password" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button type="submit">{{ 'form.login'|trans }}</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <!-- Vlajky jazyku -->
+                        <div class="system-lang-menu" style="float:left">
+                            {% set actualLangIso = locale %}
+                            {% for langIso, langParamArr in langArr %}
+                                <a class="lang-flag {{ langIso }} {{ langIso == actualLangIso ? 'selected' : '' }}"
+                                   title="{{ langParamArr['native'] }}"
+                                   href="javascript:void(0);"
+                                   onclick="$.cookie('__locale', '{{ langIso }}');window.location.reload();">
+                                    <span class="noDisplay">{{ langParamArr['native'] }}</span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+{% endblock %}

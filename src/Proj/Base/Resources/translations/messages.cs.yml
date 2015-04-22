@@ -3,6 +3,7 @@ header:
     title:
         common: ''
 form:
+    login.name: "E-mail"
     add: 'Přidat'
     edit: 'Editovat'
     save: 'Uložit'

@@ -14,12 +14,16 @@ services:
         class: Proj\Base\Assetic\Filter\JSFilter
         tags:
             - { name: assetic.filter, alias: js_filter }
-    session.memcached:
-        class: Memcached
-        arguments:
-            persistent_id: %session_memcached_prefix%
-        calls:
-            - [ addServer, [ %session_memcached_host%, %session_memcached_port% ]]
-    session.handler.memcached:
-        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler
-        arguments: [@session.memcached, { prefix: %session_memcached_prefix%, expiretime: %session_memcached_expire% }]
+#    session.memcached:
+#        class: Memcached
+#        arguments:
+#            persistent_id: %session_memcached_prefix%
+#        calls:
+#            - [ addServer, [ %session_memcached_host%, %session_memcached_port% ]]
+#    session.handler.memcached:
+#        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler
+#        arguments: [@session.memcached, { prefix: %session_memcached_prefix%, expiretime: %session_memcached_expire% }]
+    proj.auth.success:
+        class: Proj\Base\Service\AuthenticationSuccessHandler
+        arguments: ["@http.utils.class", "@doctrine"]
+        services:

@@ -86,7 +86,7 @@ class EditUserForm extends DoctrineForm {
         $user->setName($this[self::INPUT_NAME]->getValue());
         $user->setSurname($this[self::INPUT_SURNAME]->getValue());
         if ($this[self::INPUT_PASSWORD]->getValue()) {
-            $user->setPasswd(md5($this[self::INPUT_PASSWORD]->getValue()));
+            $user->setPasswd(sha1($this[self::INPUT_PASSWORD]->getValue()));
         }
         $user->setStatus($this[User::COLUMN_STATUS]->getValue());
 
