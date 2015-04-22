@@ -43,9 +43,6 @@ class TripController extends BaseController {
     public function indexAction() {
 
         $user = $this->getSelfUser();
-        dump($user);
-        dump($_SESSION);
-
         $formatter = $this->getFormater();
         $dialog = EditTripDialog::create($formatter);
         $grid = new TripGrid($this->getLangTranslator(), $this->getDoctrine());

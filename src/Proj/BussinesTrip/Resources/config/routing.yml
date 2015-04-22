@@ -13,3 +13,6 @@ _expenses:
 _tripPoint:
     resource: "@ProjBussinesTripBundle/Controller/TripPointController.php"
     type:     annotation
+_report:
+    resource: "@ProjBussinesTripBundle/Controller/ReportController.php"
+    type:     annotation

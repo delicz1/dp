@@ -221,4 +221,19 @@ class Expense {
         $this->tripUser = $tripUser;
     }
 
+    /**
+     * @return array
+     */
+    public static function getTypeList() {
+        return self::$typeList;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStatusList() {
+        return self::$statusList;
+    }
+
+
 }

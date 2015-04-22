@@ -1,0 +1,70 @@
+{% extends '@ProjBussinesTrip/Report/layout-report.html.twig' %}
+
+{% block body %}
+    <div id="report">
+        <div><h2>{{ 'trip.bussines.trip'|trans }}</h2>
+            <table>
+                <tr>
+                    <th>{{ 'vehicle.vehicle'|trans }}</th>
+                    <td>{{ trip.vehicle.name }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'trip.time.from'|trans }}</th>
+                    <td>{{ formatter.timestamp(trip.timeFrom, constant('\FormatterInterface::FORMAT_DATE_TIME')) }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'trip.time.to'|trans }}</th>
+                    <td>{{ formatter.timestamp(trip.timeTo, constant('\FormatterInterface::FORMAT_DATE_TIME')) }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'trip.point.from'|trans }}</th>
+                    <td>{{ trip.pointFrom }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'trip.point.to'|trans }}</th>
+                    <td>{{ trip.pointTo }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'trip.distance'|trans }}</th>
+                    <td>{{ trip.distance }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'trip.purpose'|trans }}</th>
+                    <td>{{ trip.purpose }}</td>
+                </tr>
+            </table>
+            {% for tripUser in trip.tripUsers %}
+                {% set user = tripUser.user %}
+                <br />
+                <table>
+                    <tr>
+                        <th>{{ 'user.user'|trans }}</th>
+                        <td>{{ user.fullname }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ 'user.status'|trans }}</th>
+                        <td>{{ tripUser.statusList[tripUser.status]|trans }}</td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <th>{{ 'expense.type'|trans }}</th>
+                        <th>{{ 'expense.price'|trans }}</th>
+                        <th>{{ 'expense.currency'|trans }}</th>
+                        <th>{{ 'expense.description'|trans }}</th>
+                        <th>{{ 'expense.status'|trans }}</th>
+                    </tr>
+                    {% for expense in tripUser.expenses %}
+                        <tr>
+                            <td>{{ expense.typeList[expense.type]|trans }}</td>
+                            <td>{{ expense.price }}</td>
+                            <td>{{ expense.currency }}</td>
+                            <td>{{ expense.description }}</td>
+                            <td>{{ expense.typeList[expense.type]|trans }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

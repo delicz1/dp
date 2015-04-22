@@ -168,4 +168,11 @@ class TripUser {
         $this->expenses = $expenses;
     }
 
+    /**
+     * @return array
+     */
+    public static function getStatusList() {
+        return self::$statusList;
+    }
+
 }

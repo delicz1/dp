@@ -84,13 +84,6 @@ class User implements UserInterface, \Serializable {
      */
     private $role;
 
-//    /**
-//     * @var ArrayCollection|Role[]
-//     *
-//     * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
-//     */
-//    protected $roles;
-
     /**
      * @var ArrayCollection|TripUser[]
      * @ORM\OneToMany(targetEntity="Proj\BussinesTrip\Entity\TripUser", mappedBy="user", cascade={"persist"})
@@ -237,33 +230,6 @@ class User implements UserInterface, \Serializable {
     public function getFullName() {
         return ($this->surname || $this->name) ? $this->surname . ' ' . $this->name : $this->email;
     }
-//
-//    /**
-//     * Add role
-//     *
-//     * @param Role $role
-//     * @return User
-//     */
-//    public function addRole(Role $role) {
-//        $this->roles[] = $role;
-//        return $this;
-//    }
-//
-//    /**
-//     * Remove role
-//     *
-//     * @param Role $role
-//     */
-//    public function removeRole(Role $role) {
-//        $this->roles->removeElement($role);
-//    }
-//
-//    /**
-//     * @return Role
-//     */
-//    public function getMainRole() {
-//        return $this->roles->first();
-//    }
 
     /**
      * @return ArrayCollection|\Proj\BussinesTrip\Entity\TripUser[]

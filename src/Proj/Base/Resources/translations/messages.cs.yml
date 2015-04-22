@@ -173,7 +173,7 @@ trip.point:
 expense:
     expense: 'Výdaje'
     currency: 'Měna'
-    descrition: 'Popis'
+    description: 'Popis'
     price: 'Cena'
     type: 'Typ'
     type.1: 'Nocležné'
