@@ -5,7 +5,9 @@
 
 namespace Proj\BussinesTrip\Controller;
 
+use Proj\BussinesTrip\Component\Form\TravelOrderForm;
 use Proj\BussinesTrip\Entity\Trip;
+use Proj\BussinesTrip\Report\TravelOrderReport;
 use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use /** @noinspection PhpUnusedAliasInspection */
@@ -19,13 +21,44 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ReportController extends BaseController {
 
-    const TRIP_DETAIL      = '/trip/detail';
-    const TRIP_DETAIL_DATA = '/trip/detailData';
+    const TRIP_DETAIL      = '/report/detail';
+    const TRIP_DETAIL_DATA = '/report/detailData';
 
-    const EDIT_FORM           = '/trip/editForm';
-    const EDIT_TRIP_USER_FORM = '/trip/editTripUserForm';
-    const GRID_DATA           = '/trip/grid';
+    const TRAVEL_ORDER_FORM = '/report/travelOrderForm';
+    const TRAVEL_ORDER_PRINT = '/report/travelOrderPrint';
 
+
+
+
+    /**
+     * @Route("/travelOrder")
+     * @Template()
+     */
+    public function travelOrderAction() {
+
+        $form = TravelOrderForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine());
+        return ['form' => $form];
+    }
+
+    /**
+     * @Route("/travelOrderForm")
+     * @Template()
+     */
+    public function travelOrderFormAction() {
+
+        $form = TravelOrderForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine());
+        return ['form' => $form];
+    }
+
+    /**
+     * @Route("/travelOrderPrint")
+     * @Template()
+     */
+    public function travelOrderPrintAction() {
+
+        $traverOrder = new TravelOrderReport($this->getSelfUser(), $this->getRequestNil(), $this->getDoctrine());
+        return ['travelOrder' => $traverOrder];
+    }
 
     /**
      * @Route("/tripDetail")

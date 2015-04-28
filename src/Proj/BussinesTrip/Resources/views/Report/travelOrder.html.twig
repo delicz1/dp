@@ -1,0 +1,11 @@
+{% extends 'ProjBaseBundle::layout.html.twig' %}
+{% block body %}
+<div class="hidden-print">
+    <div id="reportForm">
+        {{ form|raw }}
+    </div>
+    {{ form.renderSubmit|raw }}
+</div>
+<div id="reportData"></div>
+{% endblock %}
+

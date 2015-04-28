@@ -17,9 +17,12 @@
 <body>
 <br />
 {% if isUser() %}
-<div><a href="{{ path('proj_bussinestrip_user_index') }}">User administration</a> </div>
-<div><a href="{{ path('proj_bussinestrip_vehicle_index') }}">Vehicle administration</a> </div>
-<div><a href="{{ path('proj_bussinestrip_trip_index') }}">Trip administration</a> </div>
+<div class="hidden-print">
+    <div><a href="{{ path('proj_bussinestrip_user_index') }}">User administration</a> </div>
+    <div><a href="{{ path('proj_bussinestrip_vehicle_index') }}">Vehicle administration</a> </div>
+    <div><a href="{{ path('proj_bussinestrip_trip_index') }}">Trip administration</a> </div>
+    <div><a href="{{ path('proj_bussinestrip_report_travelorder') }}">Report</a> </div>
+</div>
 {% endif %}
 <br />
 {% block body %}{% endblock %}
