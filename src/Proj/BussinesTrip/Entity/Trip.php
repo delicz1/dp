@@ -8,8 +8,6 @@ namespace Proj\BussinesTrip\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Proj\Base\Object\Locale\Formatter;
-use Proj\Base\Object\Locale\LangTranslator;
-use Proj\Base\Object\Locale\SystemLang;
 
 /**
  * Class Trip
@@ -115,7 +113,7 @@ class Trip {
      * @var ArrayCollection|TripUser[]
      * @ORM\OneToMany(targetEntity="TripUser", mappedBy="trip", cascade={"persist"})
      */
-    protected $tripUsers;
+    public $tripUsers;
 
     public static $statusList = [
         self::STATUS_NEW      => self::STATUS_NEW_TRANS,

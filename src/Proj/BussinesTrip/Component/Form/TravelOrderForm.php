@@ -12,15 +12,9 @@ use Notificator;
 use Proj\Base\Entity\User;
 use Proj\Base\Object\Form\DoctrineForm;
 use Proj\Base\Object\Form\FormId;
-use Proj\Base\Object\Form\FormUtil;
 use Proj\Base\Object\Locale\Formatter;
-use Proj\BussinesTrip\Component\Dialog\EditTripDialog;
-use Proj\BussinesTrip\Component\Grid\TripGrid;
 use Proj\BussinesTrip\Controller\ReportController;
-use Proj\BussinesTrip\Controller\TripController;
 use Proj\BussinesTrip\Entity\Trip;
-use Proj\BussinesTrip\Entity\TripUser;
-use Proj\BussinesTrip\Entity\Vehicle;
 
 /**
  * @author springer
@@ -37,6 +31,8 @@ class TravelOrderForm extends DoctrineForm {
     const SELECT_USERS = 'selectedUsers';
     const INPUT_TIME_FROM = 'timeFrom';
     const INPUT_TIME_TO = 'timeTo';
+    const SELECT_STATUS = 'selectStatus';
+    const OUTPUT = 'outputType';
 
     const SUBMIT = 'save';
 
@@ -72,6 +68,10 @@ class TravelOrderForm extends DoctrineForm {
         $this->addSelect(self::SELECT_USERS, 'user.user', null, $this->getUserOptions());
         $this->addDate(self::INPUT_TIME_FROM, 'trip.time.from', $timeFrom, \FormItemDate::MODE_DATETIME);
         $this->addDate(self::INPUT_TIME_TO, 'trip.time.to', $timeTo, \FormItemDate::MODE_DATETIME);
+        $this->addSelect(self::SELECT_STATUS, 'trip.status', Trip::STATUS_APPROVED, Trip::$statusList);
+        $this->addSwitch(self::OUTPUT, 'form.output', 1)
+            ->setOption1(1, 'form.output.print')
+            ->setOption2(2, 'form.output.pdf');
 
         $this->handle();
     }
@@ -81,11 +81,15 @@ class TravelOrderForm extends DoctrineForm {
 
         Notificator::add('SUCCESS', '', Notificator::TYPE_INFO);
 
-        $url = ReportController::TRAVEL_ORDER_PRINT;
+        $url = ($this[self::OUTPUT]->getValue() == 1) ? ReportController::TRAVEL_ORDER_PRINT : ReportController::TRAVEL_ORDER_PDF;
         $url .= '?' . self::SELECT_USERS . '=' . $this[self::SELECT_USERS]->getValue();
         $url .= '&' . self::INPUT_TIME_FROM . '=' . $this[self::INPUT_TIME_FROM]->getValue();
         $url .= '&' . self::INPUT_TIME_TO . '=' . $this[self::INPUT_TIME_TO]->getValue();
-        $js = \AjaxUpdater::create('reportData', $url)->render(false, false);
+        if ($this[self::OUTPUT]->getValue() == 1) {
+            $js = \AjaxUpdater::create('reportData', $url)->render(false, false);
+        } else {
+            $js = "window.location=". $url;
+        }
         echo Html::el('script')->setHtml($js);
     }
 

@@ -1,0 +1,121 @@
+<div>
+    <table class="page2 basicTable">
+        <tr>
+            <td>
+
+                <table class="table1">
+                    <caption style="width: 800px"><div style="font-size: large; text-align: center">Výúčtování pracovní cesty</div></caption>
+                    <tr style="width: 800px">
+                        <th>Datum</th>
+                        <th>Odjez - Příjezd<br />
+                            Místo jednání podtrhněte<br />
+                            (Odjezd/Příjezd)
+                        </th>
+                        <th>Hod.</th>
+                        <th><div class="textRotate">Použitý<br />dopravní<br /> prostředek</div></th>
+                        <th><div class="textRotate">Vzdálenost<br /> v km</div></th>
+                        <th><div class="textRotate">Sazba<br /> za km</div> </th>
+                        <th>Počátek<br /> a konec prac.<br /> výkonu</th>
+                        <th>Jízdné <br />a místní <br /> doprava</th>
+                        <th>Stravné</th>
+                        <th>Nocležné</th>
+                        <th>Nutné<br />vedlejší<br />výdaje</th>
+                        <th>Celkem</th>
+                        <th>Upraveno</th>
+                    </tr>
+
+                    {% for i in 1..20 %}
+                        {% include "@ProjBussinesTrip/Report/travelOrder/page2Row.html.twig" %}
+                    {% endfor %}
+                    <tr>
+                        <td colspan="3" rowspan="2" class="noborderLeftRightBottom"><br />
+                            Stravování bylo poskytnuto bezplatně:<br />
+                            Ubytování bylo poskytnuto bezplatně:<br />
+                            Volná -zlevněná jízdenka:<br />
+                            Pobírám odlučné:
+                        </td>
+                        <td rowspan="2" colspan="2" class="noborderLeftRightBottom" style="vertical-align: top"><br />
+                            ano-ne<br />
+                            ano-ne<br />
+                            ano-ne<br />
+                            ano-ne<br />
+                        </td>
+                        <td colspan="2">Celkem</td>
+                        <td>{{ travelOrder.pageData(page, 'e_fare') }}</td>
+                        <td>{{ travelOrder.pageData(page, 'e_diet') }}</td>
+                        <td>{{ travelOrder.pageData(page, 'e_overnight') }}</td>
+                        <td>{{ travelOrder.pageData(page, 'e_other') }}</td>
+                        <td>{{ travelOrder.pageData(page, 'e_total') }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            Záloha
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" rowspan="2" class="noborder">
+                            <table class="noborder" style="width: 100%">
+                                <tr><td>&nbsp;</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        0 - osobní vlak<br />
+                                        R - rychlík<br />
+                                        A - autobus<br />
+                                        L - letadlo<br />
+                                    </td>
+                                    <td>
+                                        AUT - auto služební<br />
+                                        AUV - auto vlastní<br />
+                                        MOS - motocykl služební<br />
+                                        P - pěsky<br />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td colspan="6">
+                            Doplatek - Přeplatek
+                        </td>
+                        <td></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="noborderLeftRightBottom">
+                            Prohlašuji, že jsem všechny údaje uveld úplně a správně.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class="noborder">
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td class="noborder">
+                <table class="noborder" style="width: 100%">
+                    <tr>
+                        <td rowspan="2">
+                            Dobu odjezdu a příjezdu vyplňte podle jízdního řádu<br />
+                            Dopravní prostředek úvádějte ve zkratce<br />
+                            Dobu odjezdu a příjezdu vyplňte podle jízdního řádu<br />
+                        </td>
+                        <td style="width: 200px">
+                            <div class="dotted">&nbsp;</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px">
+                            <div>datum a podpis účtovatele</div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>

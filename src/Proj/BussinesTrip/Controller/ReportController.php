@@ -26,6 +26,7 @@ class ReportController extends BaseController {
 
     const TRAVEL_ORDER_FORM = '/report/travelOrderForm';
     const TRAVEL_ORDER_PRINT = '/report/travelOrderPrint';
+    const TRAVEL_ORDER_PDF = '/report/travelOrderPdf';
 
 
 
@@ -56,9 +57,33 @@ class ReportController extends BaseController {
      */
     public function travelOrderPrintAction() {
 
-        $traverOrder = new TravelOrderReport($this->getSelfUser(), $this->getRequestNil(), $this->getDoctrine());
+        $traverOrder = new TravelOrderReport($this->getSelfUser(), $this->getRequestNil(), $this->getDoctrine(), $this->getFormater());
         return ['travelOrder' => $traverOrder];
     }
+
+    /**
+     * @Route("/travelOrderPdf")
+     */
+    public function travelOrderPdfAction() {
+
+        $traverOrder = new TravelOrderReport($this->getSelfUser(), $this->getRequestNil(), $this->getDoctrine(), $this->getFormater());
+
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($this->renderView(
+                'ProjBussinesTripBundle:Report:travelOrderPrint.html.twig',
+                ['travelOrder' => $traverOrder, 'formatter'    => $this->getFormater()])),
+            200,
+            [
+                'Pragma'                => 'public',
+                'Cache-Control'         => 'must-revalidate, post-check=0, pre-check=0',
+                'Content-Type'          => 'application/pdf ;  charset=UTF-8',
+                'Content-Disposition'   => 'attachment; filename="tripDetail-' . date("d-m-y"). '.pdf"',
+                'Content-Transfer-Encoding'   => 'binary',
+            ]
+        );
+
+    }
+
 
     /**
      * @Route("/tripDetail")

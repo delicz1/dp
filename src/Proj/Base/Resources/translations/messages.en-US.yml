@@ -3,6 +3,12 @@ header:
     title:
         common: ''
 form:
+    output: "Output formát"
+    output.pdf: "PDF"
+    output.print: "Print"
+    password: "Password"
+    login.name: "E-mail"
+    login: "Login"
     add: 'Add'
     edit: 'Edit'
     save: 'Save'
@@ -184,6 +190,13 @@ expense:
     status.1: 'New'
     status.2: 'Approved'
     status.3: 'Rejected'
+menu:
+    admin.user: "User administration"
+    admin.vehicle: "Vehicle administration"
+    trip: "Trip"
+    travel.order: "Report - travel order"
+    user.edit: "User edit"
+    logout: "Logout"
 
 # CommandSchedulerBundle
 commandeScheduler:
