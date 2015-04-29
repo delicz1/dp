@@ -36,6 +36,9 @@ class TravelOrderForm extends DoctrineForm {
 
     const SUBMIT = 'save';
 
+    /** @var  User */
+    public $selfUser;
+
     //=====================================================
     //== Konfigurace ======================================
     //=====================================================
@@ -44,15 +47,17 @@ class TravelOrderForm extends DoctrineForm {
      * @param Formatter $formatter
      * @param \Request  $request
      * @param Registry  $doctrine
-     * @return self
+     * @param User      $selfUser
+     * @return TravelOrderForm
      */
-    public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null) {
+    public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null, User $selfUser = null) {
         $form = new self(self::NAME, self::ACTION, self::POST);
         $form->setFormater($formatter);
         $form->addSubmit(self::SUBMIT, 'form.save', 'glyphicon glyphicon-floppy-disk');
         if ($request instanceof \Request) {
             $form->setRequest($request);
             $form->doctrine = $doctrine;
+            $form->selfUser = $selfUser;
             $form->setHelpManager(false);
             $form->init();
         }
@@ -65,7 +70,12 @@ class TravelOrderForm extends DoctrineForm {
         $timeTo = \DateUtil::getEndDay();
 
 
-        $this->addSelect(self::SELECT_USERS, 'user.user', null, $this->getUserOptions());
+        if ($this->selfUser->getRole() == User::ROLE_USER) {
+            $this->addHidden(self::SELECT_USERS, $this->selfUser->getId());
+        } else {
+            $this->addSelect(self::SELECT_USERS, 'user.user', null, $this->getUserOptions());
+        }
+
         $this->addDate(self::INPUT_TIME_FROM, 'trip.time.from', $timeFrom, \FormItemDate::MODE_DATETIME);
         $this->addDate(self::INPUT_TIME_TO, 'trip.time.to', $timeTo, \FormItemDate::MODE_DATETIME);
         $this->addSelect(self::SELECT_STATUS, 'trip.status', Trip::STATUS_APPROVED, Trip::$statusList);
@@ -85,6 +95,7 @@ class TravelOrderForm extends DoctrineForm {
         $url .= '?' . self::SELECT_USERS . '=' . $this[self::SELECT_USERS]->getValue();
         $url .= '&' . self::INPUT_TIME_FROM . '=' . $this[self::INPUT_TIME_FROM]->getValue();
         $url .= '&' . self::INPUT_TIME_TO . '=' . $this[self::INPUT_TIME_TO]->getValue();
+        $url .= '&' . self::SELECT_STATUS . '=' . $this[self::SELECT_STATUS]->getValue();
         if ($this[self::OUTPUT]->getValue() == 1) {
             $js = \AjaxUpdater::create('reportData', $url)->render(false, false);
         } else {

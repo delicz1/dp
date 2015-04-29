@@ -6,7 +6,6 @@
 namespace Proj\BussinesTrip\Component\Form;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\EntityRepository;
 use nil\Html;
 use Notificator;
 use Proj\Base\Object\Form\DoctrineForm;
@@ -17,7 +16,6 @@ use Proj\BussinesTrip\Component\Grid\TripPointGrid;
 use Proj\BussinesTrip\Controller\TripPointController;
 use Proj\BussinesTrip\Entity\TripPoint;
 use Proj\BussinesTrip\Entity\Trip;
-use Proj\BussinesTrip\Entity\TripUser;
 
 /**
  * @author springer

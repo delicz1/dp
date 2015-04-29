@@ -12,11 +12,13 @@ use Proj\BussinesTrip\Component\Grid\VehicleGrid;
 use Proj\BussinesTrip\Entity\Vehicle;
 use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use /** @noinspection PhpUnusedAliasInspection */
     Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Proj\Base\Controller\BaseController;
 
 /**
+ * @Security("has_role('ROLE_ACCOUNTANT')")
  * @Route("vehicle", name="_vehicle")
  * @Template()
  */

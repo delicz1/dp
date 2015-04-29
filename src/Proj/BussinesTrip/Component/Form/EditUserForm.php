@@ -30,6 +30,7 @@ class EditUserForm extends DoctrineForm {
 
     const INPUT_NAME = 'name';
     const INPUT_EMAIL = 'email';
+    const INPUT_ADDRESS = 'address';
     const INPUT_ROLE = 'role';
     const INPUT_PASSWORD = 'password';
     const INPUT_SURNAME = 'surname';
@@ -38,6 +39,8 @@ class EditUserForm extends DoctrineForm {
 
     /** @var  User */
     public $user;
+    /** @var  User */
+    public $selfUser;
 
     //=====================================================
     //== Konfigurace ======================================
@@ -47,10 +50,11 @@ class EditUserForm extends DoctrineForm {
      * @param Formatter $formatter
      * @param \Request  $request
      * @param Registry  $doctrine
-     * @param null      $user
+     * @param null|User $user
+     * @param User      $selfUser
      * @return EditUserForm
      */
-    public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null, $user = null) {
+    public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null, User $user = null, User $selfUser = null) {
         $form = new self(self::NAME, self::ACTION, self::POST);
         $form->setFormater($formatter);
         $form->addSubmit(self::SUBMIT, 'form.save', 'glyphicon glyphicon-floppy-disk');
@@ -58,6 +62,7 @@ class EditUserForm extends DoctrineForm {
             $form->setRequest($request);
             $form->doctrine = $doctrine;
             $form->user = $user;
+            $form->selfUser = $selfUser;
             $form->setHelpManager(false);
             $form->init();
         }
@@ -67,12 +72,15 @@ class EditUserForm extends DoctrineForm {
     protected function init() {
 
         $tr = $this->formater->getLangTranslator();
-
         $this->addText(self::INPUT_NAME, $tr->get('user.name'), $this->user->getName());
         $this->addText(self::INPUT_SURNAME, $tr->get('user.surname'), $this->user->getSurname());
         $this->addText(self::INPUT_EMAIL, $tr->get('user.email'), $this->user->getEmail())->addRuleEmail('');
+        $this->addText(self::INPUT_ADDRESS, $tr->get('user.address'), $this->user->getAddress());
         $this->addPassword(self::INPUT_PASSWORD, $tr->get('user.password'))->addRuleMethod('user.valid.password', 'rulePassword');
         $this->addSelect(User::COLUMN_STATUS, $tr->get('user.status'), $this->user->getStatus(), User:: $statusList);
+        if ($this->selfUser->getRole() == User::ROLE_ADMIN) {
+            $this->addSelect(self::INPUT_ROLE, 'user.role', $this->user->getRole(), $this->roleOptions());
+        }
         $this->addHidden('id', $this->user->getId());
 
         $this->handle();
@@ -85,8 +93,12 @@ class EditUserForm extends DoctrineForm {
         $user->setEmail($this[self::INPUT_EMAIL]->getValue());
         $user->setName($this[self::INPUT_NAME]->getValue());
         $user->setSurname($this[self::INPUT_SURNAME]->getValue());
+        $user->setAddress($this[self::INPUT_ADDRESS]->getValue());
         if ($this[self::INPUT_PASSWORD]->getValue()) {
             $user->setPasswd(sha1($this[self::INPUT_PASSWORD]->getValue()));
+        }
+        if ($this->selfUser->getRole() == User::ROLE_ADMIN) {
+            $this->user->setRole($this[self::INPUT_ROLE]->getValue());
         }
         $user->setStatus($this[User::COLUMN_STATUS]->getValue());
 
@@ -107,6 +119,17 @@ class EditUserForm extends DoctrineForm {
     //=====================================================
     //== Options ==========================================
     //=====================================================
+
+    /**
+     * @return array
+     */
+    public function roleOptions() {
+        return [
+            User::ROLE_USER => 'user.role.user',
+            User::ROLE_ACCOUNTANT => 'user.role.accountant',
+            User::ROLE_ADMIN => 'user.role.admin'
+        ];
+    }
 
     //=====================================================
     //== Validace =========================================

@@ -37,7 +37,7 @@ class ReportController extends BaseController {
      */
     public function travelOrderAction() {
 
-        $form = TravelOrderForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine());
+        $form = TravelOrderForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $this->getSelfUser());
         return ['form' => $form];
     }
 
@@ -47,7 +47,7 @@ class ReportController extends BaseController {
      */
     public function travelOrderFormAction() {
 
-        $form = TravelOrderForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine());
+        $form = TravelOrderForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $this->getSelfUser());
         return ['form' => $form];
     }
 

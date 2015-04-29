@@ -25,12 +25,17 @@ class User implements UserInterface, \Serializable {
     const COLUMN_SURNAME = 'surname';
     const COLUMN_STATUS = 'status';
     const COLUMN_ROLE = 'role';
+    const COLUMN_ADDRESS = 'address';
 
     const STATUS_ACTIVE = 1;
     const STATUS_DELETED = 2;
 
     const STATUS_ACTIVE_TRANS = 'vehicle.status.1';
     const STATUS_DELETED_TRANS = 'vehicle.status.2';
+
+    const ROLE_USER = 'ROLE_USER';
+    const ROLE_ACCOUNTANT = 'ROLE_ACCOUNTANT';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
 
     //=====================================================
     //== ORM ==============================================
@@ -83,6 +88,12 @@ class User implements UserInterface, \Serializable {
      * @ORM\Column(name="role", type="string", length=100, nullable=false)
      */
     private $role;
+
+    /**
+     * @var string
+     * @ORM\Column(name="address", type="string", length=255, nullable=true)
+     */
+    private $address;
 
     /**
      * @var ArrayCollection|TripUser[]
@@ -223,6 +234,19 @@ class User implements UserInterface, \Serializable {
         $this->role = $role;
     }
 
+    /**
+     * @return string
+     */
+    public function getAddress() {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     */
+    public function setAddress($address) {
+        $this->address = $address;
+    }
 
     /**
      * @return string

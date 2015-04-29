@@ -135,9 +135,14 @@ user:
     email: 'E-mail'
     password: 'Password'
     valid.password: 'Password - length must be 6 or more characters'
+    address: 'Address'
     status: "Status"
     status.1: "Active"
     status.2: "Deleted"
+    role: "Role"
+    role.user: "User"
+    role.accountant: "Accountant"
+    role.admin: "Administrator"
 vehicle:
     vehicle: "Vehicle"
     name: "Name"

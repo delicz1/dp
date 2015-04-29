@@ -135,9 +135,14 @@ user:
     email: 'e-mail'
     password: 'heslo'
     valid.password: 'Heslo musi obsahovat alespon 6 znaků'
+    address: 'Adresa'
     status: "Stav"
     status.1: "Aktivní"
     status.2: "Nekativní"
+    role: "Role"
+    role.user: "Uživatel"
+    role.accountant: "Učetní"
+    role.admin: "Administrátor"
 vehicle:
     vehicle: "Dopravni prostředek"
     name: "Jméno"

@@ -47,7 +47,7 @@ class UserController extends BaseController {
         if ($id > 0) {
             $user = $this->getDoctrine()->getRepository('ProjBaseBundle:User')->find($id);
         }
-        $form = EditUserForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $user);
+        $form = EditUserForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $user, $this->getSelfUser());
         return ['form' => $form ];
     }
 

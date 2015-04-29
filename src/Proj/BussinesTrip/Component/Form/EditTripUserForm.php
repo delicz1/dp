@@ -102,6 +102,7 @@ class EditTripUserForm extends DoctrineForm {
         Notificator::add('SUCCESS', '', Notificator::TYPE_INFO);
         $js = EditTripUserDialog::close(EditTripUserDialog::DIV);
         $js .= TripGrid::reload(TripGrid::ID);
+        $js .= TripUserGrid::reload(TripUserGrid::ID);
         echo Html::el('script')->setHtml($js);
     }
 

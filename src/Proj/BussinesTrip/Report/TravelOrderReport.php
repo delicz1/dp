@@ -15,6 +15,10 @@ use Proj\BussinesTrip\Entity\Expense;
 use Proj\BussinesTrip\Entity\Trip;
 use Proj\BussinesTrip\Entity\TripUser;
 
+/**
+ * Class TravelOrderReport
+ * @package Proj\BussinesTrip\Report
+ */
 class TravelOrderReport {
 
     const DATE = 'date';
@@ -79,6 +83,8 @@ class TravelOrderReport {
         $this->doctrine = $doctrine;
         $this->formatter = $formatter;
         $this->tripUser = $doctrine->getRepository('ProjBaseBundle:User')->find($this->request->get(TravelOrderForm::SELECT_USERS));
+        $this->status = $this->request->get(TravelOrderForm::SELECT_STATUS);
+
         $tripUserList = $this->getTripUserList();
         foreach ($tripUserList as $tripUser) {
             $this->row++;
@@ -87,6 +93,7 @@ class TravelOrderReport {
                 $this->page++;
             }
             $trip = $tripUser->getTrip();
+            dump($trip);
             if ($this->fromPosition == '') {
                 $this->fromPosition = $trip->getPointFrom();
                 $this->purpose = $trip->getPurpose();
@@ -123,6 +130,10 @@ class TravelOrderReport {
         $this->data[$this->page][$this->row][$type] += $value;
     }
 
+    /**
+     * @param $type
+     * @param $value
+     */
     private function addPageData($type, $value) {
         if (!isset($this->pageTotal[$this->page][$type])) {
             $this->pageTotal[$this->page][$type] = 0;
@@ -130,6 +141,13 @@ class TravelOrderReport {
         $this->pageTotal[$this->page][$type] += $value;
     }
 
+    /**
+     * @param int    $page
+     * @param int    $row
+     * @param string $type
+     * @param string $default
+     * @return string
+     */
     public function getData($page, $row, $type, $default = '') {
         $value = $default;
         if (isset($this->data[$page][$row][$type])) {
@@ -138,6 +156,11 @@ class TravelOrderReport {
         return $value;
     }
 
+    /**
+     * @param int    $page
+     * @param string $type
+     * @return string
+     */
     public function getPageData($page, $type) {
         $value = '';
         if (isset($this->pageTotal[$page][$type])) {
@@ -161,14 +184,21 @@ class TravelOrderReport {
         $qb->where('u.id =' . $userId);
         $qb->andWhere(' t.' . Trip::COLUMN_TIME_FROM . ' >= ' . (int)$timeFrom);
         $qb->andWhere('t.' . Trip::COLUMN_TIME_FROM . ' <= ' . (int)$timeTo);
+        $qb->andWhere('tu.' . TripUser::COLUMN_STATUS . ' <= ' . (int)$this->status);
         $qb->orderBy('t.' . Trip::COLUMN_TIME_FROM);
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @param TripUser $tripUser
+     */
     private function addExpenses(TripUser $tripUser) {
         $expenseList = $tripUser->getExpenses();
         foreach ($expenseList as $expense) {
             $type = self::E_OTHER;
+            if ($expense->getStatus() != $this->status) {
+                continue;
+            }
             switch($expense->getType()) {
                 case Expense::TYPE_DIET:
                     $type = self::E_DIET; break;
