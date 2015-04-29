@@ -70,7 +70,7 @@ class ReportController extends BaseController {
 
         return new Response(
             $this->get('knp_snappy.pdf')->getOutputFromHtml($this->renderView(
-                'ProjBussinesTripBundle:Report:travelOrderPrint.html.twig',
+                'ProjBussinesTripBundle:Report/travelOrder:pdf.html.twig',
                 ['travelOrder' => $traverOrder, 'formatter'    => $this->getFormater()])),
             200,
             [

@@ -1,5 +1,23 @@
+{% extends '@ProjBussinesTrip/Report/layout-report.html.twig' %}
+{% block body %}
 <!--suppress CssUnusedSymbol -->
 <style type="text/css">
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+    table {
+        display: table;
+        border-spacing: 2px;
+        border-color: gray;
+    }
+    body {
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 11px;
+        line-height: 1.42857143;
+        color: #333;
+        background-color: #fff;
+    }
     .basicTable td, .basicTable th {
         border: black solid 1px;
     }
@@ -63,7 +81,7 @@
 </style>
 {% include '@ProjBussinesTrip/Report/travelOrder/page1.html.twig' %}
 {% for page in 1..travelOrder.page %}
-<div style="page-break-after: always">&nbsp;</div>
-{% include '@ProjBussinesTrip/Report/travelOrder/page2.html.twig' %}
+    <div style="page-break-after: always">&nbsp;</div>
+    {% include '@ProjBussinesTrip/Report/travelOrder/page2.html.twig' %}
 {% endfor %}
-
+{% endblock %}

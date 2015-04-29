@@ -88,7 +88,7 @@ class TravelOrderForm extends DoctrineForm {
         if ($this[self::OUTPUT]->getValue() == 1) {
             $js = \AjaxUpdater::create('reportData', $url)->render(false, false);
         } else {
-            $js = "window.location=". $url;
+            $js = "window.location.href='". $url."';";
         }
         echo Html::el('script')->setHtml($js);
     }
