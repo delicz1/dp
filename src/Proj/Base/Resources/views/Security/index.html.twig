@@ -14,6 +14,13 @@
         {% if error %}
             <div>{{ error.message }}</div>
         {% endif %}
+        <script type="text/javascript">
+            function setCookie(key, value) {
+                var expires = new Date();
+                expires.setTime(expires.getTime() + (5*24 * 60 * 60 * 1000));
+                document.cookie = key + '=' + value +';path=/'+ ';expires=' + expires.toUTCString();
+            }
+        </script>
         <form action="{{ path('login_check') }}" method="post" id="loginForm">
             <table>
                 <tr>
@@ -42,7 +49,7 @@
                                 <a class="lang-flag {{ langIso }} {{ langIso == actualLangIso ? 'selected' : '' }}"
                                    title="{{ langParamArr['native'] }}"
                                    href="javascript:void(0);"
-                                   onclick="$.cookie('__locale', '{{ langIso }}');window.location.reload();">
+                                   onclick="setCookie('__locale', '{{ langIso }}');window.location.reload();">
                                     <span class="noDisplay">{{ langParamArr['native'] }}</span>
                                 </a>
                             {% endfor %}

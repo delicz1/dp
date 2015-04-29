@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>{% block title %}Welcome!{% endblock %}</title>
+    <title>{% block title %}{{ 'header.title.common'|trans }}!{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     {% javascripts filter='?uglifyjs2, js_filter' %}
         <script src="{{ asset_url }}" type="text/javascript"></script>

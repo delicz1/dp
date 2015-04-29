@@ -169,10 +169,11 @@ class TripGrid extends GridAjaxDoctrine {
             $dialog = EditTripDialog::create($paramList->formatter, $trip->getId());
             $buttons = self::getEditButton($t, $dialog->render(false, false));
 
-            $dialog = EditTripUserDialog::create($paramList->formatter, $trip->getId(), null);
-            $buttons .= self::getEditButton($t, $dialog->render(false, false));
-
-            $buttons .= self::getEditButton($t, "window.location='".TripController::TRIP_DETAIL . '?id=' . $trip->getId() . "'");
+//            $dialog = EditTripUserDialog::create($paramList->formatter, $trip->getId(), null);
+//            $buttons .= self::getEditButton($t, $dialog->render(false, false));
+            $onclick = "window.location='".TripController::TRIP_DETAIL . '?id=' . $trip->getId() . "'";
+//            $buttons .= self::getEditButton($t, "window.location='".TripController::TRIP_DETAIL . '?id=' . $trip->getId() . "'");
+            $buttons .=  self::_getButton($onclick, 'btn btn-info', 'glyphicon glyphicon-16 glyphicon-info-sign', $t->get('trip.detail'));
             return $buttons;
         });
 

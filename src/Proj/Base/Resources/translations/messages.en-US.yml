@@ -1,7 +1,7 @@
 # messages.en.yml
 header:
     title:
-        common: ''
+        common: 'Bussines trip'
 form:
     output: "Output formát"
     output.pdf: "PDF"
@@ -21,6 +21,7 @@ form:
     delete: 'Delete'
     cancel: 'Cancel'
     repair: 'Correct'
+    generate: 'Generate'
     confirm:
         delete: 'Delete?'
     v:
@@ -170,6 +171,7 @@ trip:
     status.1: 'New'
     status.2: 'Approved'
     status.3: 'Rejected'
+    detail: 'Detail'
 trip.user:
     title: 'User of trip'
     status: 'Status'

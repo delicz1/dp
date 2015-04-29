@@ -53,7 +53,8 @@ class TravelOrderForm extends DoctrineForm {
     public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null, User $selfUser = null) {
         $form = new self(self::NAME, self::ACTION, self::POST);
         $form->setFormater($formatter);
-        $form->addSubmit(self::SUBMIT, 'form.save', 'glyphicon glyphicon-floppy-disk');
+        $form->addSubmit(self::SUBMIT, 'form.generate', 'glyphicon glyphicon-print')
+            ->addAttr('style', 'font-size:medium; padding:0.5em');
         if ($request instanceof \Request) {
             $form->setRequest($request);
             $form->doctrine = $doctrine;

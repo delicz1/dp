@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>{% block title %}Welcome!{% endblock %}</title>
+    <title>{% block title %}{{ 'header.title.common'|trans }}{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     {% javascripts '@base_js' filter='?uglifyjs2, js_filter' %}
         <script src="{{ asset_url }}" type="text/javascript"></script>
@@ -18,10 +18,11 @@
 <br />
 {% if isUser() %}
 <div class="hidden-print">
-    <div><a href="{{ path('proj_bussinestrip_user_index') }}">User administration</a> </div>
-    <div><a href="{{ path('proj_bussinestrip_vehicle_index') }}">Vehicle administration</a> </div>
-    <div><a href="{{ path('proj_bussinestrip_trip_index') }}">Trip administration</a> </div>
-    <div><a href="{{ path('proj_bussinestrip_report_travelorder') }}">Report</a> </div>
+    <div><a href="{{ path('proj_bussinestrip_user_index') }}">{{ 'menu.admin.user'|trans }}</a> </div>
+    <div><a href="{{ path('proj_bussinestrip_vehicle_index') }}">{{ 'menu.admin.vehicle'|trans }}</a> </div>
+    <div><a href="{{ path('proj_bussinestrip_trip_index') }}">{{ 'menu.trip'|trans }}</a> </div>
+    <div><a href="{{ path('proj_bussinestrip_report_travelorder') }}">{{ 'menu.travel.order'|trans }}</a> </div>
+    <div><a href="{{ path('logout') }}">{{ 'menu.logout'|trans }}</a> </div>
 </div>
 {% endif %}
 <br />

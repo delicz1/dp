@@ -93,7 +93,6 @@ class TravelOrderReport {
                 $this->page++;
             }
             $trip = $tripUser->getTrip();
-            dump($trip);
             if ($this->fromPosition == '') {
                 $this->fromPosition = $trip->getPointFrom();
                 $this->purpose = $trip->getPurpose();
