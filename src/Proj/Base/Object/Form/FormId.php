@@ -19,4 +19,5 @@ class FormId {
     const EDIT_EXPENSE = 5;
     const EDIT_TRIP_POINT = 6;
     const TRAVEL_ORDER = 7;
+    const TRIP_GRID_FILTER = 8;
 }

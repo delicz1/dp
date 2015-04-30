@@ -156,9 +156,13 @@ table.ui-jqgrid-htable thead tr.ui-jqgrid-labels th.ui-th-column {
 /* Navigation Button */
 
 div.ui-pg-div span.ui-icon {
+    /*noinspection CssUnknownTarget*/
     background-image: url("/bundles/nil/jquery/js/jquery-ui-1.10.4.custom/css/smoothness/images/ui-icons_888888_256x240.png");
 }
-
+table.ui-search-table {
+    padding: 0;
+    margin: 0;
+}
 
 
 div.ui-pg-div span.ui-icon.ui-icon-bullet { background-position: -77px -142px; }

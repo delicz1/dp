@@ -9,24 +9,45 @@
     {% endjavascripts %}
     {% stylesheets '@base_css'
                     'bundles/projbase/css/standard/grid.css'
+                    'bundles/projbase/css/standard/style.css'
                     filter='cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
-
 </head>
 <body>
-<br />
-{% if isUser() %}
-<div class="hidden-print">
-    <div><a href="{{ path('proj_bussinestrip_user_index') }}">{{ 'menu.admin.user'|trans }}</a> </div>
-    <div><a href="{{ path('proj_bussinestrip_vehicle_index') }}">{{ 'menu.admin.vehicle'|trans }}</a> </div>
-    <div><a href="{{ path('proj_bussinestrip_trip_index') }}">{{ 'menu.trip'|trans }}</a> </div>
-    <div><a href="{{ path('proj_bussinestrip_report_travelorder') }}">{{ 'menu.travel.order'|trans }}</a> </div>
-    <div><a href="{{ path('logout') }}">{{ 'menu.logout'|trans }}</a> </div>
-</div>
-{% endif %}
-<br />
-{% block body %}{% endblock %}
-{% block javascripts %}{% endblock %}
+    <div id="main">
+        <div id="header" class="hidden-print">
+            <div id="logo">
+                <div id="logo_text">
+                    <!-- class="logo_colour", allows you to change the colour of the text -->
+                    <h1><a href="">Bussines<span class="logo_colour">trip</span></a></h1>
+                    <h2>{{ "header.title.common"|trans }}</h2>
+                </div>
+            </div>
+            {% if isUser() %}
+                <div id="menubar" class="hidden-print">
+                    <ul id="menu">
+                        <li><a href="{{ path('proj_bussinestrip_user_index') }}">{{ 'menu.admin.user'|trans }}</a> </li>
+                        <li><a href="{{ path('proj_bussinestrip_vehicle_index') }}">{{ 'menu.admin.vehicle'|trans }}</a> </li>
+                        <li><a href="{{ path('proj_bussinestrip_trip_index') }}">{{ 'menu.trip'|trans }}</a> </li>
+                        <li><a href="{{ path('proj_bussinestrip_report_travelorder') }}">{{ 'menu.travel.order'|trans }}</a> </li>
+                        <li><a href="{{ path('logout') }}">{{ 'menu.logout'|trans }}</a> </li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+        <div id="content_header"></div>
+        <div id="site_content">
+            <div id="content">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+        <div id="content_footer"></div>
+        <div id="footer" class="hidden-print">
+            <p>Vytvořil Dalibor Špringer | Diplomová práce</p>
+            <p>Copyright &copy; shadowplay_2 | <a href="http://validator.w3.org/check?uri=referer">HTML5</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> | <a href="http://www.html5webtemplates.co.uk">design from HTML5webtemplates.co.uk</a></p>
+        </div>
+            {% block javascripts %}{% endblock %}
+    </div>
 </body>
 </html>

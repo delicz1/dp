@@ -42,6 +42,7 @@ class Vehicle {
     const TYPE_PUBLIC_TRAFIC_TRANS = 'vehicle.type.6';
     const TYPE_OTHER_TRANS         = 'vehicle.type.7';
 
+
     const STATUS_ACTIVE = 1;
     const STATUS_DELETED = 2;
 
@@ -104,6 +105,10 @@ class Vehicle {
     public static $statusList = [
         self::STATUS_ACTIVE => self::STATUS_ACTIVE_TRANS,
         self::STATUS_DELETED => self::STATUS_DELETED_TRANS
+    ];
+
+    public static $carList = [
+        self::TYPE_PERSONAL_CAR, self::TYPE_BUSSINES_CAR, self::TYPE_OTHER
     ];
 
     //=====================================================

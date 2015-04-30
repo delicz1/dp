@@ -306,4 +306,19 @@ class Trip {
         $text .= $this->getPurpose() ? ', ' . $this->getPurpose(): '';
         return $text;
     }
+
+    public function getFreeCapacity() {
+        $capacity = '';
+        $vehicle = $this->getVehicle();
+        if (in_array($vehicle->getType(), Vehicle::$carList)) {
+            $tripUserList = $this->getTripUsers();
+            $capacity = $vehicle->getCapacity();
+            foreach ($tripUserList as $tripUser) {
+                if ($tripUser->getStatus() != TripUser::STATUS_REJECTED) {
+                    $capacity--;
+                }
+            }
+        }
+        return $capacity;
+    }
 }

@@ -1,6 +1,11 @@
-{% extends '@ProjBussinesTrip/Report/layout-report.html.twig' %}
+{% extends 'ProjBaseBundle::layout.html.twig' %}
 
 {% block body %}
+    <style type="text/css">
+        #report td, #report th {
+            padding: 0.2em 0.5em;
+        }
+    </style>
     <div id="report">
         <div><h2>{{ 'trip.bussines.trip'|trans }}</h2>
             <table>
@@ -60,7 +65,7 @@
                             <td>{{ expense.price }}</td>
                             <td>{{ expense.currency }}</td>
                             <td>{{ expense.description }}</td>
-                            <td>{{ expense.typeList[expense.type]|trans }}</td>
+                            <td>{{ expense.statusList[expense.status]|trans }}</td>
                         </tr>
                     {% endfor %}
                 </table>

@@ -9,7 +9,6 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityRepository;
 use Proj\Base\Object\Locale\Formatter;
 use Proj\BussinesTrip\Component\Dialog\EditTripDialog;
-use Proj\BussinesTrip\Component\Dialog\EditTripUserDialog;
 use Proj\BussinesTrip\Controller\TripController;
 use Proj\BussinesTrip\Entity\Trip;
 use Proj\BussinesTrip\Entity\Vehicle;
@@ -27,6 +26,7 @@ class TripGrid extends GridAjaxDoctrine {
     //=====================================================
 
     const COLUMN_OPTIONS        = 'options';
+    const COLUMN_FREE_CAPACITY  = 'freeCapacity';
     const COLUMN_ID             = 'id';
 
     const ID        = 'trip_grid';
@@ -122,6 +122,11 @@ class TripGrid extends GridAjaxDoctrine {
         $col->option->search = true;
         $this->addColumnGrid($col);
 
+        $col = \GridColumn::create(self::COLUMN_FREE_CAPACITY, $t->get('trip.free.capacity'));
+        $col->option->index = '';
+//        $col->option->search = true;
+        $this->addColumnGrid($col);
+
         $col = \GridColumn::create(Trip::COLUMN_STATUS, $t->get('trip.status'));
         $col->option->index = 't.' . Trip::COLUMN_STATUS;
         $this->addColumnGrid($col);
@@ -152,6 +157,7 @@ class TripGrid extends GridAjaxDoctrine {
         /** @var \Doctrine\ORM\QueryBuilder $qb */
         $qb = $repository->createQueryBuilder('t');
         $qb->join('t.vehicle', 'v');
+//        $qb->leftJoin()
         return $qb;
     }
 
@@ -221,6 +227,11 @@ class TripGrid extends GridAjaxDoctrine {
         /** @noinspection PhpUnusedParameterInspection */
         $gridDataRender->addRender(Trip::COLUMN_PURPOSE, function (Trip $trip, $paramList) {
             return $trip->getPurpose();
+        });
+
+        /** @noinspection PhpUnusedParameterInspection */
+        $gridDataRender->addRender(self::COLUMN_FREE_CAPACITY, function (Trip $trip, $paramList) {
+            return $trip->getFreeCapacity();
         });
 
         /** @noinspection PhpUnusedParameterInspection */

@@ -11,6 +11,7 @@ use Proj\BussinesTrip\Component\Dialog\EditTripPointDialog;
 use Proj\BussinesTrip\Component\Dialog\EditTripUserDialog;
 use Proj\BussinesTrip\Component\Form\EditTripUserForm;
 use Proj\BussinesTrip\Component\Form\EditTripForm;
+use Proj\BussinesTrip\Component\Form\TripGridFilterForm;
 use Proj\BussinesTrip\Component\Grid\ExpenseGrid;
 use Proj\BussinesTrip\Component\Grid\TripGrid;
 use Proj\BussinesTrip\Component\Grid\TripPointGrid;
@@ -46,6 +47,7 @@ class TripController extends BaseController {
         $formatter = $this->getFormater();
         $dialog = EditTripDialog::create($formatter);
         $grid = new TripGrid($this->getLangTranslator(), $this->getDoctrine());
+        $grid->setFilter(TripGridFilterForm::create($formatter, $grid, $this->getDoctrine(), $this->getRequestNil()));
         return ['grid' => $grid, 'dialog' => $dialog, 'user' =>$user];
     }
 

@@ -10,7 +10,6 @@
     <div id="background" class="background"></div>
 
     <div id="loginCover">
-        {#<img src="bundles/rdrsecurity/img/logo.png" width="198" height="65" alt="Logo" />#}
         {% if error %}
             <div>{{ error.message }}</div>
         {% endif %}
@@ -26,22 +25,27 @@
                 <tr>
                     <td>
                         <label for="username">{{ 'form.login.name'|trans }}</label>
+                    </td>
+                    <td>
                         <input type="text" id="username" name="_username" value="{{ last_username }}" />
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <label for="password">{{ 'form.password'|trans }}</label>
+                    </td>
+                    <td>
                         <input type="password" id="password" name="_password" />
                     </td>
                 </tr>
                 <tr>
+                    <td></td>
                     <td>
                         <button type="submit">{{ 'form.login'|trans }}</button>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td colspan="2">
                         <!-- Vlajky jazyku -->
                         <div class="system-lang-menu" style="float:left">
                             {% set actualLangIso = locale %}

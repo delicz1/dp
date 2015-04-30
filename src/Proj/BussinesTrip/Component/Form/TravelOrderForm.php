@@ -4,6 +4,7 @@
  */
 
 namespace Proj\BussinesTrip\Component\Form;
+
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;

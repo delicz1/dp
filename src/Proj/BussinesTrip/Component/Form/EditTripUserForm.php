@@ -133,7 +133,7 @@ class EditTripUserForm extends DoctrineForm {
         /** @var User[] $result */
         $result = $qb->getQuery()->getResult();
         foreach ($result as $user) {
-            $list[$user->getId()] = $user->getName();
+            $list[$user->getId()] = $user->getFullName();
         }
         foreach ($this->tripUser->getTrip()->getTripUsers() as $tripUser) {
             $id = $tripUser->getUser()->getId();
