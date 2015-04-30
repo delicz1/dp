@@ -123,13 +123,11 @@ class TripGrid extends GridAjaxDoctrine {
         $col->option->search = true;
         $this->addColumnGrid($col);
 
-        $col = \GridColumn::create(self::COLUMN_FREE_CAPACITY, $t->get('trip.free.capacity'));
+        $col = \GridColumn::create('free_capacity', $t->get('trip.free.capacity'));
         $col->option->index = 'free_capacity';
-
-        $col->option->search = true;
+        //$col->option->search = true;
         $col->option->searchoptions->sopt = [\Grid::SOPT_DO_NOT_JOIN_TO_QUERY];
         $col->option->sortable = true;
-        $col->option->sorttype = 'int';
         $this->addColumnGrid($col);
 
         $col = \GridColumn::create(Trip::COLUMN_STATUS, $t->get('trip.status'));
@@ -255,7 +253,7 @@ class TripGrid extends GridAjaxDoctrine {
         });
 
         /** @noinspection PhpUnusedParameterInspection */
-        $gridDataRender->addRender(self::COLUMN_FREE_CAPACITY, function ( $trip, $paramList) {
+        $gridDataRender->addRender('free_capacity', function ( $trip, $paramList) {
             $trip = $trip[0];
             return $trip->getFreeCapacity();
         });

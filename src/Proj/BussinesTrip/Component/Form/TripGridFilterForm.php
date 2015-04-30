@@ -53,6 +53,7 @@ class TripGridFilterForm extends DoctrineFormGridFilter {
         $startDay = \DateUtil::getStartDay(null, -1);
         $endDay = \DateUtil::getEndDay();
         $dr = $this->addDateRange(Trip::COLUMN_TIME_FROM, '', [$startDay, $endDay]);
+        $this->addText('free_capacity', '', '')->setSOpt(\GridAbstract::SOPT_DO_NOT_JOIN_TO_QUERY);
 //            ->setMinPrefix(lcfirst($trans->get('overview.form.from') . ':&nbsp;'));
 //            ->setMaxPrefix('&nbsp;&nbsp;&nbsp;' . lcfirst($trans->get('overview.form.to')) . ':&nbsp;');
         $dr->setWidth(60);
