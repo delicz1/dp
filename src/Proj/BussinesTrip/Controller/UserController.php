@@ -34,7 +34,7 @@ class UserController extends BaseController {
         $dialog = EditUserDialog::create($formatter);
         $test = 'testovani';
         $grid = new UserGrid($this->getLangTranslator(), $this->getDoctrine());
-        return ['dialog' => $dialog, 'test' => $test, 'grid' => $grid];
+        return ['dialog' => $dialog, 'test' => $test, 'grid' => $grid, 'user' => $this->getSelfUser()];
     }
 
     /**
@@ -42,13 +42,22 @@ class UserController extends BaseController {
      * @Template()
      */
     public function editFormAction() {
+        $errorPermission = false;
+        $form = null;
+        $selfUser = $this->getSelfUser();
         $id = $this->getRequestNil()->getParam('id');
         $user = new User();
         if ($id > 0) {
             $user = $this->getDoctrine()->getRepository('ProjBaseBundle:User')->find($id);
         }
-        $form = EditUserForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $user, $this->getSelfUser());
-        return ['form' => $form ];
+        // Opravneni na editaci uzivatele
+
+        if ($selfUser->getRole() == User::ROLE_USER && $user->getId() != $selfUser->getId()) {
+            $errorPermission = true;
+        } else {
+            $form = EditUserForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $user, $selfUser);
+        }
+        return ['form' => $form, 'error' => $errorPermission];
     }
 
     /**

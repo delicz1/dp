@@ -72,13 +72,18 @@ class EditUserForm extends DoctrineForm {
     protected function init() {
 
         $tr = $this->formater->getLangTranslator();
+        if ($this->selfUser->getRole() != User::ROLE_ADMIN) {
+            $this->addHtml('hmtlEmail', $tr->get('user.email'), $this->user->getEmail());
+        } else {
+            $this->addText(self::INPUT_EMAIL, $tr->get('user.email'), $this->user->getEmail())->addRuleEmail('');
+        }
         $this->addText(self::INPUT_NAME, $tr->get('user.name'), $this->user->getName());
         $this->addText(self::INPUT_SURNAME, $tr->get('user.surname'), $this->user->getSurname());
-        $this->addText(self::INPUT_EMAIL, $tr->get('user.email'), $this->user->getEmail())->addRuleEmail('');
+
         $this->addText(self::INPUT_ADDRESS, $tr->get('user.address'), $this->user->getAddress());
         $this->addPassword(self::INPUT_PASSWORD, $tr->get('user.password'))->addRuleMethod('user.valid.password', 'rulePassword');
-        $this->addSelect(User::COLUMN_STATUS, $tr->get('user.status'), $this->user->getStatus(), User:: $statusList);
         if ($this->selfUser->getRole() == User::ROLE_ADMIN) {
+            $this->addSelect(User::COLUMN_STATUS, $tr->get('user.status'), $this->user->getStatus(), User:: $statusList);
             $this->addSelect(self::INPUT_ROLE, 'user.role', $this->user->getRole(), $this->roleOptions());
         }
         $this->addHidden('id', $this->user->getId());
@@ -90,7 +95,6 @@ class EditUserForm extends DoctrineForm {
 
         $user = $this->user;
 
-        $user->setEmail($this[self::INPUT_EMAIL]->getValue());
         $user->setName($this[self::INPUT_NAME]->getValue());
         $user->setSurname($this[self::INPUT_SURNAME]->getValue());
         $user->setAddress($this[self::INPUT_ADDRESS]->getValue());
@@ -99,8 +103,9 @@ class EditUserForm extends DoctrineForm {
         }
         if ($this->selfUser->getRole() == User::ROLE_ADMIN) {
             $this->user->setRole($this[self::INPUT_ROLE]->getValue());
+            $user->setStatus($this[User::COLUMN_STATUS]->getValue());
+            $user->setEmail($this[self::INPUT_EMAIL]->getValue());
         }
-        $user->setStatus($this[User::COLUMN_STATUS]->getValue());
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);

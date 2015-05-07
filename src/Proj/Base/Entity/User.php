@@ -60,14 +60,14 @@ class User implements UserInterface, \Serializable {
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=40, nullable=false)
+     * @ORM\Column(name="name", type="string", length=40, nullable=true)
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="surname", type="string", length=40, nullable=false)
+     * @ORM\Column(name="surname", type="string", length=40, nullable=true)
      */
     private $surname;
 
@@ -267,6 +267,27 @@ class User implements UserInterface, \Serializable {
      */
     public function setTripUsers($tripUsers) {
         $this->tripUsers = $tripUsers;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRoleUser() {
+        return $this->getRole() == self::ROLE_USER;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRoleAccountant() {
+        return $this->getRole() == self::ROLE_ACCOUNTANT;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRoleAdmin() {
+        return $this->getRole() == self::ROLE_ADMIN;
     }
 
     //=====================================================

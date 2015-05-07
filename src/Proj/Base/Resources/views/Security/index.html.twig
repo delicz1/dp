@@ -11,7 +11,7 @@
 
     <div id="loginCover">
         {% if error %}
-            <div>{{ error.message }}</div>
+            <div>{{ error.message|trans }}</div>
         {% endif %}
         <script type="text/javascript">
             function setCookie(key, value) {

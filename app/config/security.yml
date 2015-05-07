@@ -20,7 +20,10 @@ security:
             anonymous: ~
         logged:
             pattern: .*
-            form_login:
+            simple_form:
+                authenticator: proj.auth.autenticator
+                check_path:    /login_check
+                login_path:    /login
                 always_use_default_target_path: true
                 default_target_path: /trip/index
                 success_handler: proj.auth.success

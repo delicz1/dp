@@ -129,12 +129,14 @@ grid:
     show.selected.items: 'Zobrazit vybrané položky'
     options: 'Možnosti'
 no.data.found: 'Nenalezena žádná data'
+permission:
+    denied: 'Přístup odmítnut'
 user:
     user: 'Uživatel'
     name: 'Jméno'
     surname: 'Přijmení'
-    email: 'e-mail'
-    password: 'heslo'
+    email: 'E-mail'
+    password: 'Heslo'
     valid.password: 'Heslo musi obsahovat alespon 6 znaků'
     address: 'Adresa'
     status: "Stav"
@@ -203,6 +205,9 @@ menu:
     travel.order: "Report - cestovní příkaz"
     user.edit: "Upravit uživatele"
     logout: "Odhlásit"
+login:
+    error: "Špatný e-mail nebo heslo"
+    user.deleted: "Uživatel je blokován!"
 
 # CommandSchedulerBundle
 commandeScheduler:

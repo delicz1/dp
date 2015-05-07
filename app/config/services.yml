@@ -32,3 +32,6 @@ services:
         class: Proj\Base\Service\AuthenticationSuccessHandler
         arguments: ["@http.utils.class", "@doctrine"]
         services:
+    proj.auth.autenticator:
+        class: Proj\Base\Security\ImapAuthenticator
+        arguments: ["@security.password_encoder", "@doctrine"]

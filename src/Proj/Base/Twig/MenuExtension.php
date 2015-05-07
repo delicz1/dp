@@ -83,9 +83,14 @@ class MenuExtension extends \Twig_Extension {
             ];
         } else {
             $functions = [
-                new \Twig_SimpleFunction('isUser', function() use ($user) {
+                new \Twig_SimpleFunction('isUser', function() {
                     return false;
-                })];
+                }),
+                new \Twig_SimpleFunction('selfUser', function() {
+                    return new User();
+                }),
+            ];
+
         }
         return $functions;
     }
