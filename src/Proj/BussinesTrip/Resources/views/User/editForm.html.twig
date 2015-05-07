@@ -1,5 +1,11 @@
+{% if error %}
+    <div class="error">
+        {{ "permission.denied"|trans }}
+    </div>
+{% else %}
 <div class="formPage">
     {{ form|raw }}
 </div>
+{% endif %}
 
 

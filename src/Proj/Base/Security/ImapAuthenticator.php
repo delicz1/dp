@@ -10,13 +10,14 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
  * @author springer
  */
 class ImapAuthenticator implements SimpleFormAuthenticatorInterface {
+
+    const SERVER = 'imap.utb.cz';
 
     private $encoder;
     /**
@@ -37,55 +38,47 @@ class ImapAuthenticator implements SimpleFormAuthenticatorInterface {
 
         $userName = $token->getUsername();
         $password = $token->getCredentials();
-
+        $passwordValid = false;
         try {
-
-            $mail_server = "imap.utb.cz";
-//            $mail_username = "d_springer@fai.utb.cz" ;
-//            $mail_password = "1icJwEDk7" ;
-            $imapResult = @imap_open("{".$mail_server.":993/imap/ssl/novalidate-cert}", $userName, $password);
             $repo = $this->doctrine->getRepository("ProjBaseBundle:User");
             $user = $repo->findOneBy([User::COLUMN_EMAIL => $userName]);
-
-            if ($imapResult) {
-                if (! $user instanceof User) {
-                    $user = new User();
-                    $user->setEmail($userName);
-                    $user->setPasswd(sha1($password));
-                    $user->setStatus(User::STATUS_ACTIVE);
-                    $user->setRole(User::ROLE_USER);
-
-                    $em = $this->doctrine->getManager();
-                    $em->persist($user);
-                    $em->flush();
+            if ($user instanceof User) {
+                if ($user->getStatus() == User::STATUS_DELETED) {
+                    throw new AuthenticationException('login.user.deleted');
                 }
-            } elseif ($user instanceof User) {
                 $passwordValid = $this->encoder->isPasswordValid($user, $password);
-                if (! $passwordValid) {
-                    throw new AuthenticationException('Invalid username or password');
+            }
+            if (!$passwordValid) {
+                $imapResult = @imap_open("{".self::SERVER.":993/imap/ssl/novalidate-cert}", $userName, $password);
+                if ($imapResult) { //Uzivatel je prihlasen pomoci imapu
+                    $passwordValid = true;
+                    if (! $user instanceof User) { //uzivatel neexistuje v systemu -> vytvorim ho
+                        $user = new User();
+                        $user->setEmail($userName);
+                        $user->setPasswd(sha1($password));
+                        $user->setStatus(User::STATUS_ACTIVE);
+                        $user->setRole(User::ROLE_USER);
+
+                        $em = $this->doctrine->getManager();
+                        $em->persist($user);
+                        $em->flush();
+                    }
+                } else { //neni mozne se prihlasit
+                    throw new AuthenticationException('login.error');
                 }
             }
-        } catch (UsernameNotFoundException $e) {
-            throw new AuthenticationException('Invalid username or password');
+        } catch (\Exception $e) {
+            throw new AuthenticationException('login.error');
         }
-
-//        $passwordValid = $this->encoder->isPasswordValid($user, $token->getCredentials());
-//        dump($token->getCredentials());
-//        if ($passwordValid) {
-//            $currentHour = date('G');
-//            if ($currentHour < 14 || $currentHour > 16) {
-//                throw new AuthenticationException(
-//                    'You can only log in between 2 and 4!',
-//                    100
-//                );
-//            }
-
-        return new UsernamePasswordToken(
-            $user,
-            $user->getPassword(),
-            $providerKey,
-            $user->getRoles()
-        );
+        if ($passwordValid) {
+            return new UsernamePasswordToken(
+                $user,
+                $user->getPassword(),
+                $providerKey,
+                $user->getRoles()
+            );
+        }
+        throw new AuthenticationException('login.error');
     }
 
     public function supportsToken(TokenInterface $token, $providerKey)

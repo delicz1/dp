@@ -129,6 +129,8 @@ grid:
     show.selected.items: 'Show selected items'
     options: 'Možnosti'
 no.data.found: 'No data found'
+permission:
+    denied: 'Permission denied'
 user:
     user: 'User'
     name: 'First name'
@@ -204,6 +206,9 @@ menu:
     travel.order: "Report - travel order"
     user.edit: "User edit"
     logout: "Logout"
+login:
+    error: "Invalid e-mail or password"
+    user.deleted: "User is blocked!"
 
 # CommandSchedulerBundle
 commandeScheduler:

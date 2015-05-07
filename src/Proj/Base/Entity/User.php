@@ -269,6 +269,27 @@ class User implements UserInterface, \Serializable {
         $this->tripUsers = $tripUsers;
     }
 
+    /**
+     * @return bool
+     */
+    public function isRoleUser() {
+        return $this->getRole() == self::ROLE_USER;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRoleAccountant() {
+        return $this->getRole() == self::ROLE_ACCOUNTANT;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRoleAdmin() {
+        return $this->getRole() == self::ROLE_ADMIN;
+    }
+
     //=====================================================
     //== Security =========================================
     //=====================================================

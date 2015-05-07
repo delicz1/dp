@@ -135,10 +135,13 @@ class UserGrid extends GridAjaxDoctrine {
      */
     public static function getQueryBuilder(EntityRepository $repository, Registry $doctrine, $paramList, $gridFilter) {
         /** @var User $selfUser */
-//        $selfUser = $paramList->selfUser;
+        $selfUser = $paramList->selfUser;
         /** @var \Doctrine\ORM\QueryBuilder $qb */
         $qb = $repository
             ->createQueryBuilder('u');
+        if ($selfUser->getRole() == User::ROLE_USER) {
+            $qb->where('u.id=' . $selfUser->getId());
+        }
 //            ->join('u.' . User::COLUMN_ROLES, 'r')
 //            ->where('g.id = ' . $group->getId())
 //            ->andWhere('BIT_AND(u.' . User::COLUMN_FLAG . ', :flag) = 0')
