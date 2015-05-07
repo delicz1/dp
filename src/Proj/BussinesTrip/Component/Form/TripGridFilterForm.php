@@ -7,6 +7,7 @@ use Proj\Base\Object\Form\DoctrineFormGridFilter;
 use Proj\Base\Object\Form\FormId;
 use Proj\Base\Object\Locale\Formatter;
 use Proj\BussinesTrip\Entity\Trip;
+use Proj\BussinesTrip\Entity\Vehicle;
 
 /**
  * Class OverviewApproachFilterForm
@@ -54,6 +55,11 @@ class TripGridFilterForm extends DoctrineFormGridFilter {
         $endDay = \DateUtil::getEndDay();
         $dr = $this->addDateRange(Trip::COLUMN_TIME_FROM, '', [$startDay, $endDay]);
         $this->addText('free_capacity', '', '')->setSOpt(\GridAbstract::SOPT_DO_NOT_JOIN_TO_QUERY);
+        $this->addText(Vehicle::COLUMN_NAME, '', '');
+        $this->addText(Trip::COLUMN_POINT_FROM, '', '');
+        $this->addText(Trip::COLUMN_POINT_TO, '', '');
+        $this->addText(Trip::COLUMN_DISTANCE, '', '')->setSOpt(\GridAbstract::SOPT_EQUAL);;
+        $this->addText(Trip::COLUMN_PURPOSE, '', '');
 //            ->setMinPrefix(lcfirst($trans->get('overview.form.from') . ':&nbsp;'));
 //            ->setMaxPrefix('&nbsp;&nbsp;&nbsp;' . lcfirst($trans->get('overview.form.to')) . ':&nbsp;');
         $dr->setWidth(60);

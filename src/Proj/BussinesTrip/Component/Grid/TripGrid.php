@@ -162,11 +162,10 @@ class TripGrid extends GridAjaxDoctrine {
         /** @var \Doctrine\ORM\QueryBuilder $qb */
         $qb = $repository->createQueryBuilder('t');
         $qb->join('t.vehicle', 'v');
-        $qb->leftJoin('t.tripUsers', 'tu');
+        $qb->leftJoin('t.tripUsers', 'tu', 'WITH', 'tu.' . TripUser::COLUMN_STATUS . ' != ' . TripUser::STATUS_REJECTED);
         $qb->groupBy('t.id');
-        $qb->where('tu.status !=' . TripUser::STATUS_REJECTED);
         $qb->addSelect('v.capacity - COUNT(tu.id) as free_capacity');
-
+        /** @var \GridFilterDoctrine $gridFilter */
         $capacityRule = $gridFilter->getRuleByColumn('free_capacity');
         if ($capacityRule) {
 //            dump($capacityRule);
@@ -208,12 +207,14 @@ class TripGrid extends GridAjaxDoctrine {
 
         /** @noinspection PhpUnusedParameterInspection */
         $gridDataRender->addRender(Vehicle::COLUMN_NAME, function ( $trip, $paramList) {
+            /** @var Trip $trip */
             $trip = $trip[0];
             return $trip->getVehicle()->getName();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
         $gridDataRender->addRender(Trip::COLUMN_TIME_FROM, function ( $trip, $paramList) {
+            /** @var Trip $trip */
             $trip = $trip[0];
             /** @var Formatter $formatter */
             $formatter = $paramList->formatter;
@@ -222,6 +223,7 @@ class TripGrid extends GridAjaxDoctrine {
 
         /** @noinspection PhpUnusedParameterInspection */
         $gridDataRender->addRender(Trip::COLUMN_TIME_TO, function ( $trip, $paramList) {
+            /** @var Trip $trip */
             $trip = $trip[0];
             /** @var Formatter $formatter */
             $formatter = $paramList->formatter;
@@ -230,36 +232,42 @@ class TripGrid extends GridAjaxDoctrine {
 
         /** @noinspection PhpUnusedParameterInspection */
         $gridDataRender->addRender(Trip::COLUMN_POINT_FROM, function ( $trip, $paramList) {
+            /** @var Trip $trip */
             $trip = $trip[0];
             return $trip->getPointFrom();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
         $gridDataRender->addRender(Trip::COLUMN_POINT_TO, function ( $trip, $paramList) {
+            /** @var Trip $trip */
             $trip = $trip[0];
             return $trip->getPointTo();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
         $gridDataRender->addRender(Trip::COLUMN_DISTANCE, function ( $trip, $paramList) {
+            /** @var Trip $trip */
             $trip = $trip[0];
             return $trip->getDistance();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
         $gridDataRender->addRender(Trip::COLUMN_PURPOSE, function ( $trip, $paramList) {
+            /** @var Trip $trip */
             $trip = $trip[0];
             return $trip->getPurpose();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
         $gridDataRender->addRender('free_capacity', function ( $trip, $paramList) {
+            /** @var Trip $trip */
             $trip = $trip[0];
             return $trip->getFreeCapacity();
         });
 
         /** @noinspection PhpUnusedParameterInspection */
         $gridDataRender->addRender(Trip::COLUMN_STATUS, function ( $trip, $paramList) {
+            /** @var Trip $trip */
             $trip = $trip[0];
             /** @var LangTranslator $t */
             $t = $paramList->translator;
