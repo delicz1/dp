@@ -14,6 +14,7 @@ use Proj\BussinesTrip\Component\Form\TravelOrderForm;
 use Proj\BussinesTrip\Entity\Expense;
 use Proj\BussinesTrip\Entity\Trip;
 use Proj\BussinesTrip\Entity\TripUser;
+use Proj\BussinesTrip\Entity\Vehicle;
 
 /**
  * Class TravelOrderReport
@@ -33,6 +34,7 @@ class TravelOrderReport {
     const E_OVERNIGHT = 'e_overnight';
     const E_OTHER = 'e_other';
     const TOTAL = 'e_total';
+    const VEHICLE_TYPE = 'vehicle_type';
 
 
     private $fromPosition = '';
@@ -103,11 +105,30 @@ class TravelOrderReport {
             $this->setData(self::DATE, $this->formatter->timestamp($trip->getTimeFrom(), Formatter::FORMAT_DATE));
             $this->setData(self::TIME_FROM, $this->formatter->timestamp($trip->getTimeFrom(), Formatter::FORMAT_TIME));
             $this->setData(self::TIME_TO, $this->formatter->timestamp($trip->getTimeTo(), Formatter::FORMAT_TIME));
-            $this->setData(self::VEHICLE, $trip->getVehicle()->getType());
+            $this->setData(self::VEHICLE, $this->getVehicleType($trip->getVehicle()));
             $this->setData(self::DISTANCE, $trip->getDistance());
 
             $this->toPosition = $trip->getPointTo();
         }
+    }
+
+    /**
+     * @param Vehicle $vehicle
+     * @return string
+     */
+    private function getVehicleType(Vehicle $vehicle) {
+        $type = '';
+        switch($vehicle->getType()) {
+            case Vehicle::TYPE_BUS:
+                $type = 'A'; break;
+            case Vehicle::TYPE_PERSONAL_CAR:
+                $type = 'AUV'; break;
+            case Vehicle::TYPE_TRAIN:
+                $type = 'R'; break;
+            case Vehicle::TYPE_BUSSINES_CAR:
+                $type = 'AUT';
+        }
+        return $type;
     }
 
     /**
