@@ -101,9 +101,20 @@ class VehicleGrid extends GridAjaxDoctrine {
         $col->option->search = true;
         $this->addColumnGrid($col);
 
+//        $valueList = [Vehicle::STATUS_ACTIVE . ":" . $t->get(Vehicle::STATUS_ACTIVE_TRANS),
+//                      Vehicle::STATUS_DELETED. ":" . $t->get(Vehicle::STATUS_DELETED_TRANS), ];
+
         $col = \GridColumn::create(Vehicle::COLUMN_STATUS, $t->get('vehicle.status'));
         $col->option->index = 'v.' . Vehicle::COLUMN_STATUS;
         $col->option->sortable = true;
+
+//        $options = new \GenericClass();
+//        $options->value = ":-- " . $t->get('grid.all') . " --;" . implode(';', $valueList);
+//        $options->separator = ":";
+//        $options->delimiter = ";";
+//        $options->sopt = [GridAjaxDoctrine::SOPT_EQUAL];
+//        $options->defaultValue = '';
+//        $col->option->searchoptions = $options;
         $this->addColumnGrid($col);
     }
 

@@ -50,7 +50,7 @@ class VehicleController extends BaseController {
             $vehicle = $this->getDoctrine()->getRepository('ProjBussinesTripBundle:Vehicle')->find($id);
         }
         $vehicle = $vehicle ?: new Vehicle();
-        $form = EditVehicleForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $vehicle);
+        $form = EditVehicleForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $vehicle, $this->getSelfUser());
         return ['form' => $form ];
     }
 

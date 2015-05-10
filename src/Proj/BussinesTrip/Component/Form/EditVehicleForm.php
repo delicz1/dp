@@ -7,6 +7,8 @@ namespace Proj\BussinesTrip\Component\Form;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use nil\Html;
 use Notificator;
+use Proj\Base\Entity\FormProfile;
+use Proj\Base\Entity\User;
 use Proj\Base\Object\Form\DoctrineForm;
 use Proj\Base\Object\Form\FormId;
 use Proj\Base\Object\Locale\Formatter;
@@ -43,15 +45,18 @@ class EditVehicleForm extends DoctrineForm {
      * @var Vehicle
      */
     public $vehicle;
+    /** @var  User */
+    public $selfUser;
 
     /**
      * @param Formatter $formatter
      * @param \Request  $request
      * @param Registry  $doctrine
      * @param Vehicle   $vehicle
+     * @param User      $selfUser
      * @return EditUserForm
      */
-    public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null, Vehicle $vehicle = null) {
+    public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null, Vehicle $vehicle = null, User $selfUser = null) {
         $form = new self(self::NAME, self::ACTION, self::POST);
         $form->setFormater($formatter);
         $form->addSubmit(self::SUBMIT, 'form.save', 'glyphicon glyphicon-floppy-disk');
@@ -59,21 +64,28 @@ class EditVehicleForm extends DoctrineForm {
             $form->setRequest($request);
             $form->doctrine = $doctrine;
             $form->vehicle = $vehicle;
+            $form->selfUser = $selfUser;
             $form->setHelpManager(false);
             $form->init();
+
         }
         return $form;
     }
 
     protected function init() {
 
+//        $this->setProfile([FormProfile::TYPE_USER => $this->selfUser]);
         $tr = $this->formater->getLangTranslator();
         $statusValue = $this->vehicle->getId() ? $this->vehicle->getStatus() : Vehicle::STATUS_ACTIVE;
 
         $this->addText(self::INPUT_NAME, $tr->get('vehicle.name'), $this->vehicle->getName());
         $this->addHidden(Vehicle::COLUMN_ID, $this->vehicle->getId());
-        $this->addSelect(self::INPUT_TYPE, $tr->get('vehicle.type'), $this->vehicle->getType(), Vehicle::$typeList);
-        $this->addText(self::INPUT_CAPACITY, $tr->get('vehicle.capacity'), $this->vehicle->getCapacity())->addRuleInteger()->addRuleRange('', 1, 9999);
+        $this->addSelect(self::INPUT_TYPE, $tr->get('vehicle.type'), $this->vehicle->getType(), Vehicle::$typeList)
+            ->setProfile();
+        $this->addText(self::INPUT_CAPACITY, $tr->get('vehicle.capacity'), $this->vehicle->getCapacity())
+            ->addRuleInteger()
+            ->addRuleRange('', 1, 9999)
+            ->setProfile();
         $this->addSwitch(self::INPUT_STATUS, $tr->get('vehicle.status'), $statusValue)
             ->setOption1(Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ACTIVE_TRANS)
             ->setOption2(Vehicle::STATUS_DELETED, Vehicle::STATUS_DELETED_TRANS);

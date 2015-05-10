@@ -128,6 +128,7 @@ grid:
     chooser.columns: 'Sloupce'
     show.selected.items: 'Zobrazit vybrané položky'
     options: 'Možnosti'
+    all: "Vše"
 no.data.found: 'Nenalezena žádná data'
 permission:
     denied: 'Přístup odmítnut'

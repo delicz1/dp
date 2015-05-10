@@ -96,7 +96,7 @@ class TravelOrderReport {
             }
             $trip = $tripUser->getTrip();
             if ($this->fromPosition == '') {
-                $this->fromPosition = $trip->getPointFrom();
+                $this->fromPosition = $trip->getPointFrom() . ', ' . $this->formatter->timestamp($trip->getTimeFrom(), Formatter::FORMAT_DATE_TIME);
                 $this->purpose = $trip->getPurpose();
             }
             $this->addExpenses($tripUser);
@@ -108,7 +108,7 @@ class TravelOrderReport {
             $this->setData(self::VEHICLE, $this->getVehicleType($trip->getVehicle()));
             $this->setData(self::DISTANCE, $trip->getDistance());
 
-            $this->toPosition = $trip->getPointTo();
+            $this->toPosition = $trip->getPointTo() . ', ' . $this->formatter->timestamp($trip->getTimeTo(), Formatter::FORMAT_DATE_TIME);
         }
     }
 
