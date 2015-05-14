@@ -10,7 +10,6 @@ use Proj\Base\Object\Locale\LangTranslator;
 use Symfony\Component\Translation\Translator;
 
 /**
- * @author necas
  */
 class BaseController extends Controller {
 
@@ -80,4 +79,4 @@ class BaseController extends Controller {
     protected function getRequestNil() {
         return $this->request;
     }
-} 
+}

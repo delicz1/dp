@@ -13,7 +13,7 @@ use Request;
 use Notificator;
 
 /**
- * @author necas
+ *
  */
 class FormHelpAddForm extends DoctrineForm {
 

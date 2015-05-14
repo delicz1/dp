@@ -7,7 +7,7 @@ use Symfony\Component\Translation\Translator;
 use SystemLangInterface;
 
 /**
- * @author necas
+ *
  */
 class LangTranslator implements \LangTranslatorInterface {
 

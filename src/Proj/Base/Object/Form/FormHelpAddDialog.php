@@ -4,10 +4,10 @@ namespace Proj\Base\Object\Form;
 
 use Dialog;
 use Proj\Base\Controller\FormController;
-use Proj\Base\Object\Dialog\ProjDialog;
+//use Proj\Base\Object\Dialog\ProjDialog;
 
 /**
- * @author necas
+ *
  */
 class FormHelpAddDialog extends Dialog {
 

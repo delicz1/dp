@@ -6,7 +6,7 @@ use Dialog;
 use Proj\Base\Controller\FormController;
 
 /**
- * @author necas
+ *
  */
 class FormProfileAddDialog extends \Dialog {
 

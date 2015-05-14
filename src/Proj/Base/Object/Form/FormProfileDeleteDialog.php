@@ -10,7 +10,7 @@ use Proj\Base\Object\Dialog\ProjDialog;
 use Proj\Base\Entity\FormProfile;
 
 /**
- * @author necas
+ *
  */
 class FormProfileDeleteDialog extends \Dialog {
 

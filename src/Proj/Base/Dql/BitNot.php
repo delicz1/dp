@@ -1,6 +1,6 @@
 <?php
 /**
- * @author necas
+ *
  */
 
 namespace Proj\Base\Dql;

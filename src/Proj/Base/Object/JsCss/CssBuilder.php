@@ -3,7 +3,7 @@
 namespace Proj\Base\Object\JsCss;
 
 /**
- * @author necas
+ *
  */
 class CssBuilder extends \CssBuilderAbstract {
 

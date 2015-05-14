@@ -14,7 +14,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Request;
 
 /**
- * @author necas
+ *
  */
 class FormProfileAddForm extends DoctrineForm {
 

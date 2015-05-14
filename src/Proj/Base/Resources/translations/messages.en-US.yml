@@ -167,7 +167,7 @@ trip:
     time.to: 'Time to'
     point.from: 'Point from'
     point.to: 'Point to'
-    bussines.trip: 'Bussines trip'
+    bussines.trip: 'Business trip'
     distance: 'Distance [km]'
     purpose: 'Purpose'
     status: 'Status'

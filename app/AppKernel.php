@@ -40,6 +40,7 @@ class AppKernel extends Kernel {
             // Proj
             new Nil\NilBundle(),
             new Proj\Base\ProjBaseBundle(),
+            $bundles[] = new Proj\BussinesTrip\ProjBussinesTripBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'])) {
@@ -47,7 +48,7 @@ class AppKernel extends Kernel {
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
 //            $bundles[] = new Proj\Test\ProjTestBundle();
-            $bundles[] = new Proj\BussinesTrip\ProjBussinesTripBundle();
+//            $bundles[] = new Proj\BussinesTrip\ProjBussinesTripBundle();
         }
 
         return $bundles;

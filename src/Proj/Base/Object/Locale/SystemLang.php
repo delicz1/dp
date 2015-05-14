@@ -1,10 +1,9 @@
 <?php
 /**
- * @author necas
+ *
  */
 
 namespace Proj\Base\Object\Locale;
-
 use LangTranslatorInterface;
 
 /**

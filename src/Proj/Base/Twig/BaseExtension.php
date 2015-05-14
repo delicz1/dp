@@ -1,6 +1,6 @@
 <?php
 /**
- * @author necas
+ *
  */
 
 namespace Proj\Base\Twig;
@@ -63,4 +63,4 @@ class BaseExtension extends \Twig_Extension {
         return 'base_extension';
     }
 
-} 
+}

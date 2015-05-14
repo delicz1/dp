@@ -1,6 +1,5 @@
 <?php
 /**
- * @author necas
  */
 
 namespace Proj\Base\Object\Form;

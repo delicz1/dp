@@ -1,6 +1,6 @@
 <?php
 /**
- * @author necas
+ *
  */
 // src/Acme/LocaleBundle/EventListener/LocaleListener.php
 namespace Proj\Base\EventListener;
