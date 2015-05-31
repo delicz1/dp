@@ -12,6 +12,7 @@ use Proj\BussinesTrip\Component\Dialog\EditTripUserDialog;
 use Proj\BussinesTrip\Component\Form\EditTripUserForm;
 use Proj\BussinesTrip\Component\Form\EditTripForm;
 use Proj\BussinesTrip\Component\Form\TripGridFilterForm;
+use Proj\BussinesTrip\Component\Form\TripGridUserForm;
 use Proj\BussinesTrip\Component\Grid\ExpenseGrid;
 use Proj\BussinesTrip\Component\Grid\TripGrid;
 use Proj\BussinesTrip\Component\Grid\TripPointGrid;
@@ -100,7 +101,7 @@ class TripController extends BaseController {
             $trip = $this->getDoctrine()->getRepository('ProjBussinesTripBundle:Trip')->find($id);
         }
         $trip = $trip ?: new Trip();
-        $form = EditTripForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $trip);
+        $form = EditTripForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $trip, $this->getSelfUser());
         return ['form' => $form];
     }
 

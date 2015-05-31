@@ -7,6 +7,7 @@ namespace Proj\BussinesTrip\Component\Grid;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityRepository;
+use Proj\Base\Entity\User;
 use Proj\Base\Object\Locale\Formatter;
 use Proj\BussinesTrip\Component\Dialog\EditTripDialog;
 use Proj\BussinesTrip\Controller\TripController;
@@ -130,6 +131,13 @@ class TripGrid extends GridAjaxDoctrine {
         $col->option->sortable = true;
         $this->addColumnGrid($col);
 
+        $col = \GridColumn::create('self_user', $t->get('trip.user.in.trip'));
+        $col->option->index = 'self_user';
+        $col->option->search = true;
+        $col->option->searchoptions->sopt = [\Grid::SOPT_DO_NOT_JOIN_TO_QUERY];
+        $col->option->sortable = true;
+        $this->addColumnGrid($col);
+
         $col = \GridColumn::create(Trip::COLUMN_STATUS, $t->get('trip.status'));
         $col->option->index = 't.' . Trip::COLUMN_STATUS;
         $this->addColumnGrid($col);
@@ -158,19 +166,32 @@ class TripGrid extends GridAjaxDoctrine {
      */
     public static function getQueryBuilder(EntityRepository $repository, Registry $doctrine, $paramList, $gridFilter) {
 
-
+        /** @var User $user */
+        $user = $paramList->selfUser;
         /** @var \Doctrine\ORM\QueryBuilder $qb */
         $qb = $repository->createQueryBuilder('t');
         $qb->join('t.vehicle', 'v');
         $qb->leftJoin('t.tripUsers', 'tu', 'WITH', 'tu.' . TripUser::COLUMN_STATUS . ' != ' . TripUser::STATUS_REJECTED);
+        $qb->leftJoin('t.tripUsers', 'tu_self', 'WITH', 'tu_self.' . TripUser::COLUMN_STATUS . ' != ' . TripUser::STATUS_REJECTED . ' AND tu.user ='. $user->getId());
         $qb->groupBy('t.id');
         $qb->addSelect('v.capacity - COUNT(tu.id) as free_capacity');
+        $qb->addSelect('COUNT(tu_self.id) as self_user');
         /** @var \GridFilterDoctrine $gridFilter */
         $capacityRule = $gridFilter->getRuleByColumn('free_capacity');
         if ($capacityRule) {
 //            dump($capacityRule);
             $qb->having('free_capacity =' . $capacityRule->data);
         }
+        /** @var \GridFilterDoctrine $gridFilter */
+        $selfUserRule = $gridFilter->getRuleByColumn('self_user');
+        if ($selfUserRule) {
+            if ($selfUserRule->data == '1') {
+                $qb->having('self_user > 0');
+            } else {
+                $qb->having('self_user = 0');
+            }
+        }
+
         return $qb;
     }
 
@@ -263,6 +284,14 @@ class TripGrid extends GridAjaxDoctrine {
             /** @var Trip $trip */
             $trip = $trip[0];
             return $trip->getFreeCapacity();
+        });
+
+        /** @noinspection PhpUnusedParameterInspection */
+        $gridDataRender->addRender('self_user', function ($trip, $paramList) {
+            /** @var LangTranslator $tr */
+            $tr = $paramList->translator;
+            $result = $trip['self_user'] > 0 ? 'trip.yes'  : 'trip.no';
+            return  $tr->get($result);
         });
 
         /** @noinspection PhpUnusedParameterInspection */

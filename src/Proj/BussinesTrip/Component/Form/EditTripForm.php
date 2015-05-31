@@ -49,15 +49,20 @@ class EditTripForm extends DoctrineForm {
      * @var Trip
      */
     public $trip;
+    /**
+     * @var User
+     */
+    public $selfUser;
 
     /**
      * @param Formatter $formatter
      * @param \Request  $request
      * @param Registry  $doctrine
      * @param Trip      $trip
+     * @param User      $selfUser
      * @return EditUserForm
      */
-    public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null, Trip $trip = null) {
+    public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null, Trip $trip = null, User $selfUser = null) {
         $form = new self(self::NAME, self::ACTION, self::POST);
         $form->setFormater($formatter);
         $form->addSubmit(self::SUBMIT, 'form.save', 'glyphicon glyphicon-floppy-disk');
@@ -66,6 +71,7 @@ class EditTripForm extends DoctrineForm {
             $form->setRequest($request);
             $form->doctrine = $doctrine;
             $form->trip = $trip;
+            $form->selfUser = $selfUser;
             $form->setHelpManager(false);
             $form->init();
         }
@@ -73,7 +79,7 @@ class EditTripForm extends DoctrineForm {
     }
 
     protected function init() {
-
+        $tr = $this->getTranslator();
         $status = Trip::STATUS_NEW;
         $timeFrom = \DateUtil::getStartDay();
         $timeTo = \DateUtil::getEndDay();
@@ -92,7 +98,7 @@ class EditTripForm extends DoctrineForm {
         $this->addText(Trip::COLUMN_POINT_TO, 'trip.point.to', $this->trip->getPointTo());
         $this->addText(Trip::COLUMN_DISTANCE, 'trip.distance', $this->trip->getDistance())->addRuleInteger('', true);
         $this->addText(Trip::COLUMN_PURPOSE, 'trip.purpose', $this->trip->getPurpose());
-        $this->addSelect(Trip::COLUMN_VEHICLE_ID, 'vehicle.vehicle', $vehicleId, $this->getVehicleOptions());
+        $this->addSelect(Trip::COLUMN_VEHICLE_ID, 'vehicle.vehicle', $vehicleId, $this->getVehicleOptions())->addRuleMethod($tr->get('vehicle.not.free'),'ruleIsVehicleFree');
         $this->addSelect(Trip::COLUMN_STATUS, 'trip.status', $status, Trip::$statusList);
 
 //        /** @var TripUser[] $list */
@@ -122,6 +128,7 @@ class EditTripForm extends DoctrineForm {
     public function onSuccess() {
         $save = $this->getRequest()->getParam(self::SUBMIT);
         if ($save) {
+            $isNewTrip = $this->trip->getId();
             $vehicleId = $this[Trip::COLUMN_VEHICLE_ID]->getValue();
             $vehicle = $this->doctrine->getRepository('ProjBussinesTripBundle:Vehicle')->find($vehicleId);
             $em = $this->getDoctrine()->getManager();
@@ -138,6 +145,15 @@ class EditTripForm extends DoctrineForm {
 
             $em->persist($trip);
             $em->flush();
+            if ($isNewTrip && $this->selfUser->isRoleUser() && $this->isUserFree($trip->getTimeFrom(), $trip->getTimeTo())) {
+                $tripUser = new TripUser();
+                $tripUser->setTrip($trip);
+                $tripUser->setUser($this->selfUser);
+                $tripUser->setStatus(TripUser::STATUS_NEW);
+
+                $em->persist($tripUser);
+                $em->flush();
+            }
 
             Notificator::add('SUCCESS', '', Notificator::TYPE_INFO);
             $js = EditTripDialog::close(EditTripDialog::DIV);
@@ -194,4 +210,51 @@ class EditTripForm extends DoctrineForm {
     //=====================================================
     //== Validace =========================================
     //=====================================================
+
+
+    /**
+     * @return bool
+     */
+    public function ruleIsVehicleFree() {
+        $timeFrom = $this[Trip::COLUMN_TIME_FROM]->getValue();
+        $timeTo = $this[Trip::COLUMN_TIME_TO]->getValue();
+        $vehicleId = $this[Trip::COLUMN_VEHICLE_ID]->getValue();
+        $repository = $this->doctrine->getRepository('ProjBussinesTripBundle:Trip');
+        /** @var EntityRepository $repository */
+        $qb = $repository->createQueryBuilder('t');
+        $qb->join('t.vehicle', 'v');
+
+        $qb->where('v.id = ' . $vehicleId);
+        $qb->andWhere('t.timeFrom < ' . $timeTo);
+        $qb->andWhere('t.timeTo > ' . $timeFrom);
+        if ($this->trip->getId()) {
+            $qb->andWhere('t.id !=' . $this->trip->getId());
+        }
+
+        $qb->setMaxResults(1);
+        $result = $qb->getQuery()->getResult();
+        return ! count($result);
+    }
+
+    /**
+     * @param $timeFrom
+     * @param $timeTo
+     * @return array
+     */
+    private function isUserFree($timeFrom, $timeTo) {
+        $repository = $this->doctrine->getRepository('ProjBussinesTripBundle:Trip');
+        /** @var EntityRepository $repository */
+        $qb = $repository->createQueryBuilder('t');
+        $qb->join('t.tripUsers', 'tu');
+        $qb->join('tu.user', 'u');
+
+        $qb->where('u.id = ' . $this->selfUser->getId());
+        $qb->andWhere('tu.status != ' . TripUser::STATUS_REJECTED);
+        $qb->andWhere('t.timeFrom < ' . $timeTo);
+        $qb->andWhere('t.timeTo > ' . $timeFrom);
+
+        $qb->setMaxResults(1);
+        $result = $qb->getQuery()->getResult();
+        return ! count($result);
+    }
 }

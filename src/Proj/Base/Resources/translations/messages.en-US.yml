@@ -162,6 +162,7 @@ vehicle:
     status: "Status"
     status.1: "Active"
     status.2: "Deleted"
+    not.free: "Vehicle is not free"
 trip:
     time.from: 'Time from'
     time.to: 'Time to'
@@ -176,12 +177,15 @@ trip:
     status.3: 'Rejected'
     detail: 'Detail'
     free.capacity: 'Number of places available'
+    yes: 'Yes'
+    no: 'No'
 trip.user:
     title: 'User of trip'
     status: 'Status'
     status.1: 'New'
     status.2: 'Approved'
     status.3: 'Rejected'
+    in.trip: 'Myself in trip'
 trip.point:
     title: 'Trip point'
     point: 'Point'

@@ -55,6 +55,7 @@ class TripGridFilterForm extends DoctrineFormGridFilter {
         $endDay = \DateUtil::getEndDay();
         $dr = $this->addDateRange(Trip::COLUMN_TIME_FROM, '', [$startDay, $endDay]);
         $this->addText('free_capacity', '', '')->setSOpt(\GridAbstract::SOPT_DO_NOT_JOIN_TO_QUERY);
+        $this->addSelect('self_user', '', '', ['' => '', '1' => 'trip.yes', '0' => 'trip.no'])->setSOpt(\GridAbstract::SOPT_DO_NOT_JOIN_TO_QUERY);;
         $this->addText(Vehicle::COLUMN_NAME, '', '');
         $this->addText(Trip::COLUMN_POINT_FROM, '', '');
         $this->addText(Trip::COLUMN_POINT_TO, '', '');

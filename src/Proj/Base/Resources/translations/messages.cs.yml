@@ -162,6 +162,7 @@ vehicle:
     status: "Stav jednotky"
     status.1: "Aktivní"
     status.2: "Nekativní"
+    not.free: "Dopravní prostředek není volný"
 trip:
     time.from: 'Čas od'
     time.to: 'Čas do'
@@ -176,11 +177,14 @@ trip:
     status.3: 'Odmítnutá'
     detail: 'Detail'
     free.capacity: 'Počet volných míst'
+    yes: 'Ano'
+    no: 'Ne'
 trip.user:
     title: 'Uživatelé přiřazení k jízdě'
     status.1: 'Nová'
     status.2: 'Schválená'
     status.3: 'Odmítnutá'
+    in.trip: 'Účástním se'
 trip.point:
     title: 'Body jízdy'
     point: 'Bod'
