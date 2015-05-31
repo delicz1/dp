@@ -187,6 +187,7 @@ trip.user:
     status.2: 'Approved'
     status.3: 'Rejected'
     in.trip: 'Myself in trip'
+    rule.capacity: 'Trip is full'
 trip.point:
     title: 'Trip point'
     point: 'Point'

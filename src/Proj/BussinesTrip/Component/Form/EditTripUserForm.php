@@ -71,12 +71,15 @@ class EditTripUserForm extends DoctrineForm {
 
     protected function init() {
 
+        $tr = $this->getTranslator();
         $userId = $this->tripUser->getUser() ? $this->tripUser->getUser()->getId() : '';
 
         $this->addHtml('trip');
         $this->addHidden(TripUser::COLUMN_ID, $this->tripUser->getId());
         $this->addHidden(self::INPUT_TRIP, $this->tripUser->getTrip()->getId());
-        $this->addSelect(self::INPUT_USER, 'user.user', $userId, $this->getUserOptions())->addRuleRequired('');
+        $this->addSelect(self::INPUT_USER, 'user.user', $userId, $this->getUserOptions())
+            ->addRuleRequired('')
+            ->addRuleMethod($tr->get('trip.user.rule.capacity'), 'ruleCapacity');
         $this->addSelect(self::INPUT_STATUS, 'trip.status', $this->tripUser->getStatus(), TripUser::$statusList);
         $this->handle();
     }
@@ -147,4 +150,17 @@ class EditTripUserForm extends DoctrineForm {
     //=====================================================
     //== Validace =========================================
     //=====================================================
+
+    /**
+     * @return bool
+     */
+    public function ruleCapacity() {
+        $result = true;
+        if (!$this->tripUser->getId()) {
+            $tripId = $this[self::INPUT_TRIP]->getValue();
+            $trip = $this->doctrine->getRepository('ProjBussinesTripBundle:Trip')->find($tripId);
+            $result = (bool) $trip->getFreeCapacity();
+        }
+        return $result;
+    }
 }
