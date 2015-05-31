@@ -166,7 +166,7 @@ trip:
     time.from: 'Čas od'
     time.to: 'Čas do'
     point.from: 'Odkud'
-    point.to: 'Kam'
+    point.to: 'Místo jednání'
     bussines.trip: 'Služební jízda'
     distance: 'Ujeta vzdálenost [km]'
     purpose: 'Účel'

@@ -38,6 +38,7 @@ class TravelOrderReport {
 
 
     private $fromPosition = '';
+    private $meetinPlace = [];
     private $toPosition = '';
     private $purpose = '';
 
@@ -107,8 +108,8 @@ class TravelOrderReport {
             $this->setData(self::TIME_TO, $this->formatter->timestamp($trip->getTimeTo(), Formatter::FORMAT_TIME));
             $this->setData(self::VEHICLE, $this->getVehicleType($trip->getVehicle()));
             $this->setData(self::DISTANCE, $trip->getDistance());
-
-            $this->toPosition = $trip->getPointTo() . ', ' . $this->formatter->timestamp($trip->getTimeTo(), Formatter::FORMAT_DATE_TIME);
+            $this->meetinPlace[] = $trip->getPointTo();
+            $this->toPosition = $trip->getPointFrom() . ', ' . $this->formatter->timestamp($trip->getTimeTo(), Formatter::FORMAT_DATE_TIME);
         }
     }
 
@@ -270,4 +271,10 @@ class TravelOrderReport {
         return $this->page;
     }
 
+    /**
+     * @return string
+     */
+    public function getMeetingPlaceString() {
+        return implode(', ', $this->meetinPlace);
+    }
 }

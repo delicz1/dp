@@ -5,7 +5,7 @@
                 <table class="table1">
                     <tr>
                         <td style="width: 500px">
-                            <div class="firma">Firma</div>
+                            <div class="firma" style="float: left;">Firma: Univerzita Tomáše Bati ve Zlíně<br />&nbsp;&nbsp;&nbsp;nám. T. G. Masaryka 5555  760 01 Zlín</div>
                             <div style="font-size: large; text-align: right">Cestovní příkaz</div><br />
                             <div class="left">1. Příjmení, jméno, titul</div>
                             <div class="dotted">{{ travelOrder.tripUser.fullName }}</div>
@@ -49,6 +49,7 @@
                             {{ travelOrder.fromPosition }}
                         </td>
                         <td style="width: 200px">
+                            {{ travelOrder.meetingPlaceString }}
                         </td>
                         <td style="width: 200px">
                             {{ travelOrder.purpose }}
@@ -253,7 +254,7 @@
                     </tr>
                     <tr>
                         <td style="width:150px;">
-                            <div style="text-align: center">Datu a podpis pracovníka,<br />který upravil vyúčtování</div>
+                            <div style="text-align: center">Datum a podpis pracovníka,<br />který upravil vyúčtování</div>
                             <br />
                         </td>
                         <td style="width:50px;">
