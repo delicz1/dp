@@ -187,6 +187,7 @@ trip.user:
     status.3: 'Odmítnutá'
     in.trip: 'Účástním se'
     rule.capacity: 'V jízdě není volné místo'
+    rule.isUserFree: 'Uzivatel není volný'
 trip.point:
     title: 'Body jízdy'
     point: 'Bod'

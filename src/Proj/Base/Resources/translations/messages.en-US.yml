@@ -188,6 +188,7 @@ trip.user:
     status.3: 'Rejected'
     in.trip: 'Myself in trip'
     rule.capacity: 'Trip is full'
+    rule.isUserFree: 'User is not free'
 trip.point:
     title: 'Trip point'
     point: 'Point'

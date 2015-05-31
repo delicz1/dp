@@ -79,6 +79,7 @@ class EditTripUserForm extends DoctrineForm {
         $this->addHidden(self::INPUT_TRIP, $this->tripUser->getTrip()->getId());
         $this->addSelect(self::INPUT_USER, 'user.user', $userId, $this->getUserOptions())
             ->addRuleRequired('')
+            ->addRuleMethod($tr->get('trip.user.rule.isUserFree'), 'ruleIsUserFree')
             ->addRuleMethod($tr->get('trip.user.rule.capacity'), 'ruleCapacity');
         $this->addSelect(self::INPUT_STATUS, 'trip.status', $this->tripUser->getStatus(), TripUser::$statusList);
         $this->handle();
@@ -162,5 +163,31 @@ class EditTripUserForm extends DoctrineForm {
             $result = (bool) $trip->getFreeCapacity();
         }
         return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    public function ruleIsUserFree() {
+
+        $userId = $this[self::INPUT_USER]->getValue();
+        $tripId = $this[self::INPUT_TRIP]->getValue();
+        $trip = $this->doctrine->getRepository('ProjBussinesTripBundle:Trip')->find($tripId);;
+
+        $repository = $this->doctrine->getRepository('ProjBussinesTripBundle:Trip');
+        /** @var EntityRepository $repository */
+        $qb = $repository->createQueryBuilder('t');
+        $qb->join('t.tripUsers', 'tu');
+        $qb->join('tu.user', 'u');
+
+        $qb->where('u.id = ' . $userId);
+        $qb->andWhere('tu.status != ' . TripUser::STATUS_REJECTED);
+        $qb->andWhere('t.timeFrom < ' . $trip->getTimeTo());
+        $qb->andWhere('t.timeTo > ' . $trip->getTimeFrom());
+        $qb->andWhere('t.id != ' . $tripId);
+
+        $qb->setMaxResults(1);
+        $result = $qb->getQuery()->getResult();
+        return ! count($result);
     }
 }
