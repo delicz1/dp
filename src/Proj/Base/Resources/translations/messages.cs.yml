@@ -179,6 +179,7 @@ trip:
     free.capacity: 'Počet volných míst'
     yes: 'Ano'
     no: 'Ne'
+    rule.time.from.to: "Špatně zadaný časový interval"
 trip.user:
     title: 'Uživatelé přiřazení k jízdě'
     status.1: 'Nová'

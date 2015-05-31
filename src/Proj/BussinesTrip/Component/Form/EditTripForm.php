@@ -92,7 +92,7 @@ class EditTripForm extends DoctrineForm {
         }
 
         $this->addHidden('id', $this->trip->getId());
-        $this->addDate(Trip::COLUMN_TIME_FROM, 'trip.time.from', $timeFrom, \FormItemDate::MODE_DATETIME);
+        $this->addDate(Trip::COLUMN_TIME_FROM, 'trip.time.from', $timeFrom, \FormItemDate::MODE_DATETIME)->addRuleMethod($tr->get('trip.rule.time.from.to'), 'ruleTimeFromTo');
         $this->addDate(Trip::COLUMN_TIME_TO, 'trip.time.to', $timeTo, \FormItemDate::MODE_DATETIME);
         $this->addText(Trip::COLUMN_POINT_FROM, 'trip.point.from', $this->trip->getPointFrom());
         $this->addText(Trip::COLUMN_POINT_TO, 'trip.point.to', $this->trip->getPointTo());
@@ -210,6 +210,15 @@ class EditTripForm extends DoctrineForm {
     //=====================================================
     //== Validace =========================================
     //=====================================================
+
+    /**
+     * @return bool
+     */
+    public function ruleTimeFromTo() {
+        $timeFrom = $this[Trip::COLUMN_TIME_FROM]->getValue();
+        $timeTo = $this[Trip::COLUMN_TIME_TO]->getValue();
+        return $timeFrom < $timeTo;
+    }
 
 
     /**

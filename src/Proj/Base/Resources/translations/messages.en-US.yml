@@ -179,6 +179,7 @@ trip:
     free.capacity: 'Number of places available'
     yes: 'Yes'
     no: 'No'
+    rule.time.from.to: "Bad time interval"
 trip.user:
     title: 'User of trip'
     status: 'Status'
