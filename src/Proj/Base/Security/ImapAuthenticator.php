@@ -66,6 +66,7 @@ class ImapAuthenticator implements SimpleFormAuthenticatorInterface {
                         $user->setPasswd(sha1($password));
                         $user->setStatus(User::STATUS_ACTIVE);
                         $user->setRole(User::ROLE_USER);
+                        $user->setSurname($userName);
 
                         $em = $this->doctrine->getManager();
                         $em->persist($user);
@@ -89,12 +90,24 @@ class ImapAuthenticator implements SimpleFormAuthenticatorInterface {
         throw new AuthenticationException('login.error');
     }
 
+    /**
+     * @param TokenInterface $token
+     * @param                $providerKey
+     * @return bool
+     */
     public function supportsToken(TokenInterface $token, $providerKey)
     {
         return $token instanceof UsernamePasswordToken
         && $token->getProviderKey() === $providerKey;
     }
 
+    /**
+     * @param Request $request
+     * @param         $username
+     * @param         $password
+     * @param         $providerKey
+     * @return UsernamePasswordToken
+     */
     public function createToken(Request $request, $username, $password, $providerKey)
     {
         return new UsernamePasswordToken($username, $password, $providerKey);

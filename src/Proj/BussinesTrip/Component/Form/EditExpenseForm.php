@@ -10,6 +10,7 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityRepository;
 use nil\Html;
 use Notificator;
+use Proj\Base\Entity\User;
 use Proj\Base\Object\Form\DoctrineForm;
 use Proj\Base\Object\Form\FormId;
 use Proj\Base\Object\Locale\Formatter;
@@ -48,6 +49,11 @@ class EditExpenseForm extends DoctrineForm {
 
     const SUBMIT = 'save';
 
+    /**
+     * @var User
+     */
+    public $selfUser;
+
     /** @var Expense     */
     private $expense;
     /** @var  Trip */
@@ -63,9 +69,11 @@ class EditExpenseForm extends DoctrineForm {
      * @param \Request  $request
      * @param Registry  $doctrine
      * @param Expense   $expense
+     * @param Trip      $trip
+     * @param User      $selfUser
      * @return EditUserForm
      */
-    public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null, Expense $expense = null, Trip $trip = null) {
+    public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null, Expense $expense = null, Trip $trip = null, User $selfUser = null) {
         $form = new self(self::NAME, self::ACTION, self::POST);
         $form->setFormater($formatter);
         $form->addSubmit(self::SUBMIT, 'form.save', 'glyphicon glyphicon-floppy-disk');
@@ -74,6 +82,7 @@ class EditExpenseForm extends DoctrineForm {
             $form->doctrine = $doctrine;
             $form->expense = $expense;
             $form->trip = $trip;
+            $form->selfUser = $selfUser;
             $form->setHelpManager(false);
             $form->init();
         }
@@ -95,7 +104,11 @@ class EditExpenseForm extends DoctrineForm {
         $this->addText(self::INPUT_CURRENCY, $tr->get('expense.currency'), $this->expense->getCurrency());
         $this->addText(self::INPUT_DESCRIPTION, $tr->get('expense.description'), $this->expense->getDescription());
         $this->addSelect(self::INPUT_TYPE, $tr->get('expense.type'), $this->expense->getType(), Expense::$typeList);
-        $this->addSelect(self::INPUT_STATUS, $tr->get('expense.status'), $statusValue, Expense::$statusList);
+        if (!$this->selfUser->isRoleUser()) {
+            $this->addSelect(self::INPUT_STATUS, $tr->get('expense.status'), $statusValue, Expense::$statusList);
+        } else {
+            $this->addHidden(self::INPUT_STATUS, $statusValue);
+        }
 
         $this->handle();
     }
@@ -148,6 +161,9 @@ class EditExpenseForm extends DoctrineForm {
         $qb->join('tu.trip', 't');
         $qb->join('tu.user', 'u');
         $qb->where('t.id = ' . $tripId);
+        if ($this->selfUser->isRoleUser()) {
+            $qb->andWhere('u.id =' . $this->selfUser->getId());
+        }
         /** @var TripUser[] $resultList */
         $resultList = $qb->getQuery()->getResult();
         foreach ($resultList as $tripUser) {

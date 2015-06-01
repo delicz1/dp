@@ -41,7 +41,7 @@ class ExpenseController extends BaseController {
             $expense = $this->getDoctrine()->getRepository('ProjBussinesTripBundle:Expense')->find($id);
         }
         $expense = $expense ?: new Expense();
-        $form = EditExpenseForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $expense, $trip);
+        $form = EditExpenseForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $expense, $trip, $this->getSelfUser());
         return ['form' => $form ];
     }
 

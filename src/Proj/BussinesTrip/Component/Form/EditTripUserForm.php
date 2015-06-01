@@ -47,15 +47,20 @@ class EditTripUserForm extends DoctrineForm {
      * @var TripUser
      */
     public $tripUser;
+    /**
+     * @var User
+     */
+    public $selfUser;
 
     /**
      * @param Formatter $formatter
      * @param \Request  $request
      * @param Registry  $doctrine
      * @param TripUser  $tripUser
+     * @param User      $selfUser
      * @return EditUserForm
      */
-    public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null, TripUser $tripUser = null) {
+    public static function create(Formatter $formatter, \Request $request = null, Registry $doctrine = null, TripUser $tripUser = null, User $selfUser = null) {
         $form = new self(self::NAME, self::ACTION, self::POST);
         $form->setFormater($formatter);
         $form->addSubmit(self::SUBMIT, 'form.save', 'glyphicon glyphicon-floppy-disk');
@@ -63,6 +68,7 @@ class EditTripUserForm extends DoctrineForm {
             $form->setRequest($request);
             $form->doctrine = $doctrine;
             $form->tripUser = $tripUser;
+            $form->selfUser = $selfUser;
             $form->setHelpManager(false);
             $form->init();
         }
@@ -81,7 +87,11 @@ class EditTripUserForm extends DoctrineForm {
             ->addRuleRequired('')
             ->addRuleMethod($tr->get('trip.user.rule.isUserFree'), 'ruleIsUserFree')
             ->addRuleMethod($tr->get('trip.user.rule.capacity'), 'ruleCapacity');
-        $this->addSelect(self::INPUT_STATUS, 'trip.status', $this->tripUser->getStatus(), TripUser::$statusList);
+        if (!$this->selfUser->isRoleUser()) {
+            $this->addSelect(self::INPUT_STATUS, 'trip.status', $this->tripUser->getStatus(), TripUser::$statusList);
+        } else {
+            $this->addHidden(self::INPUT_STATUS, TripUser::STATUS_NEW);
+        }
         $this->handle();
     }
 
@@ -92,13 +102,18 @@ class EditTripUserForm extends DoctrineForm {
         $tripId = $this[self::INPUT_TRIP]->getValue();
         $trip = $this->doctrine->getRepository('ProjBussinesTripBundle:Trip')->find($tripId);
 
+        $status = Trip::STATUS_NEW;
+        if (! $this->selfUser->isRoleUser()) {
+            $status = $this[self::INPUT_STATUS]->getValue();
+        }
+
 
         $em = $this->getDoctrine()->getManager();
         $tripUser = $this->tripUser;
 
         $tripUser->setTrip($trip);
         $tripUser->setUser($user);
-        $tripUser->setStatus($this[self::INPUT_STATUS]->getValue());
+        $tripUser->setStatus($status);
 
         $em->persist($tripUser);
         $em->flush();
@@ -131,6 +146,9 @@ class EditTripUserForm extends DoctrineForm {
         /** @var QueryBuilder $qb */
         $qb = $repository->createQueryBuilder('u');
         $qb->where('u.status = ' . User::STATUS_ACTIVE);
+        if ($this->selfUser->isRoleUser()) {
+            $qb->where('u.id = ' . $this->selfUser->getId());
+        }
         if ($this->tripUser->getId()) {
             $qb->orWhere('u.id = ' . $this->tripUser->getUser()->getId());
         }

@@ -160,9 +160,15 @@ class TripUserGrid extends GridAjaxDoctrine {
         $gridDataRender->addRender(self::COLUMN_OPTIONS, function ($tripUser, $paramList) {
             /** @var TripUser $tripUser */
             /** @var LangTranslator $t */
+            /** @var User $selfUser */
             $t = $paramList->translator;
-            $dialog = EditTripUserDialog::create($paramList->formatter, $tripUser->getTrip()->getId(), $tripUser->getId());
-            return self::getEditButton($t, $dialog->render(false, false));
+            $selfUser = $paramList->selfUser;
+            $buttons = '';
+            if (! $selfUser->isRoleUser()) {
+                $dialog = EditTripUserDialog::create($paramList->formatter, $tripUser->getTrip()->getId(), $tripUser->getId());
+                $buttons = self::getEditButton($t, $dialog->render(false, false));
+            }
+                return $buttons;
         });
 
         /** @noinspection PhpUnusedParameterInspection */

@@ -118,7 +118,7 @@ class TripController extends BaseController {
             $tripUser = $this->getDoctrine()->getRepository('ProjBussinesTripBundle:TripUser')->find($id);
         }
         $tripUser->setTrip($trip);
-        $form = EditTripUserForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $tripUser);
+        $form = EditTripUserForm::create($this->getFormater(), $this->getRequestNil(), $this->getDoctrine(), $tripUser, $this->getSelfUser());
         return ['form' => $form];
     }
 
