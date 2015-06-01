@@ -99,7 +99,7 @@ class EditExpenseForm extends DoctrineForm {
         $this->addHidden(Expense::COLUMN_ID, $this->expense->getId());
         $this->addHidden(self::PARAM_TRIP, $this->trip->getId());
 
-        $this->addSelect(self::INPUT_TRIP_USER_ID, $tr->get('user.user'), $tripUser, $this->getTripUserOption($tripId));
+        $this->addSelect(self::INPUT_TRIP_USER_ID, $tr->get('user.user'), $tripUser, $this->getTripUserOption($tripId))->addRuleRequired('');
         $this->addText(self::INPUT_PRICE, $tr->get('expense.price'), $this->expense->getPrice())->addRuleFloat();
         $this->addText(self::INPUT_CURRENCY, $tr->get('expense.currency'), $this->expense->getCurrency());
         $this->addText(self::INPUT_DESCRIPTION, $tr->get('expense.description'), $this->expense->getDescription());

@@ -29,6 +29,7 @@ form:
         length: 'must have length'
         integer: 'must be number'
         range: 'must be'
+        float: 'must by number'
     filter-remove: 'Filter remove'
     setting: 'Setting'
     wizard:

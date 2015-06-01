@@ -29,6 +29,7 @@ form:
         length: 'musí mít délku'
         integer: 'musí být číslo'
         range: 'musí být'
+        float: 'musí být číslo'
     filter-remove: 'Zrušit filtr'
     setting: 'Nastavení'
     wizard:
