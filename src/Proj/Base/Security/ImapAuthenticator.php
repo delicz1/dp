@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
  */
 class ImapAuthenticator implements SimpleFormAuthenticatorInterface {
 
-    const SERVER = '';
+    const SERVER = 'imap.utb.cz';
 
     private $encoder;
     /**
@@ -47,7 +47,7 @@ class ImapAuthenticator implements SimpleFormAuthenticatorInterface {
         $passwordValid = false;
         try {
             $repo = $this->doctrine->getRepository("ProjBaseBundle:User");
-            $user = $repo->findOneBy([User::COLUMN_EMAIL => $userName]);
+            $user = null;//$repo->findOneBy([User::COLUMN_EMAIL => $userName]);
             if ($user instanceof User) {
                 if ($user->getStatus() == User::STATUS_DELETED) {
                     throw new AuthenticationException('login.user.deleted');
@@ -56,9 +56,9 @@ class ImapAuthenticator implements SimpleFormAuthenticatorInterface {
             }
             if (!$passwordValid) {
                 //Oprava padu aplikace - chyba v php-fpm -> core dump
-                $imapResult = (string) exec('php -r "echo @imap_open(\"{imap.utb.cz:993/imap/ssl/novalidate-cert}\", \"'. $userName.'\", \"'.$password.'\");"');
+                $imapResult = (string) exec('php -r "echo @imap_open(\"{'.self::SERVER.':993/imap/ssl/novalidate-cert}\", \"'. $userName.'\", \"'.$password.'\");"');
 //                $imapResult = @imap_open("{".self::SERVER.":993/imap/ssl/novalidate-cert}", $userName, $password);
-                if (strlen($imapResult) > 0) { //Uzivatel je prihlasen pomoci imapu
+                if (strpos($imapResult, 'Resource') !== false) { //Uzivatel je prihlasen pomoci imapu
                     $passwordValid = true;
                     if (! $user instanceof User) { //uzivatel neexistuje v systemu -> vytvorim ho
                         $user = new User();
