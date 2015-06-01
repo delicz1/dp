@@ -99,7 +99,11 @@ class EditTripForm extends DoctrineForm {
         $this->addText(Trip::COLUMN_DISTANCE, 'trip.distance', $this->trip->getDistance())->addRuleInteger('', true);
         $this->addText(Trip::COLUMN_PURPOSE, 'trip.purpose', $this->trip->getPurpose());
         $this->addSelect(Trip::COLUMN_VEHICLE_ID, 'vehicle.vehicle', $vehicleId, $this->getVehicleOptions())->addRuleMethod($tr->get('vehicle.not.free'),'ruleIsVehicleFree');
-        $this->addSelect(Trip::COLUMN_STATUS, 'trip.status', $status, Trip::$statusList);
+        if (! $this->selfUser->isRoleUser()) {
+            $this->addSelect(Trip::COLUMN_STATUS, 'trip.status', $status, Trip::$statusList);
+        } else  {
+            $this->addHidden(Trip::COLUMN_STATUS, Trip::STATUS_NEW);
+        }
 
 //        /** @var TripUser[] $list */
 //        $list = $this->trip->getTripUsers();
@@ -128,11 +132,16 @@ class EditTripForm extends DoctrineForm {
     public function onSuccess() {
         $save = $this->getRequest()->getParam(self::SUBMIT);
         if ($save) {
-            $isNewTrip = $this->trip->getId();
+            $isNewTrip = ! $this->trip->getId();
             $vehicleId = $this[Trip::COLUMN_VEHICLE_ID]->getValue();
             $vehicle = $this->doctrine->getRepository('ProjBussinesTripBundle:Vehicle')->find($vehicleId);
             $em = $this->getDoctrine()->getManager();
             $trip = $this->trip;
+
+            $status = Trip::STATUS_NEW;
+            if (! $this->selfUser->isRoleUser()) {
+                $status = $this[Trip::COLUMN_STATUS]->getValue();
+            }
 
             $trip->setTimeFrom($this[Trip::COLUMN_TIME_FROM]->getValue());
             $trip->setTimeTo($this[Trip::COLUMN_TIME_TO]->getValue());
@@ -140,7 +149,7 @@ class EditTripForm extends DoctrineForm {
             $trip->setPointTo($this[Trip::COLUMN_POINT_TO]->getValue());
             $trip->setDistance($this[Trip::COLUMN_DISTANCE]->getValue());
             $trip->setPurpose($this[Trip::COLUMN_PURPOSE]->getValue());
-            $trip->setStatus($this[Trip::COLUMN_STATUS]->getValue());
+            $trip->setStatus($status);
             $trip->setVehicle($vehicle);
 
             $em->persist($trip);
