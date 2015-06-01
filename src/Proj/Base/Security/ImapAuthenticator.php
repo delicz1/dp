@@ -47,7 +47,7 @@ class ImapAuthenticator implements SimpleFormAuthenticatorInterface {
         $passwordValid = false;
         try {
             $repo = $this->doctrine->getRepository("ProjBaseBundle:User");
-            $user = null;//$repo->findOneBy([User::COLUMN_EMAIL => $userName]);
+            $user = $repo->findOneBy([User::COLUMN_EMAIL => $userName]);
             if ($user instanceof User) {
                 if ($user->getStatus() == User::STATUS_DELETED) {
                     throw new AuthenticationException('login.user.deleted');
